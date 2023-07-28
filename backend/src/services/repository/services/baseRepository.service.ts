@@ -1,11 +1,12 @@
-import { BaseEntity } from './entities';
+import { BaseEntity } from '../entities';
 import { Db, Collection, ObjectId } from 'mongodb';
-import { AppResult } from '../../common/app.result';
+import { AppResult } from '../../../common/app.result';
 
 export abstract class BaseRepositoryService<Entity extends BaseEntity> {
   protected readonly table: Collection;
 
   constructor(protected readonly db: Db, tableName: string) {
+    this.db = db;
     this.table = db.collection(tableName);
   }
 
@@ -14,7 +15,6 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
       const result = await this.table.insertOne(entity, {
         ignoreUndefined: false,
       });
-      entity.id = result.insertedId.toString();
       return AppResult.createSucceeded(entity, 'entity successfully created');
     } catch (error) {
       return AppResult.createFailed(
@@ -24,10 +24,10 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
     }
   }
 
-  async getByIdAsync(id: string): Promise<AppResult<Entity>> {
+  async getByIdAsync(_id: ObjectId): Promise<AppResult<Entity>> {
     try {
       const result = await this.table.findOne<Entity>({
-        _id: new ObjectId(id),
+        _id: _id,
       });
       return AppResult.createSucceeded(result, 'successfully get entity by id');
     } catch (error) {
@@ -40,11 +40,8 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
 
   async updateAsync(entity: Entity): Promise<AppResult<Entity>> {
     try {
-      const { id, ...rest } = entity;
-      await this.table.findOneAndUpdate(
-        { _id: new ObjectId(id) },
-        { $set: { rest } },
-      );
+      const { _id, ...rest } = entity;
+      await this.table.findOneAndUpdate({ _id: _id }, { $set: { rest } });
 
       return AppResult.createSucceeded(entity, 'entity successfully updated');
     } catch (error) {
@@ -71,10 +68,10 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
     }
   }
 
-  async deleteAsync(id: string): Promise<AppResult<string>> {
+  async deleteAsync(_id: ObjectId): Promise<AppResult<ObjectId>> {
     try {
-      await this.table.findOneAndDelete({ _id: new ObjectId(id) });
-      return AppResult.createSucceeded(id, 'successfully delete entity by id');
+      await this.table.findOneAndDelete({ _id });
+      return AppResult.createSucceeded(_id, 'successfully delete entity by id');
     } catch (error) {
       return AppResult.createFailed(
         error,

@@ -1,10 +1,19 @@
+import { ObjectId } from 'mongodb';
+import { Transform, Expose } from 'class-transformer';
+
 export abstract class BaseEntity {
-  id: string;
+  @Expose({ name: 'id' })
+  @Transform(({ value }: { value: ObjectId }) => value.toString())
+  _id: ObjectId;
   date_created: Date;
   date_updated: Date;
 
-  constructor(payload: { id: string; date_created: Date; date_updated: Date }) {
-    this.id = payload.id;
+  constructor(payload: {
+    id: ObjectId;
+    date_created: Date;
+    date_updated: Date;
+  }) {
+    this._id = payload.id;
     this.date_created = payload.date_created;
     this.date_updated = payload.date_updated;
   }
@@ -17,7 +26,7 @@ export class AreaOffice extends BaseEntity {
   constructor(payload: {
     name: string;
     city: string;
-    id: string;
+    id: ObjectId;
     date_created: Date;
     date_updated: Date;
   }) {
@@ -34,7 +43,7 @@ export class Client extends BaseEntity {
   constructor(payload: {
     name: string;
     city: string;
-    id: string;
+    id: ObjectId;
     date_created: Date;
     date_updated: Date;
   }) {
@@ -48,14 +57,14 @@ export class Engineer extends BaseEntity {
   firstName: string;
   lastName: string;
   middleName: string;
-  area_office_id: string;
+  area_office_id: ObjectId;
 
   constructor(payload: {
     firstName: string;
     lastName: string;
     middleName: string;
-    area_office_id: string;
-    id: string;
+    area_office_id: ObjectId;
+    id: ObjectId;
     date_created: Date;
     date_updated: Date;
   }) {
@@ -71,7 +80,7 @@ export class EquipmentBrand extends BaseEntity {
   name: string;
   constructor(payload: {
     name: string;
-    id: string;
+    id: ObjectId;
     date_created: Date;
     date_updated: Date;
   }) {
@@ -95,7 +104,7 @@ export class User extends BaseEntity {
     username: string;
     password: string;
     roles: Array<string>;
-    id: string;
+    id: ObjectId;
     date_created: Date;
     date_updated: Date;
   }) {
@@ -116,7 +125,7 @@ export class WarrantyType extends BaseEntity {
   constructor(payload: {
     name: string;
     algorithm: string;
-    id: string;
+    id: ObjectId;
     date_created: Date;
     date_updated: Date;
   }) {

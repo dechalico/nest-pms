@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppConfigModule } from '../../config/appConfig.module';
 import { AppConfigService } from '../../config/appConfig.service';
 import { MongoClient, Db } from 'mongodb';
+import repositoryServices from './services/index';
 
 @Module({
   imports: [AppConfigModule],
@@ -20,6 +21,18 @@ import { MongoClient, Db } from 'mongodb';
       },
       inject: [AppConfigService],
     },
+    repositoryServices.AreaOfficeRepository,
+    repositoryServices.ClientRepository,
+    repositoryServices.EngineerRepository,
+    repositoryServices.UserRepository,
+    repositoryServices.WarrantyTypeRepository,
+  ],
+  exports: [
+    repositoryServices.AreaOfficeRepository,
+    repositoryServices.ClientRepository,
+    repositoryServices.EngineerRepository,
+    repositoryServices.UserRepository,
+    repositoryServices.WarrantyTypeRepository,
   ],
 })
 export class RepositoryModule {}
