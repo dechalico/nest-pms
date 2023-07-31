@@ -1,6 +1,7 @@
 import { BaseEntity } from '../entities';
 import { Db, Collection, ObjectId } from 'mongodb';
 import { AppResult } from '../../../common/app.result';
+import { objectIdCreator } from '../helper';
 
 export abstract class BaseRepositoryService<Entity extends BaseEntity> {
   protected readonly table: Collection;
@@ -24,10 +25,11 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
     }
   }
 
-  async getByIdAsync(_id: ObjectId): Promise<AppResult<Entity>> {
+  async getByIdAsync(id: string | ObjectId): Promise<AppResult<Entity>> {
     try {
+      const objectId = objectIdCreator(id);
       const result = await this.table.findOne<Entity>({
-        _id: _id,
+        _id: objectId,
       });
       return AppResult.createSucceeded(result, 'successfully get entity by id');
     } catch (error) {
@@ -68,10 +70,14 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
     }
   }
 
-  async deleteAsync(_id: ObjectId): Promise<AppResult<ObjectId>> {
+  async deleteAsync(id: string | ObjectId): Promise<AppResult<string>> {
     try {
-      await this.table.findOneAndDelete({ _id });
-      return AppResult.createSucceeded(_id, 'successfully delete entity by id');
+      const objectId = objectIdCreator(id);
+      await this.table.findOneAndDelete({ _id: objectId });
+      return AppResult.createSucceeded(
+        id.toString(),
+        'successfully delete entity by id',
+      );
     } catch (error) {
       return AppResult.createFailed(
         error,

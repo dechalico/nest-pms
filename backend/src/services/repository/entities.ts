@@ -1,12 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { Transform, Expose } from 'class-transformer';
-
-function objectIdCreator(id?: any): undefined | ObjectId {
-  if (!id) return undefined;
-  if (typeof id === 'string') return new ObjectId(id);
-  if (id instanceof ObjectId) return id;
-  throw new Error('id not supported');
-}
+import { objectIdCreator } from './helper';
 
 export abstract class BaseEntity {
   @Expose({ name: 'id' })
