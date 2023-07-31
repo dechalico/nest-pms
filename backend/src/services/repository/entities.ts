@@ -1,19 +1,26 @@
 import { ObjectId } from 'mongodb';
 import { Transform, Expose } from 'class-transformer';
 
+function objectIdCreator(id?: any): undefined | ObjectId {
+  if (!id) return undefined;
+  if (typeof id === 'string') return new ObjectId(id);
+  if (id instanceof ObjectId) return id;
+  throw new Error('id not supported');
+}
+
 export abstract class BaseEntity {
   @Expose({ name: 'id' })
   @Transform(({ value }: { value: ObjectId }) => value.toString())
-  _id: ObjectId;
+  _id: ObjectId | undefined;
   date_created: Date;
   date_updated: Date;
 
   constructor(payload: {
-    id: ObjectId;
+    id?: string | ObjectId;
     date_created: Date;
     date_updated: Date;
   }) {
-    this._id = payload.id;
+    this._id = objectIdCreator(payload.id);
     this.date_created = payload.date_created;
     this.date_updated = payload.date_updated;
   }
@@ -26,7 +33,7 @@ export class AreaOffice extends BaseEntity {
   constructor(payload: {
     name: string;
     city: string;
-    id: ObjectId;
+    id?: string | ObjectId;
     date_created: Date;
     date_updated: Date;
   }) {
@@ -40,16 +47,21 @@ export class Client extends BaseEntity {
   name: string;
   city: string;
 
+  @Transform(({ value }: { value: ObjectId }) => value.toString())
+  area_office_id: ObjectId;
+
   constructor(payload: {
     name: string;
     city: string;
-    id: ObjectId;
+    area_office_id: ObjectId | string;
+    id?: string | ObjectId;
     date_created: Date;
     date_updated: Date;
   }) {
     super(payload);
     this.name = payload.name;
     this.city = payload.city;
+    this.area_office_id = objectIdCreator(payload.area_office_id);
   }
 }
 
@@ -57,14 +69,16 @@ export class Engineer extends BaseEntity {
   firstName: string;
   lastName: string;
   middleName: string;
-  area_office_id: ObjectId;
+
+  @Transform(({ value }: { value: ObjectId }) => value.toString())
+  area_office_id: string | ObjectId;
 
   constructor(payload: {
     firstName: string;
     lastName: string;
     middleName: string;
-    area_office_id: ObjectId;
-    id: ObjectId;
+    area_office_id: ObjectId | string;
+    id?: string | ObjectId;
     date_created: Date;
     date_updated: Date;
   }) {
@@ -72,7 +86,7 @@ export class Engineer extends BaseEntity {
     this.firstName = payload.firstName;
     this.lastName = payload.lastName;
     this.middleName = payload.middleName;
-    this.area_office_id = payload.area_office_id;
+    this.area_office_id = objectIdCreator(payload.area_office_id);
   }
 }
 
@@ -80,7 +94,7 @@ export class EquipmentBrand extends BaseEntity {
   name: string;
   constructor(payload: {
     name: string;
-    id: ObjectId;
+    id?: string | ObjectId;
     date_created: Date;
     date_updated: Date;
   }) {
@@ -104,7 +118,7 @@ export class User extends BaseEntity {
     username: string;
     password: string;
     roles: Array<string>;
-    id: ObjectId;
+    id?: string | ObjectId;
     date_created: Date;
     date_updated: Date;
   }) {
@@ -125,7 +139,7 @@ export class WarrantyType extends BaseEntity {
   constructor(payload: {
     name: string;
     algorithm: string;
-    id: ObjectId;
+    id?: string | ObjectId;
     date_created: Date;
     date_updated: Date;
   }) {
