@@ -40,12 +40,12 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
     }
   }
 
-  async updateAsync(entity: Entity): Promise<AppResult<Entity>> {
+  async updateAsync(entity: Partial<Entity>): Promise<AppResult<Entity>> {
     try {
       const { _id, ...rest } = entity;
       await this.table.findOneAndUpdate({ _id: _id }, { $set: { rest } });
-
-      return AppResult.createSucceeded(entity, 'entity successfully updated');
+      const updated = await this.table.findOne<Entity>({ _id: entity._id });
+      return AppResult.createSucceeded(updated, 'entity successfully updated');
     } catch (error) {
       return AppResult.createFailed(
         error,

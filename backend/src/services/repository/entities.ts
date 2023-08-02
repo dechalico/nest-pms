@@ -219,13 +219,9 @@ export class Pms extends BaseEntity {
     this.dateInstalled = payload.dateInstalled;
     this.remarks = payload.remarks;
     this.warranties = payload.warranties.map((w) => {
-      if (!w.id) {
-        w.id = new ObjectId();
-      }
+      w.id = !w.id ? new ObjectId() : objectIdCreator(w.id);
       w.warranties = w.warranties.map((e) => {
-        if (!e.id) {
-          e.id = new ObjectId();
-        }
+        e.id = !e.id ? new ObjectId() : objectIdCreator(e.id);
         return e;
       });
       return w;
