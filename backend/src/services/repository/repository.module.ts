@@ -24,15 +24,19 @@ import repositoryServices from './services/index';
     repositoryServices.AreaOfficeRepository,
     repositoryServices.ClientRepository,
     repositoryServices.EngineerRepository,
+    repositoryServices.EquipmentBrandRepository,
     repositoryServices.UserRepository,
     repositoryServices.WarrantyTypeRepository,
+    repositoryServices.PmsRepository,
   ],
   exports: [
     repositoryServices.AreaOfficeRepository,
     repositoryServices.ClientRepository,
     repositoryServices.EngineerRepository,
+    repositoryServices.EquipmentBrandRepository,
     repositoryServices.UserRepository,
     repositoryServices.WarrantyTypeRepository,
+    repositoryServices.PmsRepository,
   ],
 })
 export class RepositoryModule {}

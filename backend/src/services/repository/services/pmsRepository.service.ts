@@ -5,7 +5,7 @@ import { Db } from 'mongodb';
 import { AppResult } from 'src/common/app.result';
 
 @Injectable()
-export class EquipmentBrandRepository extends BaseRepositoryService<Pms> {
+export class PmsRepository extends BaseRepositoryService<Pms> {
   constructor(@Inject('DATABASE_CONNECTION') db: Db) {
     super(db, 'pms');
   }

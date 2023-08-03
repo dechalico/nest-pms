@@ -1,6 +1,6 @@
 import { BaseEntity } from '../entities';
 import { Db, Collection, ObjectId } from 'mongodb';
-import { AppResult } from '../../../common/app.result';
+import { AppErrorCodes, AppResult } from '../../../common/app.result';
 import { objectIdCreator } from '../helper';
 
 export abstract class BaseRepositoryService<Entity extends BaseEntity> {
@@ -31,6 +31,13 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
       const result = await this.table.findOne<Entity>({
         _id: objectId,
       });
+      if (!result) {
+        return AppResult.createFailed(
+          new Error("can't find entity by id"),
+          "can't find entity by id",
+          AppErrorCodes.NotFound,
+        );
+      }
       return AppResult.createSucceeded(result, 'successfully get entity by id');
     } catch (error) {
       return AppResult.createFailed(

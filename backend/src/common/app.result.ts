@@ -1,9 +1,19 @@
+export enum AppErrorCodes {
+  NotFound = 'NOT_FOUND',
+  AlreadyExist = 'ALREADY_EXIST',
+  InvalidRequest = 'INVALID_REQUEST',
+}
+
 export class ErrorInfo {
   readonly description: string;
-  readonly code: string;
+  readonly code: AppErrorCodes;
   readonly error: Error;
 
-  constructor(opts: { description: string; code: string; error: Error }) {
+  constructor(opts: {
+    description: string;
+    code: AppErrorCodes;
+    error: Error;
+  }) {
     this.description = opts.description;
     this.code = opts.code;
     this.error = opts.error;
@@ -56,7 +66,7 @@ export class AppResult<Type> {
   static createFailed<Type>(
     error: Error,
     message: string,
-    errorCode?: string | undefined,
+    errorCode?: AppErrorCodes | undefined,
   ): AppResult<Type> {
     return new AppResult<Type>({
       error: new ErrorInfo({ code: errorCode, description: message, error }),

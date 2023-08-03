@@ -4,6 +4,7 @@ import { EngineerRepository } from './engineerRepository.service';
 import { EquipmentBrandRepository } from './equipmentBrandRepository.service';
 import { UserRepository } from './userRepository.service';
 import { WarrantyTypeRepository } from './warrantyTypeRepository.service';
+import { PmsRepository } from './pmsRepository.service';
 
 export default {
   AreaOfficeRepository,
@@ -12,4 +13,5 @@ export default {
   EquipmentBrandRepository,
   UserRepository,
   WarrantyTypeRepository,
+  PmsRepository,
 };
