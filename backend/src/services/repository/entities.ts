@@ -6,7 +6,10 @@ export abstract class BaseEntity {
   @Expose({ name: 'id' })
   @Transform(({ value }: { value: ObjectId }) => value.toString())
   _id: ObjectId | undefined;
+
+  @Expose({ name: 'dateCreated' })
   date_created: Date;
+  @Expose({ name: 'dateUpdated' })
   date_updated: Date;
 
   constructor(payload: {

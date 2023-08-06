@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { UserRepository } from '../../repository/services/userRepository.service';
-import { UserSchema } from '../schemas/user.schema';
+import { UserSchema, CreateUserSchema } from '../schemas/user.schema';
 import { AppErrorCodes, AppResult } from 'src/common/app.result';
 import { User } from 'src/services/repository/entities';
 
@@ -9,7 +9,9 @@ import { User } from 'src/services/repository/entities';
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  async createUserAsync(user: UserSchema): Promise<AppResult<UserSchema>> {
+  async createUserAsync(
+    user: CreateUserSchema,
+  ): Promise<AppResult<UserSchema>> {
     try {
       const checkUser = await this.userRepository.getByUsernameAsync(
         user.username,
@@ -33,11 +35,10 @@ export class UserService {
         );
       }
 
-      const { id, ...rest } = user;
       const now = new Date();
       const createdRes = await this.userRepository.createAsync({
         _id: undefined,
-        ...rest,
+        ...user,
         date_created: now,
         date_updated: now,
       });
@@ -163,6 +164,28 @@ export class UserService {
       return AppResult.createFailed(
         error,
         'an error occured when trying to update the user',
+      );
+    }
+  }
+
+  async getAllUsers(): Promise<AppResult<Array<UserSchema>>> {
+    try {
+      const usersRes = await this.userRepository.getAllAsync();
+      if (!usersRes.Succeeded || !usersRes.Result) {
+        return AppResult.createFailed(
+          new Error(usersRes.Message),
+          usersRes.Message,
+        );
+      }
+      const transformedUsers = plainToClass(Array<UserSchema>, usersRes);
+      return AppResult.createSucceeded(
+        transformedUsers,
+        'successfully get all users',
+      );
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'an error occured when getting all users',
       );
     }
   }
