@@ -9,4 +9,9 @@ export default (): Config => ({
     password: process.env.DATABASE_PASSWORD,
     dbName: process.env.DATABASE_NAME,
   },
+  jwt: {
+    expires: process.env.JWT_EXPIRES,
+    secretKey: process.env.JWT_SECRET,
+    issuer: process.env.JWT_ISSUER,
+  },
 });
