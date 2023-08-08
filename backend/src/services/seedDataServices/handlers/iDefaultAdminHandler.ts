@@ -9,7 +9,7 @@ export abstract class IDefaultAdminHandler
   implements
     IAsyncInteractorHandler<DefaultAdminArgs, AppResult<DefaultAdminResult>>
 {
-  executeAsync(args: DefaultAdminArgs): Promise<AppResult<DefaultAdminResult>> {
-    throw new Error('Method not implemented.');
-  }
+  abstract executeAsync(
+    args: DefaultAdminArgs,
+  ): Promise<AppResult<DefaultAdminResult>>;
 }

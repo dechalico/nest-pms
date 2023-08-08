@@ -1,11 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AppConfigModule } from '../../config/appConfig.module';
 import { AppConfigService } from '../../config/appConfig.service';
 import { MongoClient, Db } from 'mongodb';
 import repositoryServices from './services/index';
 
 @Module({
-  imports: [AppConfigModule],
   providers: [
     {
       provide: 'DATABASE_CONNECTION',
