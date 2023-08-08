@@ -17,7 +17,7 @@ export class PmsRepository extends BaseRepositoryService<Pms> {
     } catch (error) {
       return AppResult.createFailed(
         error,
-        'an error occured when trying to get all entities',
+        'An error occured when trying to get all entities.',
       );
     }
   }

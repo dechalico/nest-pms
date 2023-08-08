@@ -9,11 +9,11 @@ export class PasswordHasher {
   async hashPassword(password: string): Promise<AppResult<string>> {
     try {
       const hash = await bcrypt.hash(password, this.saltOrRounds);
-      return AppResult.createSucceeded(hash, 'successfully hashed password.');
+      return AppResult.createSucceeded(hash, 'Password successfully hashed.');
     } catch (error) {
       return AppResult.createFailed(
         error,
-        'an error occured whent trying to hash password',
+        'An error occured whent trying to hash password.',
       );
     }
   }
@@ -26,12 +26,12 @@ export class PasswordHasher {
       const isMatch = await bcrypt.compare(password, hashedPassword);
       return AppResult.createSucceeded(
         isMatch,
-        'successfully validate password',
+        'Password successfully validated.',
       );
     } catch (error) {
       return AppResult.createFailed(
         error,
-        'an error occured when trying to validate password',
+        'An error occured when trying to validate password.',
       );
     }
   }

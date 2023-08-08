@@ -16,11 +16,11 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
       const result = await this.table.insertOne(entity, {
         ignoreUndefined: false,
       });
-      return AppResult.createSucceeded(entity, 'entity successfully created');
+      return AppResult.createSucceeded(entity, 'Entity successfully created.');
     } catch (error) {
       return AppResult.createFailed(
         error,
-        'an error occured when creating entity',
+        'An error occured when creating entity',
       );
     }
   }
@@ -33,16 +33,19 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
       });
       if (!result) {
         return AppResult.createFailed(
-          new Error("can't find entity by id"),
-          "can't find entity by id",
+          new Error("Can't find entity by id."),
+          "Can't find entity by id.",
           AppErrorCodes.NotFound,
         );
       }
-      return AppResult.createSucceeded(result, 'successfully get entity by id');
+      return AppResult.createSucceeded(
+        result,
+        'Successfully get entity by id.',
+      );
     } catch (error) {
       return AppResult.createFailed(
         error,
-        'an error occure when getting the entity by id',
+        'An error occured when getting the entity by id.',
       );
     }
   }
@@ -52,11 +55,11 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
       const { _id, ...rest } = entity;
       await this.table.findOneAndUpdate({ _id: _id }, { $set: { rest } });
       const updated = await this.table.findOne<Entity>({ _id: entity._id });
-      return AppResult.createSucceeded(updated, 'entity successfully updated');
+      return AppResult.createSucceeded(updated, 'Entity successfully updated.');
     } catch (error) {
       return AppResult.createFailed(
         error,
-        'an error occured when updating entity',
+        'An error occured when updating entity.',
       );
     }
   }
@@ -68,11 +71,14 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
       for await (const doc of cursor) {
         result.push(doc);
       }
-      return AppResult.createSucceeded(result, 'successfully get all entities');
+      return AppResult.createSucceeded(
+        result,
+        'Successfully get all entities.',
+      );
     } catch (error) {
       return AppResult.createFailed(
         error,
-        'an error occured when trying to get all entities',
+        'An error occured when trying to get all entities.',
       );
     }
   }
@@ -83,12 +89,12 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
       await this.table.findOneAndDelete({ _id: objectId });
       return AppResult.createSucceeded(
         id.toString(),
-        'successfully delete entity by id',
+        'Successfully delete entity by id.',
       );
     } catch (error) {
       return AppResult.createFailed(
         error,
-        'an error occured when trying to delete entity',
+        'An error occured when trying to delete entity.',
       );
     }
   }

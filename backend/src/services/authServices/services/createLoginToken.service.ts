@@ -30,8 +30,8 @@ export class CreateLoginToken implements ICreateLoginTokenHandler {
         chkUserRes.Error.code === AppErrorCodes.NotFound
       ) {
         return AppResult.createFailed(
-          new Error('invalid username or password'),
-          'invalid username or password',
+          new Error('Invalid username or password.'),
+          'Invalid username or password.',
         );
       }
       if (!chkUserRes.Succeeded || !chkUserRes.Result) {
@@ -49,8 +49,8 @@ export class CreateLoginToken implements ICreateLoginTokenHandler {
       );
       if (!chkPassword.Succeeded || !chkPassword.Result) {
         return AppResult.createFailed(
-          new Error('invalid username or password'),
-          'invalid username or password',
+          new Error('Invalid username or password.'),
+          'Invalid username or password.',
         );
       }
 

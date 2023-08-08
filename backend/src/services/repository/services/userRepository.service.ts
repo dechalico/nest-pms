@@ -15,20 +15,20 @@ export class UserRepository extends BaseRepositoryService<User> {
       const result = await this.table.findOne<User>({ username: username });
       if (!result) {
         return AppResult.createFailed(
-          new Error('unable to find user by username'),
-          'unable to find user by username',
+          new Error('Unable to find user by username.'),
+          'Unable to find user by username.',
           AppErrorCodes.NotFound,
         );
       }
 
       return AppResult.createSucceeded(
         result,
-        'successfullt get user by username',
+        'Successfully get user by username.',
       );
     } catch (error) {
       return AppResult.createFailed(
         error,
-        'an error occured when getting user by username',
+        'An error occured when getting user by username.',
       );
     }
   }

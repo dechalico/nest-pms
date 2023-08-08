@@ -19,8 +19,8 @@ export class UserService {
 
       if (checkUser.Succeeded) {
         return AppResult.createFailed(
-          new Error('username already in use.'),
-          'username already in use.',
+          new Error('Username already in used.'),
+          'Username already in used.',
           AppErrorCodes.InvalidRequest,
         );
       }
@@ -51,11 +51,11 @@ export class UserService {
       }
 
       const result = plainToClass(UserSchema, createdRes.Result);
-      return AppResult.createSucceeded(result, 'user successfully created.');
+      return AppResult.createSucceeded(result, 'User successfully created.');
     } catch (error) {
       return AppResult.createFailed(
         error,
-        'an error occured when creating user',
+        'An error occured when creating user',
       );
     }
   }
@@ -71,8 +71,8 @@ export class UserService {
         getUserRes.Error.code === AppErrorCodes.NotFound
       ) {
         return AppResult.createFailed(
-          new Error("can't find user by username."),
-          "can't find user by username",
+          new Error("Can't find user by username."),
+          "Can't find user by username.",
           AppErrorCodes.NotFound,
         );
       }
@@ -87,12 +87,12 @@ export class UserService {
       const result = plainToClass(UserSchema, getUserRes.Result);
       return AppResult.createSucceeded(
         result,
-        'successfully get user by username',
+        'Successfully get user by username',
       );
     } catch (error) {
       return AppResult.createFailed(
         error,
-        'an error occured when getting user by username',
+        'An error occured when getting user by username',
       );
     }
   }
@@ -106,8 +106,8 @@ export class UserService {
         getUserRes.Error.code === AppErrorCodes.NotFound
       ) {
         return AppResult.createFailed(
-          new Error("can't find user by user id."),
-          "can't find user by user id.",
+          new Error("Can't find user by user id."),
+          "Can't find user by user id.",
           AppErrorCodes.NotFound,
         );
       }
@@ -122,12 +122,12 @@ export class UserService {
       const result = plainToClass(UserSchema, getUserRes.Result);
       return AppResult.createSucceeded(
         result,
-        'successfully get user by user id',
+        'Successfully get user by user id',
       );
     } catch (error) {
       return AppResult.createFailed(
         error,
-        'an error occured when getting user by user id',
+        'An error occured when getting user by user id',
       );
     }
   }
@@ -159,11 +159,11 @@ export class UserService {
       }
 
       const result = plainToClass(UserSchema, updateRes.Result);
-      return AppResult.createSucceeded(result, 'user successfully updated.');
+      return AppResult.createSucceeded(result, 'User successfully updated.');
     } catch (error) {
       return AppResult.createFailed(
         error,
-        'an error occured when trying to update the user',
+        'An error occured when trying to update the user',
       );
     }
   }
@@ -180,12 +180,12 @@ export class UserService {
       const transformedUsers = plainToClass(Array<UserSchema>, usersRes);
       return AppResult.createSucceeded(
         transformedUsers,
-        'successfully get all users',
+        'Successfully get all users',
       );
     } catch (error) {
       return AppResult.createFailed(
         error,
-        'an error occured when getting all users',
+        'An error occured when getting all users',
       );
     }
   }

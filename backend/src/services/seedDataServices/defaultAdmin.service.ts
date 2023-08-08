@@ -40,8 +40,10 @@ export class DefaultAdminService implements IDefaultAdminHandler, OnModuleInit {
       const users = checkUsers.Result;
       if (users.length > 0) {
         return AppResult.createFailed(
-          new Error("already have registered user. can't create default user."),
-          "already have registered user. can't create default user.",
+          new Error(
+            'Already have registered user. Unable to create default user.',
+          ),
+          'Already have registered user. Unable to create default user.',
         );
       }
 
@@ -73,12 +75,12 @@ export class DefaultAdminService implements IDefaultAdminHandler, OnModuleInit {
 
       return AppResult.createSucceeded(
         result,
-        'successfully create default user',
+        'Default user successfully created.',
       );
     } catch (error) {
       return AppResult.createFailed(
         error,
-        'an error occured when trying to create default user',
+        'An error occured when trying to create default user.',
       );
     }
   }
