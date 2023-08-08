@@ -5,16 +5,14 @@ import {
 } from '../interactors/createLoginTokenInteractor';
 import { AppResult } from '../../../common/app.result';
 
-export class ICreateLoginTokenHandler
+export abstract class ICreateLoginTokenHandler
   implements
     IAsyncInteractorHandler<
       CreateLoginTokenArgs,
       AppResult<CreateLoginTokenResult>
     >
 {
-  executeAsync(
+  abstract executeAsync(
     args: CreateLoginTokenArgs,
-  ): Promise<AppResult<CreateLoginTokenResult>> {
-    throw new Error('Method not implemented.');
-  }
+  ): Promise<AppResult<CreateLoginTokenResult>>;
 }

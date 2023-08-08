@@ -6,12 +6,15 @@ import { AppConfigModule } from '../../config/appConfig.module';
 import { AppConfigService } from '../../config/appConfig.service';
 import { ICreateLoginTokenHandler } from './handlers/iCreateLoginTokenHandler';
 import { CreateLoginToken } from './services/createLoginToken.service';
+import { AuthGuard } from './services/auth.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
     BaseServicesModule,
     AppConfigModule,
     JwtModule.registerAsync({
+      imports: [AppConfigModule],
       inject: [AppConfigService],
       useFactory: async (configService: AppConfigService) => {
         const jwtConfig = configService.getJwtConfig();
@@ -33,6 +36,10 @@ import { CreateLoginToken } from './services/createLoginToken.service';
     {
       provide: ICreateLoginTokenHandler,
       useClass: CreateLoginToken,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
     },
   ],
   exports: [ICreateLoginTokenHandler],

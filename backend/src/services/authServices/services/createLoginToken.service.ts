@@ -7,7 +7,9 @@ import {
 import { PasswordHasher } from '../../securityServices/services/passwordService';
 import { UserService } from '../../baseServices/services/user.service';
 import { JwtService } from '@nestjs/jwt';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class CreateLoginToken implements ICreateLoginTokenHandler {
   constructor(
     private readonly passwordHasher: PasswordHasher,

@@ -24,7 +24,10 @@ export class PasswordHasher {
   ): Promise<AppResult<boolean>> {
     try {
       const isMatch = await bcrypt.compare(password, hashedPassword);
-      return AppResult.createSucceeded(true, 'successfully validate password');
+      return AppResult.createSucceeded(
+        isMatch,
+        'successfully validate password',
+      );
     } catch (error) {
       return AppResult.createFailed(
         error,
