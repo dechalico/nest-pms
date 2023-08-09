@@ -1,3 +1,5 @@
+import { OmitType } from '@nestjs/mapped-types';
+
 export class DefaultAdminArgs {
   username: string;
   password: string;
@@ -6,10 +8,10 @@ export class DefaultAdminArgs {
   roles: Array<string>;
 }
 
-export class DefaultAdminResult {
-  username: string;
+export class DefaultAdminResult extends OmitType(DefaultAdminArgs, [
+  'password',
+  'roles',
+]) {
   hashedPassword: string;
-  firstName: string;
-  lastName: string;
   dateCreated: Date;
 }

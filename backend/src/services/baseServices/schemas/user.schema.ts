@@ -1,3 +1,5 @@
+import { OmitType, PartialType } from '@nestjs/mapped-types';
+
 export class UserSchema {
   id: string;
   firstName: string;
@@ -10,11 +12,12 @@ export class UserSchema {
   dateUpdated: Date;
 }
 
-export interface CreateUserSchema {
-  firstName: string;
-  lastName: string;
-  email: string;
-  username: string;
-  password: string;
-  roles: Array<string>;
+export class CreateUser extends OmitType(UserSchema, [
+  'id',
+  'dateCreated',
+  'dateUpdated',
+]) {}
+
+export class UpdateUser extends PartialType(UserSchema) {
+  id: string;
 }

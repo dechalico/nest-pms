@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { UserRepository } from '../../repository/services/userRepository.service';
-import { UserSchema, CreateUserSchema } from '../schemas/user.schema';
+import { UserSchema, CreateUser, UpdateUser } from '../schemas/user.schema';
 import { AppErrorCodes, AppResult } from 'src/common/app.result';
 import { User } from 'src/services/repository/entities';
 
@@ -9,9 +9,7 @@ import { User } from 'src/services/repository/entities';
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  async createUserAsync(
-    user: CreateUserSchema,
-  ): Promise<AppResult<UserSchema>> {
+  async createUserAsync(user: CreateUser): Promise<AppResult<UserSchema>> {
     try {
       const checkUser = await this.userRepository.getByUsernameAsync(
         user.username,
@@ -132,9 +130,7 @@ export class UserService {
     }
   }
 
-  async updateUserAsync(
-    user: Partial<UserSchema>,
-  ): Promise<AppResult<UserSchema>> {
+  async updateUserAsync(user: UpdateUser): Promise<AppResult<UserSchema>> {
     try {
       const { id } = user;
       const checkUserRes = await this.userRepository.getByIdAsync(id);
