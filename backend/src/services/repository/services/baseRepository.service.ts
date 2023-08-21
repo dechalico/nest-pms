@@ -29,7 +29,7 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
       Object.assign(obj, entity);
 
       return AppResult.createSucceeded(
-        instanceToPlain(obj),
+        instanceToPlain(obj, { excludeExtraneousValues: true }),
         'Entity successfully created.',
       );
     } catch (error) {
@@ -58,7 +58,7 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
       Object.assign(obj, result);
 
       return AppResult.createSucceeded(
-        instanceToPlain(obj),
+        instanceToPlain(obj, { excludeExtraneousValues: true }),
         'Successfully get entity by id.',
       );
     } catch (error) {
@@ -83,7 +83,7 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
       Object.assign(obj, updated);
 
       return AppResult.createSucceeded(
-        instanceToPlain(obj),
+        instanceToPlain(obj, { excludeExtraneousValues: true }),
         'Entity successfully updated.',
       );
     } catch (error) {
@@ -105,7 +105,7 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
       }
 
       return AppResult.createSucceeded(
-        instanceToPlain(result),
+        instanceToPlain(result, { excludeExtraneousValues: true }),
         'Successfully get all entities.',
       );
     } catch (error) {

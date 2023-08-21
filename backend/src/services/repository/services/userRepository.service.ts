@@ -23,7 +23,7 @@ export class UserRepository extends BaseRepositoryService<User> {
       }
 
       const obj = new this.Wrapper();
-      Object.assign(result);
+      Object.assign(obj, result);
 
       return AppResult.createSucceeded(
         instanceToPlain(obj, { excludeExtraneousValues: true }),

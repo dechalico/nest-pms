@@ -13,12 +13,18 @@ export abstract class BaseEntity {
 }
 
 export class AreaOffice extends BaseEntity {
+  @Expose()
   name: string;
+
+  @Expose()
   city: string;
 }
 
 export class Client extends BaseEntity {
+  @Expose()
   name: string;
+
+  @Expose()
   city: string;
 
   @Expose({ name: 'areaOfficeId' })
@@ -27,8 +33,13 @@ export class Client extends BaseEntity {
 }
 
 export class Engineer extends BaseEntity {
+  @Expose()
   firstName: string;
+
+  @Expose()
   lastName: string;
+
+  @Expose()
   middleName: string;
 
   @Expose({ name: 'areaOfficeId' })
@@ -37,20 +48,35 @@ export class Engineer extends BaseEntity {
 }
 
 export class EquipmentBrand extends BaseEntity {
+  @Expose()
   name: string;
 }
 
 export class User extends BaseEntity {
+  @Expose()
   firstName: string;
+
+  @Expose()
   lastName: string;
+
+  @Expose()
   email: string;
+
+  @Expose()
   username: string;
+
+  @Expose()
   password: string;
+
+  @Expose()
   roles: Array<string>;
 }
 
 export class WarrantyType extends BaseEntity {
+  @Expose()
   name: string;
+
+  @Expose()
   algorithm: string;
 }
 
