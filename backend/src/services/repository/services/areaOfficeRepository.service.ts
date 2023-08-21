@@ -6,6 +6,6 @@ import { Db } from 'mongodb';
 @Injectable()
 export class AreaOfficeRepository extends BaseRepositoryService<AreaOffice> {
   constructor(@Inject('DATABASE_CONNECTION') db: Db) {
-    super(db, 'area_offices');
+    super(db, 'area_offices', AreaOffice);
   }
 }

@@ -2,21 +2,36 @@ import { BaseEntity } from '../entities';
 import { Db, Collection, ObjectId } from 'mongodb';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
 import { objectIdCreator } from '../helper';
+import { instanceToPlain } from 'class-transformer';
 
 export abstract class BaseRepositoryService<Entity extends BaseEntity> {
   protected readonly table: Collection;
+  protected readonly Wrapper: new () => Entity;
 
-  constructor(protected readonly db: Db, tableName: string) {
+  constructor(
+    protected readonly db: Db,
+    tableName: string,
+    Wrapper: new () => Entity,
+  ) {
     this.db = db;
     this.table = db.collection(tableName);
+    this.Wrapper = Wrapper;
   }
 
-  async createAsync(entity: Entity): Promise<AppResult<Entity>> {
+  async createAsync(entity: Entity): Promise<AppResult<any>> {
     try {
-      const result = await this.table.insertOne(entity, {
+      const { _id, ...rest } = entity;
+      const result = await this.table.insertOne(rest, {
         ignoreUndefined: false,
       });
-      return AppResult.createSucceeded(entity, 'Entity successfully created.');
+      entity._id = result.insertedId;
+      const obj = new this.Wrapper();
+      Object.assign(obj, entity);
+
+      return AppResult.createSucceeded(
+        instanceToPlain(obj),
+        'Entity successfully created.',
+      );
     } catch (error) {
       return AppResult.createFailed(
         error,
@@ -25,7 +40,7 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
     }
   }
 
-  async getByIdAsync(id: string | ObjectId): Promise<AppResult<Entity>> {
+  async getByIdAsync(id: string | ObjectId): Promise<AppResult<any>> {
     try {
       const objectId = objectIdCreator(id);
       const result = await this.table.findOne<Entity>({
@@ -38,8 +53,12 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
           AppErrorCodes.NotFound,
         );
       }
+
+      const obj = new this.Wrapper();
+      Object.assign(obj, result);
+
       return AppResult.createSucceeded(
-        result,
+        instanceToPlain(obj),
         'Successfully get entity by id.',
       );
     } catch (error) {
@@ -50,12 +69,23 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
     }
   }
 
-  async updateAsync(entity: Partial<Entity>): Promise<AppResult<Entity>> {
+  async updateAsync(entity: Partial<Entity>): Promise<AppResult<any>> {
     try {
       const { _id, ...rest } = entity;
-      await this.table.findOneAndUpdate({ _id: _id }, { $set: { rest } });
-      const updated = await this.table.findOne<Entity>({ _id: entity._id });
-      return AppResult.createSucceeded(updated, 'Entity successfully updated.');
+      await this.table.findOneAndUpdate(
+        { _id: objectIdCreator(_id) },
+        { $set: { rest } },
+      );
+      const updated = await this.table.findOne<Entity>({
+        _id: objectIdCreator(_id),
+      });
+      const obj = new this.Wrapper();
+      Object.assign(obj, updated);
+
+      return AppResult.createSucceeded(
+        instanceToPlain(obj),
+        'Entity successfully updated.',
+      );
     } catch (error) {
       return AppResult.createFailed(
         error,
@@ -64,15 +94,18 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
     }
   }
 
-  async getAllAsync(): Promise<AppResult<Array<Entity>>> {
+  async getAllAsync(): Promise<AppResult<any>> {
     try {
       const cursor = this.table.find<Entity>({}, { sort: { _id: 1 } });
       const result: Array<Entity> = [];
       for await (const doc of cursor) {
-        result.push(doc);
+        const obj = new this.Wrapper();
+        Object.assign(obj, doc);
+        result.push(obj);
       }
+
       return AppResult.createSucceeded(
-        result,
+        instanceToPlain(result),
         'Successfully get all entities.',
       );
     } catch (error) {

@@ -6,6 +6,6 @@ import { Db } from 'mongodb';
 @Injectable()
 export class ClientRepository extends BaseRepositoryService<Client> {
   constructor(@Inject('DATABASE_CONNECTION') db: Db) {
-    super(db, 'clients');
+    super(db, 'clients', Client);
   }
 }

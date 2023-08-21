@@ -7,7 +7,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { UserService } from '../baseServices/services/user.service';
 import { AppResult } from 'src/common/app.result';
 import { PasswordHasher } from '../securityServices/services/passwordService';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class DefaultAdminService implements IDefaultAdminHandler, OnModuleInit {
@@ -70,7 +70,9 @@ export class DefaultAdminService implements IDefaultAdminHandler, OnModuleInit {
         );
       }
       const created = createRes.Result;
-      const result = plainToClass(DefaultAdminResult, created);
+      const result = plainToInstance(DefaultAdminResult, created, {
+        excludeExtraneousValues: true,
+      });
       result.hashedPassword = created.password;
 
       return AppResult.createSucceeded(

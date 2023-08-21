@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { plainToClass } from 'class-transformer';
 import { UserRepository } from '../../repository/services/userRepository.service';
 import { UserSchema, CreateUser, UpdateUser } from '../schemas/user.schema';
 import { AppErrorCodes, AppResult } from 'src/common/app.result';
-import { User } from 'src/services/repository/entities';
 
 @Injectable()
 export class UserService {
@@ -35,10 +33,10 @@ export class UserService {
 
       const now = new Date();
       const createdRes = await this.userRepository.createAsync({
-        _id: undefined,
         ...user,
+        _id: undefined,
         date_created: now,
-        date_updated: now,
+        date_updated: undefined,
       });
 
       if (!createdRes.Succeeded || !createdRes.Result) {
@@ -48,8 +46,11 @@ export class UserService {
         );
       }
 
-      const result = plainToClass(UserSchema, createdRes.Result);
-      return AppResult.createSucceeded(result, 'User successfully created.');
+      const userSchema: UserSchema = createdRes.Result;
+      return AppResult.createSucceeded(
+        userSchema,
+        'User successfully created.',
+      );
     } catch (error) {
       return AppResult.createFailed(
         error,
@@ -82,9 +83,9 @@ export class UserService {
         );
       }
 
-      const result = plainToClass(UserSchema, getUserRes.Result);
+      const userSchema: UserSchema = getUserRes.Result;
       return AppResult.createSucceeded(
-        result,
+        userSchema,
         'Successfully get user by username',
       );
     } catch (error) {
@@ -117,9 +118,9 @@ export class UserService {
         );
       }
 
-      const result = plainToClass(UserSchema, getUserRes.Result);
+      const userSchema: UserSchema = getUserRes.Result;
       return AppResult.createSucceeded(
-        result,
+        userSchema,
         'Successfully get user by user id',
       );
     } catch (error) {
@@ -132,7 +133,7 @@ export class UserService {
 
   async updateUserAsync(user: UpdateUser): Promise<AppResult<UserSchema>> {
     try {
-      const { id } = user;
+      const { id, dateCreated, dateUpdated, ...rest } = user;
       const checkUserRes = await this.userRepository.getByIdAsync(id);
       if (!checkUserRes.Succeeded || !checkUserRes.Result) {
         return AppResult.createFailed(
@@ -142,9 +143,12 @@ export class UserService {
         );
       }
 
-      const objToUpdate = plainToClass(User, user);
-      objToUpdate.date_updated = new Date();
-      const updateRes = await this.userRepository.updateAsync(objToUpdate);
+      const now = new Date();
+      const updateRes = await this.userRepository.updateAsync({
+        ...rest,
+        _id: id,
+        date_updated: now,
+      });
 
       if (!updateRes.Succeeded || !updateRes.Result) {
         return AppResult.createFailed(
@@ -154,8 +158,11 @@ export class UserService {
         );
       }
 
-      const result = plainToClass(UserSchema, updateRes.Result);
-      return AppResult.createSucceeded(result, 'User successfully updated.');
+      const userSchema: UserSchema = updateRes.Result;
+      return AppResult.createSucceeded(
+        userSchema,
+        'User successfully updated.',
+      );
     } catch (error) {
       return AppResult.createFailed(
         error,
@@ -173,9 +180,9 @@ export class UserService {
           usersRes.Message,
         );
       }
-      const transformedUsers = plainToClass(Array<UserSchema>, usersRes);
+      const userSchema: Array<UserSchema> = usersRes.Result;
       return AppResult.createSucceeded(
-        transformedUsers,
+        userSchema,
         'Successfully get all users',
       );
     } catch (error) {
