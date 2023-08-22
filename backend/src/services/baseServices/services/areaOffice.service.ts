@@ -6,6 +6,7 @@ import {
   AreaOfficeSchema,
   UpdateAreaOffice,
 } from '../schemas/areaOffice.schema';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class AreaOfficeService {
@@ -15,6 +16,11 @@ export class AreaOfficeService {
     payload: CreateAreaOffice,
   ): Promise<AppResult<AreaOfficeSchema>> {
     try {
+      // to remove not defined properties
+      payload = plainToInstance(CreateAreaOffice, payload, {
+        excludeExtraneousValues: true,
+      });
+
       const now = new Date();
       const createdRes = await this.areaOfficeRepo.createAsync({
         ...payload,
@@ -46,6 +52,11 @@ export class AreaOfficeService {
     payload: UpdateAreaOffice,
   ): Promise<AppResult<AreaOfficeSchema>> {
     try {
+      // to remove not defined properties
+      payload = plainToInstance(UpdateAreaOffice, payload, {
+        excludeExtraneousValues: true,
+      });
+
       const { id, ...rest } = payload;
       const checkRes = await this.areaOfficeRepo.getByIdAsync(id);
       if (!checkRes.Succeeded || !checkRes.Result) {

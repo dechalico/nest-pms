@@ -3,6 +3,7 @@ import { UserRepository } from '../../repository/services/userRepository.service
 import { UserSchema, CreateUser, UpdateUser } from '../schemas/user.schema';
 import { AppErrorCodes, AppResult } from 'src/common/app.result';
 import { PasswordHasher } from '../../securityServices/services/passwordService';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class UserService {
@@ -13,6 +14,11 @@ export class UserService {
 
   async createUserAsync(user: CreateUser): Promise<AppResult<UserSchema>> {
     try {
+      // to remove not defined properties
+      user = plainToInstance(CreateUser, user, {
+        excludeExtraneousValues: true,
+      });
+
       const checkUser = await this.userRepository.getByUsernameAsync(
         user.username,
       );
@@ -158,6 +164,11 @@ export class UserService {
 
   async updateUserAsync(user: UpdateUser): Promise<AppResult<UserSchema>> {
     try {
+      // to remove not defined properties
+      user = plainToInstance(UpdateUser, user, {
+        excludeExtraneousValues: true,
+      });
+
       const { id, ...rest } = user;
       const checkUserRes = await this.userRepository.getByIdAsync(id);
       if (!checkUserRes.Succeeded || !checkUserRes.Result) {

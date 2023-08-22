@@ -6,7 +6,6 @@ import {
 } from './interactors/createOfficeInteractor';
 import { Injectable } from '@nestjs/common';
 import { AreaOfficeService } from '../../baseServices/services/areaOffice.service';
-import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class CreateOfficeHandler implements ICreateOfficeHandler {
@@ -16,11 +15,8 @@ export class CreateOfficeHandler implements ICreateOfficeHandler {
     args: CreateOfficeArgs,
   ): Promise<AppResult<CreateOfficeResult>> {
     try {
-      const payload = plainToInstance(CreateOfficeArgs, args, {
-        excludeExtraneousValues: true,
-      });
       const createdRes = await this.areaOfficeService.createAreaOfficeAsync(
-        payload,
+        args,
       );
 
       if (!createdRes.Succeeded || !createdRes.Result) {
