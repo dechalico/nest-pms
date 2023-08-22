@@ -18,6 +18,8 @@ export class UserService {
       user = plainToInstance(CreateUser, user, {
         excludeExtraneousValues: true,
       });
+      // lowercase username
+      user.username = user.username.toLowerCase();
 
       const checkUser = await this.userRepository.getByUsernameAsync(
         user.username,
