@@ -32,12 +32,14 @@ export class CreateLoginToken implements ICreateLoginTokenHandler {
         return AppResult.createFailed(
           new Error('Invalid username or password.'),
           'Invalid username or password.',
+          AppErrorCodes.InvalidRequest,
         );
       }
       if (!chkUserRes.Succeeded || !chkUserRes.Result) {
         return AppResult.createFailed(
           new Error(chkUserRes.Message),
           chkUserRes.Message,
+          chkUserRes.Error.code,
         );
       }
       const user = chkUserRes.Result;
@@ -51,6 +53,7 @@ export class CreateLoginToken implements ICreateLoginTokenHandler {
         return AppResult.createFailed(
           new Error('Invalid username or password.'),
           'Invalid username or password.',
+          AppErrorCodes.InvalidRequest,
         );
       }
 
@@ -69,6 +72,7 @@ export class CreateLoginToken implements ICreateLoginTokenHandler {
       return AppResult.createFailed(
         error,
         'an error occured in CreateLoginToken',
+        AppErrorCodes.InternalError,
       );
     }
   }

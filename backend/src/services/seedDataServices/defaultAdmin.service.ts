@@ -5,7 +5,7 @@ import {
 } from './interactors/defaultAdminInteractors';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { UserService } from '../baseServices/services/user.service';
-import { AppResult } from 'src/common/app.result';
+import { AppErrorCodes, AppResult } from 'src/common/app.result';
 import { plainToInstance } from 'class-transformer';
 
 @Injectable()
@@ -31,6 +31,7 @@ export class DefaultAdminService implements IDefaultAdminHandler, OnModuleInit {
         return AppResult.createFailed(
           new Error(checkUsers.Message),
           checkUsers.Message,
+          checkUsers.Error.code,
         );
       }
       const users = checkUsers.Result;
@@ -40,6 +41,7 @@ export class DefaultAdminService implements IDefaultAdminHandler, OnModuleInit {
             'Already have registered user. Unable to create default user.',
           ),
           'Already have registered user. Unable to create default user.',
+          AppErrorCodes.InternalError,
         );
       }
 
@@ -51,6 +53,7 @@ export class DefaultAdminService implements IDefaultAdminHandler, OnModuleInit {
         return AppResult.createFailed(
           new Error(createRes.Message),
           createRes.Message,
+          createRes.Error.code,
         );
       }
       const created = createRes.Result;
@@ -67,6 +70,7 @@ export class DefaultAdminService implements IDefaultAdminHandler, OnModuleInit {
       return AppResult.createFailed(
         error,
         'An error occured when trying to create default user.',
+        AppErrorCodes.InternalError,
       );
     }
   }

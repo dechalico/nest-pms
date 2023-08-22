@@ -33,6 +33,7 @@ export class UserRepository extends BaseRepositoryService<User> {
       return AppResult.createFailed(
         error,
         'An error occured when getting user by username.',
+        AppErrorCodes.InternalError,
       );
     }
   }

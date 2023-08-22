@@ -36,6 +36,7 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
       return AppResult.createFailed(
         error,
         'An error occured when creating entity',
+        AppErrorCodes.InternalError,
       );
     }
   }
@@ -65,6 +66,7 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
       return AppResult.createFailed(
         error,
         'An error occured when getting the entity by id.',
+        AppErrorCodes.InternalError,
       );
     }
   }
@@ -90,6 +92,7 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
       return AppResult.createFailed(
         error,
         'An error occured when updating entity.',
+        AppErrorCodes.InternalError,
       );
     }
   }
@@ -112,6 +115,7 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
       return AppResult.createFailed(
         error,
         'An error occured when trying to get all entities.',
+        AppErrorCodes.InternalError,
       );
     }
   }
@@ -128,6 +132,7 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
       return AppResult.createFailed(
         error,
         'An error occured when trying to delete entity.',
+        AppErrorCodes.InternalError,
       );
     }
   }

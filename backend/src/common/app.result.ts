@@ -2,6 +2,7 @@ export enum AppErrorCodes {
   NotFound = 'NOT_FOUND',
   AlreadyExist = 'ALREADY_EXIST',
   InvalidRequest = 'INVALID_REQUEST',
+  InternalError = 'INTERNAL_ERROR',
 }
 
 export class ErrorInfo {

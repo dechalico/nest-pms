@@ -6,8 +6,6 @@ import {
   AreaOfficeSchema,
   UpdateAreaOffice,
 } from '../schemas/areaOffice.schema';
-import { plainToClass } from 'class-transformer';
-import { AreaOffice } from '../../repository/entities';
 
 @Injectable()
 export class AreaOfficeService {
@@ -21,7 +19,7 @@ export class AreaOfficeService {
       const createdRes = await this.areaOfficeRepo.createAsync({
         ...payload,
         date_created: now,
-        date_updated: now,
+        date_updated: undefined,
         _id: undefined,
       });
       if (!createdRes.Succeeded || !createdRes.Result) {
@@ -31,7 +29,7 @@ export class AreaOfficeService {
         );
       }
 
-      const result = plainToClass(AreaOfficeSchema, createdRes.Result);
+      const result: AreaOfficeSchema = createdRes.Result;
       return AppResult.createSucceeded(
         result,
         'Area Office successfully created.',
@@ -48,7 +46,7 @@ export class AreaOfficeService {
     payload: UpdateAreaOffice,
   ): Promise<AppResult<AreaOfficeSchema>> {
     try {
-      const { id } = payload;
+      const { id, ...rest } = payload;
       const checkRes = await this.areaOfficeRepo.getByIdAsync(id);
       if (!checkRes.Succeeded || !checkRes.Result) {
         return AppResult.createFailed(
@@ -57,9 +55,12 @@ export class AreaOfficeService {
         );
       }
 
-      const objToUpdate = plainToClass(AreaOffice, payload);
-      objToUpdate.date_updated = new Date();
-      const updateRes = await this.areaOfficeRepo.updateAsync(objToUpdate);
+      const now = new Date();
+      const updateRes = await this.areaOfficeRepo.updateAsync({
+        _id: id,
+        ...rest,
+        date_updated: now,
+      });
 
       if (!updateRes.Succeeded || !updateRes.Result) {
         return AppResult.createFailed(
@@ -68,7 +69,7 @@ export class AreaOfficeService {
         );
       }
 
-      const result = plainToClass(AreaOfficeSchema, updateRes.Result);
+      const result: AreaOfficeSchema = updateRes.Result;
       return AppResult.createSucceeded(
         result,
         'Area Office successfully updated.',

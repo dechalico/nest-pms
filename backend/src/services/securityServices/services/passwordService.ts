@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { AppResult } from '../../../common/app.result';
+import { AppErrorCodes, AppResult } from '../../../common/app.result';
 
 @Injectable()
 export class PasswordHasher {
@@ -14,6 +14,7 @@ export class PasswordHasher {
       return AppResult.createFailed(
         error,
         'An error occured whent trying to hash password.',
+        AppErrorCodes.InternalError,
       );
     }
   }
@@ -32,6 +33,7 @@ export class PasswordHasher {
       return AppResult.createFailed(
         error,
         'An error occured when trying to validate password.',
+        AppErrorCodes.InternalError,
       );
     }
   }

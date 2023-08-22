@@ -32,6 +32,7 @@ export class UserService {
         return AppResult.createFailed(
           new Error(checkUser.Message),
           checkUser.Message,
+          checkUser.Error.code,
         );
       }
 
@@ -42,6 +43,7 @@ export class UserService {
         return AppResult.createFailed(
           new Error(hashedPasswordRes.Message),
           hashedPasswordRes.Message,
+          AppErrorCodes.InternalError,
         );
       }
       user.password = hashedPasswordRes.Result;
@@ -58,6 +60,7 @@ export class UserService {
         return AppResult.createFailed(
           new Error(createdRes.Message),
           createdRes.Message,
+          createdRes.Error.code,
         );
       }
 
@@ -70,6 +73,7 @@ export class UserService {
       return AppResult.createFailed(
         error,
         'An error occured when creating user',
+        AppErrorCodes.InternalError,
       );
     }
   }
@@ -95,6 +99,7 @@ export class UserService {
         return AppResult.createFailed(
           new Error(getUserRes.Message),
           getUserRes.Message,
+          getUserRes.Error.code,
         );
       }
 
@@ -107,6 +112,7 @@ export class UserService {
       return AppResult.createFailed(
         error,
         'An error occured when getting user by username',
+        AppErrorCodes.InternalError,
       );
     }
   }
@@ -130,6 +136,7 @@ export class UserService {
         return AppResult.createFailed(
           new Error(getUserRes.Message),
           getUserRes.Message,
+          getUserRes.Error.code,
         );
       }
 
@@ -142,6 +149,7 @@ export class UserService {
       return AppResult.createFailed(
         error,
         'An error occured when getting user by user id',
+        AppErrorCodes.InternalError,
       );
     }
   }
@@ -182,6 +190,7 @@ export class UserService {
       return AppResult.createFailed(
         error,
         'An error occured when trying to update the user',
+        AppErrorCodes.InternalError,
       );
     }
   }
@@ -193,6 +202,7 @@ export class UserService {
         return AppResult.createFailed(
           new Error(usersRes.Message),
           usersRes.Message,
+          usersRes.Error.code,
         );
       }
       const userSchema: Array<UserSchema> = usersRes.Result;
@@ -204,6 +214,7 @@ export class UserService {
       return AppResult.createFailed(
         error,
         'An error occured when getting all users',
+        AppErrorCodes.InternalError,
       );
     }
   }
