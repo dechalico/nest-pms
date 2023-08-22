@@ -6,15 +6,11 @@ import {
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { UserService } from '../baseServices/services/user.service';
 import { AppResult } from 'src/common/app.result';
-import { PasswordHasher } from '../securityServices/services/passwordService';
 import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class DefaultAdminService implements IDefaultAdminHandler, OnModuleInit {
-  constructor(
-    private readonly userService: UserService,
-    private readonly passwordHasher: PasswordHasher,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   async onModuleInit(): Promise<void> {
     await this.executeAsync({
@@ -47,21 +43,9 @@ export class DefaultAdminService implements IDefaultAdminHandler, OnModuleInit {
         );
       }
 
-      const hashedPasswordRes = await this.passwordHasher.hashPassword(
-        args.password,
-      );
-      if (!hashedPasswordRes.Succeeded || !hashedPasswordRes.Result) {
-        return AppResult.createFailed(
-          new Error(hashedPasswordRes.Message),
-          hashedPasswordRes.Message,
-        );
-      }
-
-      const { password, ...rest } = args;
       const createRes = await this.userService.createUserAsync({
-        ...rest,
+        ...args,
         email: String.Empty,
-        password: hashedPasswordRes.Result,
       });
       if (!createRes.Succeeded || !createRes.Result) {
         return AppResult.createFailed(

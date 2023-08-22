@@ -18,6 +18,9 @@ export class CreateUser extends OmitType(UserSchema, [
   'dateUpdated',
 ]) {}
 
-export class UpdateUser extends PartialType(UserSchema) {
+export class UpdateUser extends OmitType(PartialType(UserSchema), [
+  'dateCreated',
+  'dateUpdated',
+]) {
   id: string;
 }

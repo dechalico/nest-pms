@@ -2,10 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { UserRepository } from '../../repository/services/userRepository.service';
 import { UserSchema, CreateUser, UpdateUser } from '../schemas/user.schema';
 import { AppErrorCodes, AppResult } from 'src/common/app.result';
+import { PasswordHasher } from '../../securityServices/services/passwordService';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly passwordHasher: PasswordHasher,
+  ) {}
 
   async createUserAsync(user: CreateUser): Promise<AppResult<UserSchema>> {
     try {
@@ -30,6 +34,17 @@ export class UserService {
           checkUser.Message,
         );
       }
+
+      const hashedPasswordRes = await this.passwordHasher.hashPassword(
+        user.password,
+      );
+      if (!hashedPasswordRes.Succeeded || !hashedPasswordRes.Result) {
+        return AppResult.createFailed(
+          new Error(hashedPasswordRes.Message),
+          hashedPasswordRes.Message,
+        );
+      }
+      user.password = hashedPasswordRes.Result;
 
       const now = new Date();
       const createdRes = await this.userRepository.createAsync({
@@ -133,7 +148,7 @@ export class UserService {
 
   async updateUserAsync(user: UpdateUser): Promise<AppResult<UserSchema>> {
     try {
-      const { id, dateCreated, dateUpdated, ...rest } = user;
+      const { id, ...rest } = user;
       const checkUserRes = await this.userRepository.getByIdAsync(id);
       if (!checkUserRes.Succeeded || !checkUserRes.Result) {
         return AppResult.createFailed(
