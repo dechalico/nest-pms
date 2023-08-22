@@ -1,7 +1,7 @@
 import { Controller, Post, Body, BadRequestException } from '@nestjs/common';
 import { LoginArgs, LoginResult } from './dtos/login.dto';
 import { ICreateLoginTokenHandler } from '../../services/authServices/handlers/iCreateLoginTokenHandler';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { AllowAnonymous } from '../../services/authServices/decorators/allowAnonymous';
 
 @AllowAnonymous()
@@ -15,7 +15,9 @@ export class AuthController {
     if (!validateResult.Succeeded || !validateResult.Result) {
       throw new BadRequestException(validateResult.Message);
     }
-    const result = plainToClass(LoginResult, validateResult.Result);
+    const result = plainToInstance(LoginResult, validateResult.Result, {
+      excludeExtraneousValues: true,
+    });
     return result;
   }
 }

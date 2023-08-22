@@ -1,3 +1,4 @@
+import { Expose } from 'class-transformer';
 import { IsNotEmpty } from 'class-validator';
 
 export class LoginArgs {
@@ -9,7 +10,12 @@ export class LoginArgs {
 }
 
 export class LoginResult {
+  @Expose()
   firstName: string;
+
+  @Expose()
   lastName: string;
+
+  @Expose()
   token: string;
 }
