@@ -70,6 +70,10 @@ export class User extends BaseEntity {
 
   @Expose()
   roles: Array<string>;
+
+  @Expose({ name: 'areaOfficeId' })
+  @Transform(({ value }: { value: ObjectId }) => value.toString())
+  area_office_id: ObjectId | string;
 }
 
 export class WarrantyType extends BaseEntity {

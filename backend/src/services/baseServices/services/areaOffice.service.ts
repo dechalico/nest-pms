@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AreaOfficeRepository } from '../../repository/services/areaOfficeRepository.service';
-import { AppResult } from 'src/common/app.result';
+import { AppErrorCodes, AppResult } from 'src/common/app.result';
 import {
   CreateAreaOffice,
   AreaOfficeSchema,
@@ -78,6 +78,30 @@ export class AreaOfficeService {
       return AppResult.createFailed(
         error,
         'An error occured when trying to update Area Office',
+      );
+    }
+  }
+
+  async getAllAreaOffices(): Promise<AppResult<Array<AreaOfficeSchema>>> {
+    try {
+      const getAllRes = await this.areaOfficeRepo.getAllAsync();
+      if (!getAllRes.Succeeded || !getAllRes.Result) {
+        return AppResult.createFailed(
+          new Error(getAllRes.Message),
+          getAllRes.Message,
+          getAllRes.Error.code,
+        );
+      }
+      const result: Array<AreaOfficeSchema> = getAllRes.Result;
+      return AppResult.createSucceeded(
+        result,
+        'Successfully get all area offices',
+      );
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'An error occured when getting all area offices.',
+        AppErrorCodes.InternalError,
       );
     }
   }

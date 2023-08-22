@@ -49,11 +49,13 @@ export class UserService {
       user.password = hashedPasswordRes.Result;
 
       const now = new Date();
+      const { areaOfficeId, ...rest } = user;
       const createdRes = await this.userRepository.createAsync({
-        ...user,
+        ...rest,
         _id: undefined,
         date_created: now,
         date_updated: undefined,
+        area_office_id: areaOfficeId,
       });
 
       if (!createdRes.Succeeded || !createdRes.Result) {

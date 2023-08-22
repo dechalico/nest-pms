@@ -5,12 +5,16 @@ import {
 } from './interactors/defaultAdminInteractors';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { UserService } from '../baseServices/services/user.service';
+import { AreaOfficeService } from '../baseServices/services/areaOffice.service';
 import { AppErrorCodes, AppResult } from 'src/common/app.result';
 import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class DefaultAdminService implements IDefaultAdminHandler, OnModuleInit {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly areaOfficeService: AreaOfficeService,
+  ) {}
 
   async onModuleInit(): Promise<void> {
     await this.executeAsync({
@@ -45,9 +49,38 @@ export class DefaultAdminService implements IDefaultAdminHandler, OnModuleInit {
         );
       }
 
+      // create default area office
+      let areaOfficeId: string = undefined;
+      const getAllAreaRes = await this.areaOfficeService.getAllAreaOffices();
+      if (!getAllAreaRes.Succeeded || !getAllAreaRes.Result) {
+        return AppResult.createFailed(
+          new Error(getAllAreaRes.Message),
+          getAllAreaRes.Message,
+          getAllAreaRes.Error.code,
+        );
+      }
+      if (getAllAreaRes.Result.length === 0) {
+        const createAreaRes =
+          await this.areaOfficeService.createAreaOfficeAsync({
+            city: 'Davao City',
+            name: 'MinOne',
+          });
+        if (!createAreaRes.Succeeded || !createAreaRes.Result) {
+          return AppResult.createFailed(
+            new Error(createAreaRes.Message),
+            createAreaRes.Message,
+            createAreaRes.Error.code,
+          );
+        }
+        areaOfficeId = createAreaRes.Result.id;
+      } else {
+        areaOfficeId = getAllAreaRes.Result[0].id;
+      }
+
       const createRes = await this.userService.createUserAsync({
         ...args,
         email: String.Empty,
+        areaOfficeId: areaOfficeId,
       });
       if (!createRes.Succeeded || !createRes.Result) {
         return AppResult.createFailed(

@@ -10,6 +10,7 @@ export class UserSchema {
   roles: Array<string>;
   dateCreated: Date;
   dateUpdated: Date;
+  areaOfficeId: string;
 }
 
 export class CreateUser extends OmitType(UserSchema, [
