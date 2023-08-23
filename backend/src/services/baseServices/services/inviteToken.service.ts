@@ -51,7 +51,6 @@ export class InviteTokenService {
 
       const now = new Date();
       const createRes = await this.inviteTokenRepo.createAsync({
-        ...args,
         date_created: now,
         area_office_id: args.areaOfficeId,
         date_updated: undefined,
@@ -60,6 +59,8 @@ export class InviteTokenService {
         is_used: args.isUsed,
         used_by: args.usedBy,
         _id: undefined,
+        guid: args.guid,
+        token: args.token,
       });
       if (!createRes.Succeeded || !createRes.Result) {
         return AppResult.createFailed(

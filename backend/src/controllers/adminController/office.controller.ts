@@ -5,10 +5,13 @@ import {
   Get,
   BadRequestException,
 } from '@nestjs/common';
-import { CreateOffice, CreateOfficeResult } from './dtos/create.office.dto';
+import {
+  CreateOffice,
+  CreateOfficeResult,
+} from './office.dtos/create.office.dto';
 import { ICreateOfficeHandler } from '../../services/adminServices/officeServices/handlers/iCreateOfficeHandler';
 import { plainToInstance } from 'class-transformer';
-import { GetOfficeResult } from './dtos/get.office.dto';
+import { GetOfficeResult } from './office.dtos/get.office.dto';
 import { IGetOfficesHandler } from '../../services/adminServices/officeServices/handlers/IGetOfficesHandler';
 
 @Controller('/admin/offices')

@@ -4,9 +4,13 @@ import { CreateOfficeHandler } from './officeServices/createOfficeHandler';
 import { ICreateOfficeHandler } from './officeServices/handlers/iCreateOfficeHandler';
 import { GetOfficesHandler } from './officeServices/getOfficesHandler';
 import { IGetOfficesHandler } from './officeServices/handlers/IGetOfficesHandler';
+import { SecurityModule } from '../securityServices/sercurity.module';
+import { AuthModule } from '../authServices/auth.module';
+import { ICreateUserInviteHandler } from './officeServices/handlers/iCreateUserInviteHandler';
+import { CreateUserInviteHandler } from './officeServices/createUserInviteHandler';
 
 @Module({
-  imports: [BaseServicesModule],
+  imports: [BaseServicesModule, SecurityModule, AuthModule],
   providers: [
     {
       provide: ICreateOfficeHandler,
@@ -16,7 +20,11 @@ import { IGetOfficesHandler } from './officeServices/handlers/IGetOfficesHandler
       provide: IGetOfficesHandler,
       useClass: GetOfficesHandler,
     },
+    {
+      provide: ICreateUserInviteHandler,
+      useClass: CreateUserInviteHandler,
+    },
   ],
-  exports: [ICreateOfficeHandler, IGetOfficesHandler],
+  exports: [ICreateOfficeHandler, IGetOfficesHandler, ICreateUserInviteHandler],
 })
 export class AdminModule {}

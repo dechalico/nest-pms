@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import cypto from 'crypto';
+import { randomBytes } from 'crypto';
 import { promisify } from 'util';
 import { AppErrorCodes, AppResult } from 'src/common/app.result';
 
@@ -10,7 +10,7 @@ export class TokenService {
     urlSafe: boolean,
   ): Promise<AppResult<GeneratedToken>> {
     try {
-      const randombytesAsync = promisify(cypto.randomBytes);
+      const randombytesAsync = promisify(randomBytes);
       const format = urlSafe ? 'base64url' : 'base64';
       const token = (await randombytesAsync(50)).toString(format);
       const uuid = uuidv4();
