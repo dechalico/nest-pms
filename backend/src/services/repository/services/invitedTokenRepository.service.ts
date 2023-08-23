@@ -4,6 +4,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { Db } from 'mongodb';
 import { AppErrorCodes, AppResult } from 'src/common/app.result';
 import { objectIdCreator } from '../helper';
+import { instanceToPlain } from 'class-transformer';
 
 @Injectable()
 export class InvitedTokenRepository extends BaseRepositoryService<InvitedToken> {
@@ -13,16 +14,44 @@ export class InvitedTokenRepository extends BaseRepositoryService<InvitedToken> 
 
   async createAsync(entity: InvitedToken): Promise<AppResult<any>> {
     try {
-      const { used_by, created_by, ...rest } = entity;
+      const { used_by, created_by, area_office_id, ...rest } = entity;
       return super.createAsync({
         ...rest,
         created_by: objectIdCreator(created_by),
         used_by: objectIdCreator(used_by),
+        area_office_id: objectIdCreator(area_office_id),
       });
     } catch (error) {
       return AppResult.createFailed(
         error,
         'An error occured when creating invited token.',
+        AppErrorCodes.InternalError,
+      );
+    }
+  }
+
+  async getTokenAsync(guid: string, token: string): Promise<AppResult<any>> {
+    try {
+      const result = this.table.findOne<InvitedToken>({ guid, token });
+      if (!result) {
+        return AppResult.createFailed(
+          new Error("Can't find token."),
+          "Can't find token.",
+          AppErrorCodes.NotFound,
+        );
+      }
+
+      const obj = new this.Wrapper();
+      Object.assign(obj, result);
+
+      return AppResult.createSucceeded(
+        instanceToPlain(obj, { excludeExtraneousValues: true }),
+        'Successfully get token.',
+      );
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'An error occured when getting token.',
         AppErrorCodes.InternalError,
       );
     }

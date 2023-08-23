@@ -180,6 +180,10 @@ export class InvitedToken extends BaseEntity {
   @Expose({ name: 'isUsed' })
   is_used: boolean;
 
+  @Expose({ name: 'areaOfficeId' })
+  @Transform(({ value }: { value: ObjectId }) => value.toString())
+  area_office_id: ObjectId | string;
+
   @Expose({ name: 'usedBy' })
   @Transform(({ value }: { value: ObjectId }) => value.toString())
   used_by: ObjectId | string;
