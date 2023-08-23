@@ -169,3 +169,25 @@ export class Pms extends BaseEntity {
   //   });
   // }
 }
+
+export class InvitedToken extends BaseEntity {
+  @Expose()
+  token: string;
+
+  @Expose()
+  guid: string;
+
+  @Expose({ name: 'isUsed' })
+  is_used: boolean;
+
+  @Expose({ name: 'usedBy' })
+  @Transform(({ value }: { value: ObjectId }) => value.toString())
+  used_by: ObjectId | string;
+
+  @Expose({ name: 'dateUsed' })
+  date_used: Date;
+
+  @Expose({ name: 'createdBy' })
+  @Transform(({ value }: { value: ObjectId }) => value.toString())
+  created_by: ObjectId | string;
+}

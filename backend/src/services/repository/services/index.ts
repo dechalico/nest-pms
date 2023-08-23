@@ -5,6 +5,7 @@ import { EquipmentBrandRepository } from './equipmentBrandRepository.service';
 import { UserRepository } from './userRepository.service';
 import { WarrantyTypeRepository } from './warrantyTypeRepository.service';
 import { PmsRepository } from './pmsRepository.service';
+import { InvitedTokenRepository } from './invitedTokenRepository.service';
 
 export default {
   AreaOfficeRepository,
@@ -14,4 +15,5 @@ export default {
   UserRepository,
   WarrantyTypeRepository,
   PmsRepository,
+  InvitedTokenRepository,
 };

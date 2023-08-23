@@ -26,6 +26,7 @@ import repositoryServices from './services/index';
     repositoryServices.UserRepository,
     repositoryServices.WarrantyTypeRepository,
     repositoryServices.PmsRepository,
+    repositoryServices.InvitedTokenRepository,
   ],
   exports: [
     repositoryServices.AreaOfficeRepository,
@@ -35,6 +36,7 @@ import repositoryServices from './services/index';
     repositoryServices.UserRepository,
     repositoryServices.WarrantyTypeRepository,
     repositoryServices.PmsRepository,
+    repositoryServices.InvitedTokenRepository,
   ],
 })
 export class RepositoryModule {}

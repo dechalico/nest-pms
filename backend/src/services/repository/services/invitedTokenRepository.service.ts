@@ -1,0 +1,30 @@
+import { BaseRepositoryService } from './baseRepository.service';
+import { InvitedToken } from '../entities';
+import { Injectable, Inject } from '@nestjs/common';
+import { Db } from 'mongodb';
+import { AppErrorCodes, AppResult } from 'src/common/app.result';
+import { objectIdCreator } from '../helper';
+
+@Injectable()
+export class InvitedTokenRepository extends BaseRepositoryService<InvitedToken> {
+  constructor(@Inject('DATABASE_CONNECTION') db: Db) {
+    super(db, 'invited_tokens', InvitedToken);
+  }
+
+  async createAsync(entity: InvitedToken): Promise<AppResult<any>> {
+    try {
+      const { used_by, created_by, ...rest } = entity;
+      return super.createAsync({
+        ...rest,
+        created_by: objectIdCreator(created_by),
+        used_by: objectIdCreator(used_by),
+      });
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'An error occured when creating invited token.',
+        AppErrorCodes.InternalError,
+      );
+    }
+  }
+}
