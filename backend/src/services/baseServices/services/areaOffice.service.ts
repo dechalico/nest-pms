@@ -6,7 +6,6 @@ import {
   AreaOfficeSchema,
   UpdateAreaOffice,
 } from '../schemas/areaOffice.schema';
-import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class AreaOfficeService {
@@ -16,14 +15,10 @@ export class AreaOfficeService {
     payload: CreateAreaOffice,
   ): Promise<AppResult<AreaOfficeSchema>> {
     try {
-      // to remove not defined properties
-      payload = plainToInstance(CreateAreaOffice, payload, {
-        excludeExtraneousValues: true,
-      });
-
       const now = new Date();
       const createdRes = await this.areaOfficeRepo.createAsync({
-        ...payload,
+        city: payload.city,
+        name: payload.name,
         date_created: now,
         date_updated: undefined,
         _id: undefined,
@@ -52,13 +47,7 @@ export class AreaOfficeService {
     payload: UpdateAreaOffice,
   ): Promise<AppResult<AreaOfficeSchema>> {
     try {
-      // to remove not defined properties
-      payload = plainToInstance(UpdateAreaOffice, payload, {
-        excludeExtraneousValues: true,
-      });
-
-      const { id, ...rest } = payload;
-      const checkRes = await this.areaOfficeRepo.getByIdAsync(id);
+      const checkRes = await this.areaOfficeRepo.getByIdAsync(payload.id);
       if (!checkRes.Succeeded || !checkRes.Result) {
         return AppResult.createFailed(
           new Error(checkRes.Message),
@@ -68,9 +57,10 @@ export class AreaOfficeService {
 
       const now = new Date();
       const updateRes = await this.areaOfficeRepo.updateAsync({
-        _id: id,
-        ...rest,
+        _id: payload.id,
         date_updated: now,
+        city: payload.city,
+        name: payload.name,
       });
 
       if (!updateRes.Succeeded || !updateRes.Result) {

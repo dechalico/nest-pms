@@ -8,7 +8,6 @@ import { InvitedTokenRepository } from '../../repository/services/invitedTokenRe
 import { AreaOfficeRepository } from '../../repository/services/areaOfficeRepository.service';
 import { UserRepository } from '../../repository/services/userRepository.service';
 import { AppErrorCodes, AppResult } from 'src/common/app.result';
-import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class InviteTokenService {
@@ -22,11 +21,6 @@ export class InviteTokenService {
     args: CreateInvitedToken,
   ): Promise<AppResult<InvitedTokenSchema>> {
     try {
-      // to remove not defined properties
-      args = plainToInstance(CreateInvitedToken, args, {
-        excludeExtraneousValues: true,
-      });
-
       // check area office if existed
       const chkAreaRes = await this.areaOfficeRepo.getByIdAsync(
         args.areaOfficeId,
@@ -87,11 +81,6 @@ export class InviteTokenService {
     args: UpdateInvitedToken,
   ): Promise<AppResult<InvitedTokenSchema>> {
     try {
-      // to remove not defined properties
-      args = plainToInstance(UpdateInvitedToken, args, {
-        excludeExtraneousValues: true,
-      });
-
       // check area office if existed
       const chkAreaRes = await this.areaOfficeRepo.getByIdAsync(
         args.areaOfficeId,
@@ -120,9 +109,10 @@ export class InviteTokenService {
         area_office_id: args.areaOfficeId,
         date_updated: new Date(),
         date_used: args.dateUsed,
-        ...args,
         is_used: args.isUsed,
         used_by: args.usedBy,
+        guid: args.guid,
+        token: args.token,
       });
       if (!updatedRes.Succeeded || !updatedRes.Result) {
         return AppResult.createFailed(

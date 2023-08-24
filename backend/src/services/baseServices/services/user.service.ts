@@ -3,7 +3,6 @@ import { UserRepository } from '../../repository/services/userRepository.service
 import { UserSchema, CreateUser, UpdateUser } from '../schemas/user.schema';
 import { AppErrorCodes, AppResult } from 'src/common/app.result';
 import { PasswordHasher } from '../../securityServices/services/passwordService';
-import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class UserService {
@@ -14,10 +13,6 @@ export class UserService {
 
   async createUserAsync(user: CreateUser): Promise<AppResult<UserSchema>> {
     try {
-      // to remove not defined properties
-      user = plainToInstance(CreateUser, user, {
-        excludeExtraneousValues: true,
-      });
       // lowercase username
       user.username = user.username.toLowerCase();
 
@@ -57,13 +52,17 @@ export class UserService {
       user.password = hashedPasswordRes.Result;
 
       const now = new Date();
-      const { areaOfficeId, ...rest } = user;
       const createdRes = await this.userRepository.createAsync({
-        ...rest,
         _id: undefined,
         date_created: now,
         date_updated: undefined,
-        area_office_id: areaOfficeId,
+        area_office_id: user.areaOfficeId,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        password: user.password,
+        roles: user.roles,
+        username: user.username,
       });
 
       if (!createdRes.Succeeded || !createdRes.Result) {
@@ -166,13 +165,7 @@ export class UserService {
 
   async updateUserAsync(user: UpdateUser): Promise<AppResult<UserSchema>> {
     try {
-      // to remove not defined properties
-      user = plainToInstance(UpdateUser, user, {
-        excludeExtraneousValues: true,
-      });
-
-      const { id, ...rest } = user;
-      const checkUserRes = await this.userRepository.getByIdAsync(id);
+      const checkUserRes = await this.userRepository.getByIdAsync(user.id);
       if (!checkUserRes.Succeeded || !checkUserRes.Result) {
         return AppResult.createFailed(
           new Error(checkUserRes.Message),
@@ -183,9 +176,15 @@ export class UserService {
 
       const now = new Date();
       const updateRes = await this.userRepository.updateAsync({
-        ...rest,
-        _id: id,
+        _id: user.id,
         date_updated: now,
+        area_office_id: user.areaOfficeId,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        password: user.password,
+        roles: user.roles,
+        username: user.username,
       });
 
       if (!updateRes.Succeeded || !updateRes.Result) {
