@@ -1,11 +1,11 @@
 import { AppErrorCodes, AppResult } from 'src/common/app.result';
-import { ICreateOfficeHandler } from './handlers/iCreateOfficeHandler';
+import { ICreateOfficeHandler } from '../handlers/iCreateOfficeHandler';
 import {
   CreateOfficeArgs,
   CreateOfficeResult,
-} from './interactors/createOfficeInteractor';
+} from '../interactors/createOfficeInteractor';
 import { Injectable } from '@nestjs/common';
-import { AreaOfficeService } from '../../baseServices/services/areaOffice.service';
+import { AreaOfficeService } from '../../../baseServices/services/areaOffice.service';
 
 @Injectable()
 export class CreateOfficeHandler implements ICreateOfficeHandler {

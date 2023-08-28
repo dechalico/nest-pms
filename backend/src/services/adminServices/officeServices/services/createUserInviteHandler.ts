@@ -1,13 +1,13 @@
 import { AppErrorCodes, AppResult } from 'src/common/app.result';
-import { ICreateUserInviteHandler } from './handlers/iCreateUserInviteHandler';
+import { ICreateUserInviteHandler } from '../handlers/iCreateUserInviteHandler';
 import {
   CreateUserInviteArgs,
   CreateUserInviteResult,
-} from './interactors/createUserInviteInteractor';
+} from '../interactors/createUserInviteInteractor';
 import { Injectable } from '@nestjs/common';
-import { TokenService } from '../../securityServices/services/tokenService';
-import { InviteTokenService } from '../../baseServices/services/inviteToken.service';
-import { ICurrentUserHandler } from '../../authServices/handlers/ICurrentUserHandler';
+import { TokenService } from '../../../securityServices/services/tokenService';
+import { InviteTokenService } from '../../../baseServices/services/inviteToken.service';
+import { ICurrentUserHandler } from '../../../authServices/handlers/ICurrentUserHandler';
 
 @Injectable()
 export class CreateUserInviteHandler implements ICreateUserInviteHandler {

@@ -1,11 +1,11 @@
 import { AppErrorCodes, AppResult } from 'src/common/app.result';
-import { IGetOfficesHandler } from './handlers/IGetOfficesHandler';
+import { IGetOfficesHandler } from '../handlers/IGetOfficesHandler';
 import {
   GetOfficesArgs,
   GetOfficesResult,
   Office,
-} from './interactors/getOfficesInteractor';
-import { AreaOfficeService } from '../../baseServices/services/areaOffice.service';
+} from '../interactors/getOfficesInteractor';
+import { AreaOfficeService } from '../../../baseServices/services/areaOffice.service';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
