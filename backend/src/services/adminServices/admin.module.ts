@@ -8,6 +8,8 @@ import { SecurityModule } from '../securityServices/sercurity.module';
 import { AuthModule } from '../authServices/auth.module';
 import { ICreateUserInviteHandler } from './officeServices/handlers/iCreateUserInviteHandler';
 import { CreateUserInviteHandler } from './officeServices/services/createUserInviteHandler';
+import { IValidateUserInviteHandler } from './officeServices/handlers/IValidateUserInviteHandler';
+import { ValidateUserInviteHandler } from './officeServices/services/validateUserInviteHandler';
 
 @Module({
   imports: [BaseServicesModule, SecurityModule, AuthModule],
@@ -24,7 +26,16 @@ import { CreateUserInviteHandler } from './officeServices/services/createUserInv
       provide: ICreateUserInviteHandler,
       useClass: CreateUserInviteHandler,
     },
+    {
+      provide: IValidateUserInviteHandler,
+      useClass: ValidateUserInviteHandler,
+    },
   ],
-  exports: [ICreateOfficeHandler, IGetOfficesHandler, ICreateUserInviteHandler],
+  exports: [
+    ICreateOfficeHandler,
+    IGetOfficesHandler,
+    ICreateUserInviteHandler,
+    IValidateUserInviteHandler,
+  ],
 })
 export class AdminModule {}

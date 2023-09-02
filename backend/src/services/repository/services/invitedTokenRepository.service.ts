@@ -32,7 +32,7 @@ export class InvitedTokenRepository extends BaseRepositoryService<InvitedToken> 
 
   async getTokenAsync(guid: string, token: string): Promise<AppResult<any>> {
     try {
-      const result = this.table.findOne<InvitedToken>({ guid, token });
+      const result = await this.table.findOne<InvitedToken>({ guid, token });
       if (!result) {
         return AppResult.createFailed(
           new Error("Can't find token."),
