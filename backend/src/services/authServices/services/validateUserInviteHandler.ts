@@ -5,7 +5,7 @@ import {
   ValidateUserInviteResult,
 } from '../interactors/validateUserInviteInteractor';
 import { Injectable } from '@nestjs/common';
-import { InviteTokenService } from '../../../baseServices/services/inviteToken.service';
+import { InviteTokenService } from '../../baseServices/services/inviteToken.service';
 
 @Injectable()
 export class ValidateUserInviteHandler implements IValidateUserInviteHandler {

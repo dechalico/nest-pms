@@ -10,7 +10,7 @@ import { LoginArgs, LoginResult } from './dtos/login.dto';
 import { ICreateLoginTokenHandler } from '../../services/authServices/handlers/iCreateLoginTokenHandler';
 import { plainToInstance } from 'class-transformer';
 import { AllowAnonymous } from '../../services/authServices/decorators/allowAnonymous';
-import { IValidateUserInviteHandler } from '../../services/adminServices/officeServices/handlers/IValidateUserInviteHandler';
+import { IValidateUserInviteHandler } from '../../services/authServices/handlers/IValidateUserInviteHandler';
 import {
   ValidateInviteResult,
   ValidateInviteArgs,

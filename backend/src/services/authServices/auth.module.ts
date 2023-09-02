@@ -9,6 +9,8 @@ import { AuthGuard } from './services/auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { CurrentUser } from './services/currentUser.service';
 import { ICurrentUserHandler } from './handlers/ICurrentUserHandler';
+import { ValidateUserInviteHandler } from './services/validateUserInviteHandler';
+import { IValidateUserInviteHandler } from './handlers/IValidateUserInviteHandler';
 
 @Module({
   imports: [
@@ -44,7 +46,15 @@ import { ICurrentUserHandler } from './handlers/ICurrentUserHandler';
       provide: ICurrentUserHandler,
       useClass: CurrentUser,
     },
+    {
+      provide: IValidateUserInviteHandler,
+      useClass: ValidateUserInviteHandler,
+    },
   ],
-  exports: [ICreateLoginTokenHandler, ICurrentUserHandler],
+  exports: [
+    ICreateLoginTokenHandler,
+    ICurrentUserHandler,
+    IValidateUserInviteHandler,
+  ],
 })
 export class AuthModule {}
