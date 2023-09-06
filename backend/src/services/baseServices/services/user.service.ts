@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from '../../repository/services/userRepository.service';
 import { UserSchema, CreateUser, UpdateUser } from '../schemas/user.schema';
-import { AppErrorCodes, AppResult } from 'src/common/app.result';
+import { AppErrorCodes, AppResult } from '../../../common/app.result';
 import { PasswordHasher } from '../../securityServices/services/passwordService';
 
 @Injectable()

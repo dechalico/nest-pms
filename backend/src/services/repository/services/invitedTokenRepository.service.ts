@@ -2,7 +2,7 @@ import { BaseRepositoryService } from './baseRepository.service';
 import { InvitedToken } from '../entities';
 import { Injectable, Inject } from '@nestjs/common';
 import { Db } from 'mongodb';
-import { AppErrorCodes, AppResult } from 'src/common/app.result';
+import { AppErrorCodes, AppResult } from '../../../common/app.result';
 import { objectIdCreator } from '../helper';
 import { instanceToPlain } from 'class-transformer';
 
@@ -25,6 +25,24 @@ export class InvitedTokenRepository extends BaseRepositoryService<InvitedToken> 
       return AppResult.createFailed(
         error,
         'An error occured when creating invited token.',
+        AppErrorCodes.InternalError,
+      );
+    }
+  }
+
+  async updateAsync(entity: Partial<InvitedToken>): Promise<AppResult<any>> {
+    try {
+      if (entity.area_office_id) {
+        entity.area_office_id = objectIdCreator(entity.area_office_id);
+      }
+      if (entity.used_by) {
+        entity.used_by = objectIdCreator(entity.used_by);
+      }
+      return super.updateAsync(entity);
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'An error occured when updating invited token.',
         AppErrorCodes.InternalError,
       );
     }

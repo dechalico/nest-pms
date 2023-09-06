@@ -11,6 +11,8 @@ import { CurrentUser } from './services/currentUser.service';
 import { ICurrentUserHandler } from './handlers/ICurrentUserHandler';
 import { ValidateUserInviteHandler } from './services/validateUserInviteHandler';
 import { IValidateUserInviteHandler } from './handlers/IValidateUserInviteHandler';
+import { RegisterUserHandler } from './services/registerUserHandler';
+import { IRegisterUserHandler } from './handlers/iRegisterUserHandler';
 
 @Module({
   imports: [
@@ -50,11 +52,16 @@ import { IValidateUserInviteHandler } from './handlers/IValidateUserInviteHandle
       provide: IValidateUserInviteHandler,
       useClass: ValidateUserInviteHandler,
     },
+    {
+      provide: IRegisterUserHandler,
+      useClass: RegisterUserHandler,
+    },
   ],
   exports: [
     ICreateLoginTokenHandler,
     ICurrentUserHandler,
     IValidateUserInviteHandler,
+    IRegisterUserHandler,
   ],
 })
 export class AuthModule {}

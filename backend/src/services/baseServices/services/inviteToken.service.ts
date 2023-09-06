@@ -7,7 +7,7 @@ import {
 import { InvitedTokenRepository } from '../../repository/services/invitedTokenRepository.service';
 import { AreaOfficeRepository } from '../../repository/services/areaOfficeRepository.service';
 import { UserRepository } from '../../repository/services/userRepository.service';
-import { AppErrorCodes, AppResult } from 'src/common/app.result';
+import { AppErrorCodes, AppResult } from '../../../common/app.result';
 
 @Injectable()
 export class InviteTokenService {
@@ -82,25 +82,29 @@ export class InviteTokenService {
   ): Promise<AppResult<InvitedTokenSchema>> {
     try {
       // check area office if existed
-      const chkAreaRes = await this.areaOfficeRepo.getByIdAsync(
-        args.areaOfficeId,
-      );
-      if (!chkAreaRes.Succeeded || !chkAreaRes.Result) {
-        return AppResult.createFailed(
-          new Error('Invalid area office id.'),
-          'Invalid area office id.',
-          AppErrorCodes.InvalidRequest,
+      if (args.areaOfficeId) {
+        const chkAreaRes = await this.areaOfficeRepo.getByIdAsync(
+          args.areaOfficeId,
         );
+        if (!chkAreaRes.Succeeded || !chkAreaRes.Result) {
+          return AppResult.createFailed(
+            new Error('Invalid area office id.'),
+            'Invalid area office id.',
+            AppErrorCodes.InvalidRequest,
+          );
+        }
       }
 
       // check created by user
-      const chkCreatedRes = await this.userRepo.getByIdAsync(args.createdBy);
-      if (!chkCreatedRes.Succeeded || !chkCreatedRes.Result) {
-        return AppResult.createFailed(
-          new Error('Invalid created by id.'),
-          'Invalid created by id.',
-          AppErrorCodes.InvalidRequest,
-        );
+      if (args.createdBy) {
+        const chkCreatedRes = await this.userRepo.getByIdAsync(args.createdBy);
+        if (!chkCreatedRes.Succeeded || !chkCreatedRes.Result) {
+          return AppResult.createFailed(
+            new Error('Invalid created by id.'),
+            'Invalid created by id.',
+            AppErrorCodes.InvalidRequest,
+          );
+        }
       }
 
       const updatedRes = await this.inviteTokenRepo.updateAsync({

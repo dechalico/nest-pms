@@ -8,4 +8,6 @@ export class ValidateUserInviteResult {
   usedBy: string;
   dateUsed: Date;
   createdBy: string;
+  id: string;
+  areaOfficeId: string;
 }

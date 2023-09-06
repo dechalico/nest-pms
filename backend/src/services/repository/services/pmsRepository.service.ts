@@ -2,7 +2,7 @@ import { BaseRepositoryService } from './baseRepository.service';
 import { Pms } from '../entities';
 import { Injectable, Inject } from '@nestjs/common';
 import { Db } from 'mongodb';
-import { AppErrorCodes, AppResult } from 'src/common/app.result';
+import { AppErrorCodes, AppResult } from '../../../common/app.result';
 
 @Injectable()
 export class PmsRepository extends BaseRepositoryService<Pms> {

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { randomBytes } from 'crypto';
 import { promisify } from 'util';
-import { AppErrorCodes, AppResult } from 'src/common/app.result';
+import { AppErrorCodes, AppResult } from '../../../common/app.result';
 
 @Injectable()
 export class TokenService {

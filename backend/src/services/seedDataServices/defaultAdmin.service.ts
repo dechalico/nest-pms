@@ -6,7 +6,7 @@ import {
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { UserService } from '../baseServices/services/user.service';
 import { AreaOfficeService } from '../baseServices/services/areaOffice.service';
-import { AppErrorCodes, AppResult } from 'src/common/app.result';
+import { AppErrorCodes, AppResult } from '../../common/app.result';
 import { plainToInstance } from 'class-transformer';
 
 @Injectable()

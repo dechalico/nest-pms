@@ -1,4 +1,4 @@
-import { AppErrorCodes, AppResult } from 'src/common/app.result';
+import { AppErrorCodes, AppResult } from '../../../common/app.result';
 import { IValidateUserInviteHandler } from '../handlers/IValidateUserInviteHandler';
 import {
   ValidateUserInviteArgs,
@@ -32,6 +32,8 @@ export class ValidateUserInviteHandler implements IValidateUserInviteHandler {
           dateUsed: inviteToken.dateUsed,
           isvalid: !inviteToken.isUsed,
           usedBy: inviteToken.usedBy,
+          areaOfficeId: inviteToken.areaOfficeId,
+          id: inviteToken.id,
         },
         'Invite token successfully validated',
       );

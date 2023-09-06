@@ -15,6 +15,8 @@ import {
   ValidateInviteResult,
   ValidateInviteArgs,
 } from './dtos/validateInvite.dto';
+import { RegisterArgs, RegisterResult } from './dtos/register.dto';
+import { IRegisterUserHandler } from '../../services/authServices/handlers/iRegisterUserHandler';
 
 @AllowAnonymous()
 @Controller('auth')
@@ -22,6 +24,7 @@ export class AuthController {
   constructor(
     private readonly createLoginToken: ICreateLoginTokenHandler,
     private readonly validateToken: IValidateUserInviteHandler,
+    private readonly registerHandler: IRegisterUserHandler,
   ) {}
 
   @Post('login')
@@ -52,6 +55,18 @@ export class AuthController {
       throw new BadRequestException(validateRes.Message);
     }
     const result = plainToInstance(ValidateInviteResult, validateRes.Result, {
+      excludeExtraneousValues: true,
+    });
+    return result;
+  }
+
+  @Post('register')
+  async register(@Body() args: RegisterArgs): Promise<RegisterResult> {
+    const registerRes = await this.registerHandler.executeAsync(args);
+    if (!registerRes.Succeeded || !registerRes.Result) {
+      throw new BadRequestException(registerRes.Message);
+    }
+    const result = plainToInstance(RegisterResult, registerRes.Result, {
       excludeExtraneousValues: true,
     });
     return result;

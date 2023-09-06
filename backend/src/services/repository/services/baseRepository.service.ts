@@ -3,6 +3,7 @@ import { Db, Collection, ObjectId } from 'mongodb';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
 import { objectIdCreator } from '../helper';
 import { instanceToPlain } from 'class-transformer';
+import { removeUndefinedValues } from '../../../common/helpers/objectHelper';
 
 export abstract class BaseRepositoryService<Entity extends BaseEntity> {
   protected readonly table: Collection;
@@ -74,9 +75,10 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
   async updateAsync(entity: Partial<Entity>): Promise<AppResult<any>> {
     try {
       const { _id, ...rest } = entity;
+      const fields = removeUndefinedValues(rest);
       await this.table.findOneAndUpdate(
         { _id: objectIdCreator(_id) },
-        { $set: { rest } },
+        { $set: { ...fields } },
       );
       const updated = await this.table.findOne<Entity>({
         _id: objectIdCreator(_id),

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AreaOfficeRepository } from '../../repository/services/areaOfficeRepository.service';
-import { AppErrorCodes, AppResult } from 'src/common/app.result';
+import { AppErrorCodes, AppResult } from '../../../common/app.result';
 import {
   CreateAreaOffice,
   AreaOfficeSchema,

@@ -1,4 +1,4 @@
-import { AppErrorCodes, AppResult } from 'src/common/app.result';
+import { AppErrorCodes, AppResult } from '../../../../common/app.result';
 import { IGetOfficesHandler } from '../handlers/IGetOfficesHandler';
 import {
   GetOfficesArgs,
