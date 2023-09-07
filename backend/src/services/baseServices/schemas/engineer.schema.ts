@@ -22,6 +22,9 @@ export class EngineerSchema {
 
   @Expose()
   dateUpdated: Date;
+
+  @Expose()
+  createdBy: string;
 }
 
 export class CreateEngineerSchema extends OmitType(EngineerSchema, [

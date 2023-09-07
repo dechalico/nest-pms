@@ -6,4 +6,5 @@ export class RegisterEngineerArgs {
 
 export class RegisterEngineerResult extends RegisterEngineerArgs {
   id: string;
+  areaOfficeId: string;
 }

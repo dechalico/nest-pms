@@ -38,6 +38,7 @@ export class EngineerService {
         firstName: args.firstName,
         lastName: args.lastName,
         middleName: args.middleName,
+        created_by: args.createdBy
       });
       if (!createRes.Succeeded || !createRes.Result) {
         return AppResult.createFailed(
