@@ -64,14 +64,14 @@ describe('AuthController', () => {
           firstName: 'dexter',
           lastName: 'dexter',
           email: 'dexter@gmail.com',
-          username: 'dexterdexter',
+          username: 'aloralor',
           password: '12312312312',
           guid,
           token,
         })
         .expect(201)
         .then((response) => {
-          expect(response.body.username).toEqual('dexterdexter');
+          expect(response.body.username).toEqual('aloralor');
         });
     });
   });
