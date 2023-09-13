@@ -10,6 +10,8 @@ import { ICreateUserInviteHandler } from './officeServices/handlers/iCreateUserI
 import { CreateUserInviteHandler } from './officeServices/services/createUserInviteHandler';
 import { IRegisterEngineerHandler } from './officeServices/handlers/IRegisterEngineerHandler';
 import { RegisterEngineerHandler } from './officeServices/services/registerEngineerHandler';
+import { GetEngineersHandler } from './officeServices/services/getEngineersHandler';
+import { IGetEngineersHandler } from './officeServices/handlers/iGetEngineersHandler';
 
 @Module({
   imports: [BaseServicesModule, SecurityModule, AuthModule],
@@ -30,12 +32,17 @@ import { RegisterEngineerHandler } from './officeServices/services/registerEngin
       provide: IRegisterEngineerHandler,
       useClass: RegisterEngineerHandler,
     },
+    {
+      provide: IGetEngineersHandler,
+      useClass: GetEngineersHandler,
+    },
   ],
   exports: [
     ICreateOfficeHandler,
     IGetOfficesHandler,
     ICreateUserInviteHandler,
     IRegisterEngineerHandler,
+    IGetEngineersHandler,
   ],
 })
 export class AdminModule {}

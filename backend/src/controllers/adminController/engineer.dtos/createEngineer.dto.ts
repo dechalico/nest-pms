@@ -1,7 +1,11 @@
 import { Expose } from 'class-transformer';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { OmitType } from '@nestjs/mapped-types';
 
-export class CreateEngineerArgs {
+class Engineer {
+  @Expose()
+  id: string;
+
   @Expose()
   @IsNotEmpty()
   @IsString()
@@ -18,7 +22,11 @@ export class CreateEngineerArgs {
   middleName: string;
 }
 
-export class CreateEngineerResult extends CreateEngineerArgs {
+export class CreateEngineerArgs extends OmitType(Engineer, ['id']) {}
+
+export class CreateEngineerResult extends Engineer {}
+
+export class GetAllEngineersResult {
   @Expose()
-  id: string;
+  engineers: Array<Engineer>;
 }

@@ -107,4 +107,29 @@ export class EngineerService {
       );
     }
   }
+
+  async getAllEngineersAsync(): Promise<AppResult<Array<EngineerSchema>>> {
+    try {
+      const getRes = await this.engineerRepo.getAllAsync();
+      if (!getRes.Succeeded || !getRes.Result) {
+        return AppResult.createFailed(
+          new Error(getRes.Message),
+          getRes.Message,
+          getRes.Error.code,
+        );
+      }
+
+      const result: Array<EngineerSchema> = getRes.Result;
+      return AppResult.createSucceeded(
+        result,
+        'Successfully get all engineers.',
+      );
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'An error occured when getting all engineers.',
+        AppErrorCodes.InternalError,
+      );
+    }
+  }
 }
