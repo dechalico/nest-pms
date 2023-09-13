@@ -1,4 +1,5 @@
 export class Engineer {
+  id: string;
   firstName: string;
   middleName: string;
   lastName: string;

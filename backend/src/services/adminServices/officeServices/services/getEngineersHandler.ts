@@ -32,6 +32,7 @@ export class GetEngineersHandler implements IGetEngineersHandler {
           firstName: e.firstName,
           lastName: e.lastName,
           middleName: e.middleName,
+          id: e.id,
         };
       });
       return AppResult.createSucceeded(

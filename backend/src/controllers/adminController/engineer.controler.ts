@@ -4,14 +4,21 @@ import {
   Post,
   Body,
   Get,
+  Put,
+  Param,
 } from '@nestjs/common';
 import {
   CreateEngineerArgs,
   CreateEngineerResult,
   GetAllEngineersResult,
 } from './engineer.dtos/createEngineer.dto';
+import {
+  UpdateEngineerArgs,
+  UpdateEngineerResult,
+} from './engineer.dtos/updateEngineer.dto';
 import { IRegisterEngineerHandler } from '../../services/adminServices/officeServices/handlers/IRegisterEngineerHandler';
 import { IGetEngineersHandler } from '../../services/adminServices/officeServices/handlers/iGetEngineersHandler';
+import { IUpdateEngineerHandler } from '../../services/adminServices/officeServices/handlers/iUpdateEngineerHandler';
 import { plainToInstance } from 'class-transformer';
 
 @Controller('/admin/engineers')
@@ -19,6 +26,7 @@ export class EngineerController {
   constructor(
     private readonly registerEngineerHandler: IRegisterEngineerHandler,
     private readonly getEngineersHandler: IGetEngineersHandler,
+    private readonly updateEngineerHandler: IUpdateEngineerHandler,
   ) {}
 
   @Post()
@@ -46,6 +54,24 @@ export class EngineerController {
       getEngineersRes.Result,
       { excludeExtraneousValues: true },
     );
+    return result;
+  }
+
+  @Put(':id')
+  async updateEngineer(
+    @Body() args: UpdateEngineerArgs,
+    @Param('id') id: string,
+  ): Promise<UpdateEngineerResult> {
+    const updateRes = await this.updateEngineerHandler.executeAsync({
+      id,
+      ...args,
+    });
+    if (!updateRes.Succeeded || !updateRes.Result) {
+      throw new BadRequestException(updateRes.Message);
+    }
+    const result = plainToInstance(UpdateEngineerResult, updateRes.Result, {
+      excludeExtraneousValues: true,
+    });
     return result;
   }
 }

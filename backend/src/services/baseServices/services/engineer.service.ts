@@ -132,4 +132,28 @@ export class EngineerService {
       );
     }
   }
+
+  async getEngineerAsync(id: string): Promise<AppResult<EngineerSchema>> {
+    try {
+      const getEngineerRes = await this.engineerRepo.getByIdAsync(id);
+      if (!getEngineerRes.Succeeded || !getEngineerRes.Result) {
+        return AppResult.createFailed(
+          new Error(getEngineerRes.Message),
+          getEngineerRes.Message,
+          getEngineerRes.Error.code,
+        );
+      }
+      const result: EngineerSchema = getEngineerRes.Result;
+      return AppResult.createSucceeded(
+        result,
+        'Successfully get engineer by id.',
+      );
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'An error occured when getting engineer by id.',
+        AppErrorCodes.InternalError,
+      );
+    }
+  }
 }
