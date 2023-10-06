@@ -199,3 +199,7 @@ export class InvitedToken extends BaseEntity {
   @Transform(({ value }: { value: ObjectId }) => value && value.toString())
   created_by: ObjectId | string;
 }
+
+export class GetAllArgs {
+  filter?: any;
+}

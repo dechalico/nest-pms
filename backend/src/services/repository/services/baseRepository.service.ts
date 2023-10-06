@@ -1,4 +1,4 @@
-import { BaseEntity } from '../entities';
+import { BaseEntity, GetAllArgs } from '../entities';
 import { Db, Collection, ObjectId } from 'mongodb';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
 import { objectIdCreator } from '../helper';
@@ -99,9 +99,11 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
     }
   }
 
-  async getAllAsync(): Promise<AppResult<any>> {
+  async getAllAsync(
+    args: GetAllArgs = { filter: {} },
+  ): Promise<AppResult<any>> {
     try {
-      const cursor = this.table.find<Entity>({}, { sort: { _id: 1 } });
+      const cursor = this.table.find<Entity>(args.filter).sort({ _id: 1 });
       const result: Array<Entity> = [];
       for await (const doc of cursor) {
         const obj = new this.Wrapper();
