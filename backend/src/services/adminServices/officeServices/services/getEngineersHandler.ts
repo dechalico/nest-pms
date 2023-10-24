@@ -1,4 +1,4 @@
-import { AppErrorCodes, AppResult } from 'src/common/app.result';
+import { AppErrorCodes, AppResult } from '../../../../common/app.result';
 import { IGetEngineersHandler } from '../handlers/iGetEngineersHandler';
 import {
   GetEngineersArgs,
@@ -24,17 +24,7 @@ export class GetEngineersHandler implements IGetEngineersHandler {
           engineerRes.Error.code,
         );
       }
-      const result: Array<Engineer> = engineerRes.Result.map((e) => {
-        return {
-          areaOfficeId: e.areaOfficeId,
-          dateCreated: e.dateCreated,
-          dateUpdated: e.dateUpdated,
-          firstName: e.firstName,
-          lastName: e.lastName,
-          middleName: e.middleName,
-          id: e.id,
-        };
-      });
+      const result: Array<Engineer> = engineerRes.Result;
       return AppResult.createSucceeded(
         { engineers: result },
         'Successfully get all engineers',

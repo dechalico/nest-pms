@@ -14,6 +14,10 @@ import { GetEngineersHandler } from './officeServices/services/getEngineersHandl
 import { IGetEngineersHandler } from './officeServices/handlers/iGetEngineersHandler';
 import { IUpdateEngineerHandler } from './officeServices/handlers/iUpdateEngineerHandler';
 import { UpdateEngineerHandler } from './officeServices/services/updateEngineerHandler';
+import { ICreateClientHandler } from './pmsServices/handlers/iCreateClientHandler';
+import { CreateClientHandler } from './pmsServices/services/createClientHandler';
+import { GetClientsHandler } from './pmsServices/services/getClientsHandler';
+import { IGetClientsHandler } from './pmsServices/handlers/iGetClientsHandler';
 
 @Module({
   imports: [BaseServicesModule, SecurityModule, AuthModule],
@@ -42,6 +46,14 @@ import { UpdateEngineerHandler } from './officeServices/services/updateEngineerH
       provide: IUpdateEngineerHandler,
       useClass: UpdateEngineerHandler,
     },
+    {
+      provide: ICreateClientHandler,
+      useClass: CreateClientHandler,
+    },
+    {
+      provide: IGetClientsHandler,
+      useClass: GetClientsHandler,
+    },
   ],
   exports: [
     ICreateOfficeHandler,
@@ -50,6 +62,8 @@ import { UpdateEngineerHandler } from './officeServices/services/updateEngineerH
     IRegisterEngineerHandler,
     IGetEngineersHandler,
     IUpdateEngineerHandler,
+    ICreateClientHandler,
+    IGetClientsHandler,
   ],
 })
 export class AdminModule {}

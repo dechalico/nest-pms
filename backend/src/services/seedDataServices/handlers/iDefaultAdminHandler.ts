@@ -3,7 +3,7 @@ import {
   DefaultAdminArgs,
   DefaultAdminResult,
 } from '../interactors/defaultAdminInteractors';
-import { AppResult } from 'src/common/app.result';
+import { AppResult } from '../../../../src/common/app.result';
 
 export abstract class IDefaultAdminHandler
   implements

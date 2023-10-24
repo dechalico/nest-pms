@@ -1,4 +1,4 @@
-import { AppResult } from 'src/common/app.result';
+import { AppResult } from '../../../../../src/common/app.result';
 import { IAsyncInteractorHandler } from '../../../../common/asyncInteractorHandler';
 import {
   GetOfficesArgs,

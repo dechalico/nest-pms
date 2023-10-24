@@ -103,7 +103,9 @@ export class ClientService {
     }
   }
 
-  async getAllClients(args: GetAllArgs): Promise<AppResult<ClientSchema>> {
+  async getAllClients(
+    args: GetAllArgs,
+  ): Promise<AppResult<Array<ClientSchema>>> {
     try {
       const filter: any = {};
       if (args.areaOfficeId) {
@@ -111,7 +113,18 @@ export class ClientService {
       }
       const getClientsRes = await this.clientRepository.getAllAsync({ filter });
       if (!getClientsRes.Succeeded || !getClientsRes.Result) {
+        return AppResult.createFailed(
+          new Error(getClientsRes.Message),
+          getClientsRes.Message,
+          getClientsRes.Error.code,
+        );
       }
+
+      const result: Array<ClientSchema> = getClientsRes.Result;
+      return AppResult.createSucceeded(
+        result,
+        'Successfully get list of clients.',
+      );
     } catch (error) {
       return AppResult.createFailed(
         error,

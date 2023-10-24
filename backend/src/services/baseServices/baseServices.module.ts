@@ -5,6 +5,7 @@ import { AreaOfficeService } from './services/areaOffice.service';
 import { InviteTokenService } from './services/inviteToken.service';
 import { SecurityModule } from '../securityServices/sercurity.module';
 import { EngineerService } from './services/engineer.service';
+import { ClientService } from './services/client.service';
 
 @Module({
   imports: [RepositoryModule, SecurityModule],
@@ -13,12 +14,14 @@ import { EngineerService } from './services/engineer.service';
     AreaOfficeService,
     InviteTokenService,
     EngineerService,
+    ClientService,
   ],
   exports: [
     UserService,
     AreaOfficeService,
     InviteTokenService,
     EngineerService,
+    ClientService,
   ],
 })
 export class BaseServicesModule {}

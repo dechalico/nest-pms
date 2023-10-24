@@ -2,7 +2,7 @@ import { BaseRepositoryService } from './baseRepository.service';
 import { Engineer } from '../entities';
 import { Injectable, Inject } from '@nestjs/common';
 import { Db } from 'mongodb';
-import { AppErrorCodes, AppResult } from 'src/common/app.result';
+import { AppErrorCodes, AppResult } from '../../../common/app.result';
 import { objectIdCreator } from '../helper';
 
 @Injectable()

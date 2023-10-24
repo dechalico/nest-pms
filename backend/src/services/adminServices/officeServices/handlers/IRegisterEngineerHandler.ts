@@ -14,7 +14,6 @@ export abstract class IRegisterEngineerHandler
       AppResult<RegisterEngineerResult>
     >
 {
-  constructor() {}
   executeAsync(
     args: RegisterEngineerArgs,
   ): Promise<AppResult<RegisterEngineerResult>> {

@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 
-describe('AuthController', () => {
+describe('ClientController', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
@@ -12,6 +12,9 @@ describe('AuthController', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.useGlobalPipes(
+      new ValidationPipe({ whitelist: true, transform: true }),
+    );
     await app.init();
   });
 
@@ -31,48 +34,37 @@ describe('AuthController', () => {
     });
   });
 
-  let guid: string, token: string;
-  describe('create user invite', () => {
-    it('/admin/users/create-invite (POST)', async () => {
+  describe('create client', () => {
+    it('/admin/clients/', async () => {
       return request(app.getHttpServer())
-        .post('/admin/users/create-invite')
+        .post('/admin/clients')
         .set('Authorization', `Bearer ${bearerToken}`)
         .send({
-          areaOfficeId: '64eb8d2f03384540ef132063',
+          city: 'muntinlupa city',
+          name: 'muntinlupa hospital',
         })
-        .expect(201)
-        .then((response) => {
-          guid = response.body.guid;
-          token = response.body.token;
-        });
+        .expect(201);
     });
   });
 
-  describe('validate token and guid', () => {
-    it('/auth/validate-invite (GET)', async () => {
+  describe('list client', () => {
+    it('/admin/clients', async () => {
       return request(app.getHttpServer())
-        .get(`/auth/validate-invite/?token=${token}&guid=${guid}`)
+        .get('/admin/clients')
+        .set('Authorization', `Bearer ${bearerToken}`)
         .expect(200);
     });
   });
 
-  describe('register user', () => {
-    it('/auth/register (POST)', async () => {
+  describe('will not accept payload data', () => {
+    it('/admin/clients', async () => {
       return request(app.getHttpServer())
-        .post('/auth/register')
+        .post('/admin/clients')
+        .set('Authorization', `Bearer ${bearerToken}`)
         .send({
-          firstName: 'dexter',
-          lastName: 'dexter',
-          email: 'dexter@gmail.com',
-          username: 'alamakher',
-          password: '12312312312',
-          guid,
-          token,
+          name: 'muntinlupa hospital',
         })
-        .expect(201)
-        .then((response) => {
-          expect(response.body.username).toEqual('alamakher');
-        });
+        .expect(400);
     });
   });
 });

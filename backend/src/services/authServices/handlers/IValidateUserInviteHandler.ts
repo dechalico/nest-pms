@@ -3,7 +3,7 @@ import {
   ValidateUserInviteArgs,
   ValidateUserInviteResult,
 } from '../interactors/validateUserInviteInteractor';
-import { AppResult } from 'src/common/app.result';
+import { AppResult } from '../../../../src/common/app.result';
 
 export abstract class IValidateUserInviteHandler
   implements

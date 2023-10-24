@@ -2,7 +2,7 @@ import { ICurrentUserHandler } from '../../../authServices/handlers/ICurrentUser
 import { Injectable } from '@nestjs/common';
 import { EngineerService } from '../../../baseServices/services/engineer.service';
 import { IUpdateEngineerHandler } from '../handlers/iUpdateEngineerHandler';
-import { AppResult, AppErrorCodes } from 'src/common/app.result';
+import { AppResult, AppErrorCodes } from '../../../../common/app.result';
 import {
   UpdateEngineerArgs,
   UpdateEngineerResult,
