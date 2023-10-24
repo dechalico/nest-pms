@@ -1,9 +1,6 @@
 import { AppErrorCodes, AppResult } from '../../../../common/app.result';
 import { ICreateOfficeHandler } from '../handlers/iCreateOfficeHandler';
-import {
-  CreateOfficeArgs,
-  CreateOfficeResult,
-} from '../interactors/createOfficeInteractor';
+import { CreateOfficeArgs, CreateOfficeResult } from '../interactors/createOfficeInteractor';
 import { Injectable } from '@nestjs/common';
 import { AreaOfficeService } from '../../../baseServices/services/areaOffice.service';
 
@@ -11,13 +8,9 @@ import { AreaOfficeService } from '../../../baseServices/services/areaOffice.ser
 export class CreateOfficeHandler implements ICreateOfficeHandler {
   constructor(private readonly areaOfficeService: AreaOfficeService) {}
 
-  async executeAsync(
-    args: CreateOfficeArgs,
-  ): Promise<AppResult<CreateOfficeResult>> {
+  async executeAsync(args: CreateOfficeArgs): Promise<AppResult<CreateOfficeResult>> {
     try {
-      const createdRes = await this.areaOfficeService.createAreaOfficeAsync(
-        args,
-      );
+      const createdRes = await this.areaOfficeService.createAreaOfficeAsync(args);
 
       if (!createdRes.Succeeded || !createdRes.Result) {
         return AppResult.createFailed(

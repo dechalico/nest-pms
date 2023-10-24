@@ -1,20 +1,10 @@
-import {
-  Controller,
-  Post,
-  Get,
-  Body,
-  BadRequestException,
-  Query,
-} from '@nestjs/common';
+import { Controller, Post, Get, Body, BadRequestException, Query } from '@nestjs/common';
 import { LoginArgs, LoginResult } from './dtos/login.dto';
 import { ICreateLoginTokenHandler } from '../../services/authServices/handlers/iCreateLoginTokenHandler';
 import { plainToInstance } from 'class-transformer';
 import { AllowAnonymous } from '../../services/authServices/decorators/allowAnonymous';
 import { IValidateUserInviteHandler } from '../../services/authServices/handlers/IValidateUserInviteHandler';
-import {
-  ValidateInviteResult,
-  ValidateInviteArgs,
-} from './dtos/validateInvite.dto';
+import { ValidateInviteResult, ValidateInviteArgs } from './dtos/validateInvite.dto';
 import { RegisterArgs, RegisterResult } from './dtos/register.dto';
 import { IRegisterUserHandler } from '../../services/authServices/handlers/iRegisterUserHandler';
 
@@ -40,18 +30,12 @@ export class AuthController {
   }
 
   @Get('validate-invite')
-  async validateInvite(
-    @Query() query: ValidateInviteArgs,
-  ): Promise<ValidateInviteResult> {
+  async validateInvite(@Query() query: ValidateInviteArgs): Promise<ValidateInviteResult> {
     const validateRes = await this.validateToken.executeAsync({
       guid: query.guid,
       token: query.token,
     });
-    if (
-      !validateRes.Succeeded ||
-      !validateRes.Result ||
-      !validateRes.Result.isvalid
-    ) {
+    if (!validateRes.Succeeded || !validateRes.Result || !validateRes.Result.isvalid) {
       throw new BadRequestException(validateRes.Message);
     }
     const result = plainToInstance(ValidateInviteResult, validateRes.Result, {

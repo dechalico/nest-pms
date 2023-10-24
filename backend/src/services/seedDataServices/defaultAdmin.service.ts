@@ -1,8 +1,5 @@
 import { IDefaultAdminHandler } from './handlers/iDefaultAdminHandler';
-import {
-  DefaultAdminArgs,
-  DefaultAdminResult,
-} from './interactors/defaultAdminInteractors';
+import { DefaultAdminArgs, DefaultAdminResult } from './interactors/defaultAdminInteractors';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { UserService } from '../baseServices/services/user.service';
 import { AreaOfficeService } from '../baseServices/services/areaOffice.service';
@@ -26,9 +23,7 @@ export class DefaultAdminService implements IDefaultAdminHandler, OnModuleInit {
     });
   }
 
-  async executeAsync(
-    args: DefaultAdminArgs,
-  ): Promise<AppResult<DefaultAdminResult>> {
+  async executeAsync(args: DefaultAdminArgs): Promise<AppResult<DefaultAdminResult>> {
     try {
       const checkUsers = await this.userService.getAllUsers();
       if (!checkUsers.Succeeded || !checkUsers.Result) {
@@ -41,9 +36,7 @@ export class DefaultAdminService implements IDefaultAdminHandler, OnModuleInit {
       const users = checkUsers.Result;
       if (users.length > 0) {
         return AppResult.createFailed(
-          new Error(
-            'Already have registered user. Unable to create default user.',
-          ),
+          new Error('Already have registered user. Unable to create default user.'),
           'Already have registered user. Unable to create default user.',
           AppErrorCodes.InternalError,
         );
@@ -60,11 +53,10 @@ export class DefaultAdminService implements IDefaultAdminHandler, OnModuleInit {
         );
       }
       if (getAllAreaRes.Result.length === 0) {
-        const createAreaRes =
-          await this.areaOfficeService.createAreaOfficeAsync({
-            city: 'Davao City',
-            name: 'MinOne',
-          });
+        const createAreaRes = await this.areaOfficeService.createAreaOfficeAsync({
+          city: 'Davao City',
+          name: 'MinOne',
+        });
         if (!createAreaRes.Succeeded || !createAreaRes.Result) {
           return AppResult.createFailed(
             new Error(createAreaRes.Message),
@@ -95,10 +87,7 @@ export class DefaultAdminService implements IDefaultAdminHandler, OnModuleInit {
       });
       result.hashedPassword = created.password;
 
-      return AppResult.createSucceeded(
-        result,
-        'Default user successfully created.',
-      );
+      return AppResult.createSucceeded(result, 'Default user successfully created.');
     } catch (error) {
       return AppResult.createFailed(
         error,

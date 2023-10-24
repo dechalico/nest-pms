@@ -1,9 +1,6 @@
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
 import { ICurrentUserHandler } from '../handlers/ICurrentUserHandler';
-import {
-  CurrentUserArgs,
-  CurrentUserResult,
-} from '../interactors/currentUserInteractor';
+import { CurrentUserArgs, CurrentUserResult } from '../interactors/currentUserInteractor';
 import { Injectable, Inject, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
@@ -16,9 +13,7 @@ export class CurrentUser implements ICurrentUserHandler {
     private readonly userService: UserService,
   ) {}
 
-  async executeAsync(
-    args: CurrentUserArgs,
-  ): Promise<AppResult<CurrentUserResult>> {
+  async executeAsync(args: CurrentUserArgs): Promise<AppResult<CurrentUserResult>> {
     try {
       const userId = this.request['user'].id;
       const userRes = await this.userService.getUserByIdAsync(userId);

@@ -8,14 +8,10 @@ import { plainToInstance } from 'class-transformer';
 
 @Controller('/admin/users')
 export class UserController {
-  constructor(
-    private readonly creaUserInviteHandler: ICreateUserInviteHandler,
-  ) {}
+  constructor(private readonly creaUserInviteHandler: ICreateUserInviteHandler) {}
 
   @Post('create-invite')
-  async createUserInvite(
-    @Body() args: CreateUserInviteArgs,
-  ): Promise<CreateUserInviteResult> {
+  async createUserInvite(@Body() args: CreateUserInviteArgs): Promise<CreateUserInviteResult> {
     const result = await this.creaUserInviteHandler.executeAsync(args);
     if (!result.Succeeded || !result.Result) {
       throw new BadRequestException(result.Message);

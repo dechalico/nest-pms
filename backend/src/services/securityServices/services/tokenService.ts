@@ -6,18 +6,13 @@ import { AppErrorCodes, AppResult } from '../../../common/app.result';
 
 @Injectable()
 export class TokenService {
-  async generateTokenAsync(
-    urlSafe: boolean,
-  ): Promise<AppResult<GeneratedToken>> {
+  async generateTokenAsync(urlSafe: boolean): Promise<AppResult<GeneratedToken>> {
     try {
       const randombytesAsync = promisify(randomBytes);
       const format = urlSafe ? 'base64url' : 'base64';
       const token = (await randombytesAsync(50)).toString(format);
       const uuid = uuidv4();
-      return AppResult.createSucceeded(
-        { token, uuid },
-        'Successfully generate token',
-      );
+      return AppResult.createSucceeded({ token, uuid }, 'Successfully generate token');
     } catch (error) {
       return AppResult.createFailed(
         error,

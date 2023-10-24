@@ -1,21 +1,10 @@
-import {
-  Controller,
-  BadRequestException,
-  Post,
-  Body,
-  Get,
-  Put,
-  Param,
-} from '@nestjs/common';
+import { Controller, BadRequestException, Post, Body, Get, Put, Param } from '@nestjs/common';
 import {
   CreateEngineerArgs,
   CreateEngineerResult,
   GetAllEngineersResult,
 } from './engineer.dtos/createEngineer.dto';
-import {
-  UpdateEngineerArgs,
-  UpdateEngineerResult,
-} from './engineer.dtos/updateEngineer.dto';
+import { UpdateEngineerArgs, UpdateEngineerResult } from './engineer.dtos/updateEngineer.dto';
 import { IRegisterEngineerHandler } from '../../services/adminServices/officeServices/handlers/IRegisterEngineerHandler';
 import { IGetEngineersHandler } from '../../services/adminServices/officeServices/handlers/iGetEngineersHandler';
 import { IUpdateEngineerHandler } from '../../services/adminServices/officeServices/handlers/iUpdateEngineerHandler';
@@ -30,9 +19,7 @@ export class EngineerController {
   ) {}
 
   @Post()
-  async createEngineerAsync(
-    @Body() args: CreateEngineerArgs,
-  ): Promise<CreateEngineerResult> {
+  async createEngineerAsync(@Body() args: CreateEngineerArgs): Promise<CreateEngineerResult> {
     const registerRes = await this.registerEngineerHandler.executeAsync(args);
     if (!registerRes.Succeeded || !registerRes.Result) {
       throw new BadRequestException(registerRes.Message);
@@ -49,11 +36,9 @@ export class EngineerController {
     if (!getEngineersRes.Succeeded || !getEngineersRes.Result) {
       throw new BadRequestException(getEngineersRes.Message);
     }
-    const result = plainToInstance(
-      GetAllEngineersResult,
-      getEngineersRes.Result,
-      { excludeExtraneousValues: true },
-    );
+    const result = plainToInstance(GetAllEngineersResult, getEngineersRes.Result, {
+      excludeExtraneousValues: true,
+    });
     return result;
   }
 

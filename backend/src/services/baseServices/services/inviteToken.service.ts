@@ -17,14 +17,10 @@ export class InviteTokenService {
     private readonly userRepo: UserRepository,
   ) {}
 
-  async createInviteTokenAsync(
-    args: CreateInvitedToken,
-  ): Promise<AppResult<InvitedTokenSchema>> {
+  async createInviteTokenAsync(args: CreateInvitedToken): Promise<AppResult<InvitedTokenSchema>> {
     try {
       // check area office if existed
-      const chkAreaRes = await this.areaOfficeRepo.getByIdAsync(
-        args.areaOfficeId,
-      );
+      const chkAreaRes = await this.areaOfficeRepo.getByIdAsync(args.areaOfficeId);
       if (!chkAreaRes.Succeeded || !chkAreaRes.Result) {
         return AppResult.createFailed(
           new Error('Invalid area office id.'),
@@ -57,17 +53,11 @@ export class InviteTokenService {
         token: args.token,
       });
       if (!createRes.Succeeded || !createRes.Result) {
-        return AppResult.createFailed(
-          new Error(createRes.Message),
-          createRes.Message,
-        );
+        return AppResult.createFailed(new Error(createRes.Message), createRes.Message);
       }
 
       const objResult: InvitedTokenSchema = createRes.Result;
-      return AppResult.createSucceeded(
-        objResult,
-        'Invited token successfully created.',
-      );
+      return AppResult.createSucceeded(objResult, 'Invited token successfully created.');
     } catch (error) {
       return AppResult.createFailed(
         error,
@@ -77,15 +67,11 @@ export class InviteTokenService {
     }
   }
 
-  async updateInviteTokenAsync(
-    args: UpdateInvitedToken,
-  ): Promise<AppResult<InvitedTokenSchema>> {
+  async updateInviteTokenAsync(args: UpdateInvitedToken): Promise<AppResult<InvitedTokenSchema>> {
     try {
       // check area office if existed
       if (args.areaOfficeId) {
-        const chkAreaRes = await this.areaOfficeRepo.getByIdAsync(
-          args.areaOfficeId,
-        );
+        const chkAreaRes = await this.areaOfficeRepo.getByIdAsync(args.areaOfficeId);
         if (!chkAreaRes.Succeeded || !chkAreaRes.Result) {
           return AppResult.createFailed(
             new Error('Invalid area office id.'),
@@ -127,10 +113,7 @@ export class InviteTokenService {
       }
 
       const objResult: InvitedTokenSchema = updatedRes.Result;
-      return AppResult.createSucceeded(
-        objResult,
-        'Invited token successfully updated.',
-      );
+      return AppResult.createSucceeded(objResult, 'Invited token successfully updated.');
     } catch (error) {
       return AppResult.createFailed(
         error,
@@ -140,18 +123,11 @@ export class InviteTokenService {
     }
   }
 
-  async getTokenAsync(
-    guid: string,
-    token: string,
-  ): Promise<AppResult<InvitedTokenSchema>> {
+  async getTokenAsync(guid: string, token: string): Promise<AppResult<InvitedTokenSchema>> {
     try {
       const getRes = await this.inviteTokenRepo.getTokenAsync(guid, token);
       if (!getRes.Succeeded || !getRes.Result) {
-        return AppResult.createFailed(
-          new Error(getRes.Message),
-          getRes.Message,
-          getRes.Error.code,
-        );
+        return AppResult.createFailed(new Error(getRes.Message), getRes.Message, getRes.Error.code);
       }
 
       const obj: InvitedTokenSchema = getRes.Result;

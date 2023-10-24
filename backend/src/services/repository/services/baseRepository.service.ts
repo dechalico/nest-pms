@@ -9,11 +9,7 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
   protected readonly table: Collection;
   protected readonly Wrapper: new () => Entity;
 
-  constructor(
-    protected readonly db: Db,
-    tableName: string,
-    Wrapper: new () => Entity,
-  ) {
+  constructor(protected readonly db: Db, tableName: string, Wrapper: new () => Entity) {
     this.db = db;
     this.table = db.collection(tableName);
     this.Wrapper = Wrapper;
@@ -76,10 +72,7 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
     try {
       const { _id, ...rest } = entity;
       const fields = removeUndefinedValues(rest);
-      await this.table.findOneAndUpdate(
-        { _id: objectIdCreator(_id) },
-        { $set: { ...fields } },
-      );
+      await this.table.findOneAndUpdate({ _id: objectIdCreator(_id) }, { $set: { ...fields } });
       const updated = await this.table.findOne<Entity>({
         _id: objectIdCreator(_id),
       });
@@ -99,9 +92,7 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
     }
   }
 
-  async getAllAsync(
-    args: GetAllArgs = { filter: {} },
-  ): Promise<AppResult<any>> {
+  async getAllAsync(args: GetAllArgs = { filter: {} }): Promise<AppResult<any>> {
     try {
       const cursor = this.table.find<Entity>(args.filter).sort({ _id: 1 });
       const result: Array<Entity> = [];
@@ -128,10 +119,7 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
     try {
       const objectId = objectIdCreator(id);
       await this.table.findOneAndDelete({ _id: objectId });
-      return AppResult.createSucceeded(
-        id.toString(),
-        'Successfully delete entity by id.',
-      );
+      return AppResult.createSucceeded(id.toString(), 'Successfully delete entity by id.');
     } catch (error) {
       return AppResult.createFailed(
         error,

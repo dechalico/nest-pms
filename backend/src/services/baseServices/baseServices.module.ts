@@ -9,19 +9,7 @@ import { ClientService } from './services/client.service';
 
 @Module({
   imports: [RepositoryModule, SecurityModule],
-  providers: [
-    UserService,
-    AreaOfficeService,
-    InviteTokenService,
-    EngineerService,
-    ClientService,
-  ],
-  exports: [
-    UserService,
-    AreaOfficeService,
-    InviteTokenService,
-    EngineerService,
-    ClientService,
-  ],
+  providers: [UserService, AreaOfficeService, InviteTokenService, EngineerService, ClientService],
+  exports: [UserService, AreaOfficeService, InviteTokenService, EngineerService, ClientService],
 })
 export class BaseServicesModule {}

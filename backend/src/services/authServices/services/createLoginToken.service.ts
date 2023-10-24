@@ -17,18 +17,11 @@ export class CreateLoginToken implements ICreateLoginTokenHandler {
     private readonly jwtService: JwtService,
   ) {}
 
-  async executeAsync(
-    args: CreateLoginTokenArgs,
-  ): Promise<AppResult<CreateLoginTokenResult>> {
+  async executeAsync(args: CreateLoginTokenArgs): Promise<AppResult<CreateLoginTokenResult>> {
     try {
       // check user if existed
-      const chkUserRes = await this.userService.getUserByUsernameAsync(
-        args.username,
-      );
-      if (
-        !chkUserRes.Succeeded &&
-        chkUserRes.Error.code === AppErrorCodes.NotFound
-      ) {
+      const chkUserRes = await this.userService.getUserByUsernameAsync(args.username);
+      if (!chkUserRes.Succeeded && chkUserRes.Error.code === AppErrorCodes.NotFound) {
         return AppResult.createFailed(
           new Error('Invalid username or password.'),
           'Invalid username or password.',
@@ -45,10 +38,7 @@ export class CreateLoginToken implements ICreateLoginTokenHandler {
       const user = chkUserRes.Result;
 
       // validate user password
-      const chkPassword = await this.passwordHasher.validatePassword(
-        args.password,
-        user.password,
-      );
+      const chkPassword = await this.passwordHasher.validatePassword(args.password, user.password);
       if (!chkPassword.Succeeded || !chkPassword.Result) {
         return AppResult.createFailed(
           new Error('Invalid username or password.'),

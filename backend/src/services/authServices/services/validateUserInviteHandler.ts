@@ -11,14 +11,9 @@ import { InviteTokenService } from '../../baseServices/services/inviteToken.serv
 export class ValidateUserInviteHandler implements IValidateUserInviteHandler {
   constructor(private readonly inviteService: InviteTokenService) {}
 
-  async executeAsync(
-    args: ValidateUserInviteArgs,
-  ): Promise<AppResult<ValidateUserInviteResult>> {
+  async executeAsync(args: ValidateUserInviteArgs): Promise<AppResult<ValidateUserInviteResult>> {
     try {
-      const getTokenRes = await this.inviteService.getTokenAsync(
-        args.guid,
-        args.token,
-      );
+      const getTokenRes = await this.inviteService.getTokenAsync(args.guid, args.token);
       if (!getTokenRes.Succeeded || !getTokenRes.Result) {
         return AppResult.createFailed(
           new Error('Invalid guid and token.'),

@@ -8,10 +8,6 @@ class Client {
   dateCreated: Date;
 }
 
-export class CreateClientArgs extends OmitType(Client, [
-  'areaOfficeId',
-  'dateCreated',
-  'id',
-]) {}
+export class CreateClientArgs extends OmitType(Client, ['areaOfficeId', 'dateCreated', 'id']) {}
 
 export class CreateClientResult extends Client {}

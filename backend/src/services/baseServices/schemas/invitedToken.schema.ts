@@ -30,10 +30,7 @@ export class InvitedTokenSchema {
   dateCreated: Date;
 }
 
-export class CreateInvitedToken extends OmitType(InvitedTokenSchema, [
-  'id',
-  'dateCreated',
-]) {}
+export class CreateInvitedToken extends OmitType(InvitedTokenSchema, ['id', 'dateCreated']) {}
 
 export class UpdateInvitedToken extends PartialType(CreateInvitedToken) {
   @Expose()

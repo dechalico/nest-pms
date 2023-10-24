@@ -44,14 +44,10 @@ export class ClientRepository extends BaseRepositoryService<Client> {
     }
   }
 
-  async getAllAsync(
-    args: GetAllArgs = { filter: {} },
-  ): Promise<AppResult<any>> {
+  async getAllAsync(args: GetAllArgs = { filter: {} }): Promise<AppResult<any>> {
     try {
       if (args.filter?.area_office_id) {
-        args.filter.area_office_id = objectIdCreator(
-          args.filter.area_office_id,
-        );
+        args.filter.area_office_id = objectIdCreator(args.filter.area_office_id);
       }
       return super.getAllAsync(args);
     } catch (error) {

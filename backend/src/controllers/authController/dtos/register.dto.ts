@@ -1,9 +1,4 @@
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsString,
-  IsStrongPassword,
-} from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, IsStrongPassword } from 'class-validator';
 import { OmitType } from '@nestjs/mapped-types';
 import { Expose } from 'class-transformer';
 
@@ -47,11 +42,7 @@ export class RegisterArgs {
   guid: string;
 }
 
-export class RegisterResult extends OmitType(RegisterArgs, [
-  'password',
-  'token',
-  'guid',
-]) {
+export class RegisterResult extends OmitType(RegisterArgs, ['password', 'token', 'guid']) {
   @Expose()
   id: string;
 }

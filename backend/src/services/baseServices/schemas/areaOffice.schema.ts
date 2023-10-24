@@ -15,10 +15,7 @@ export class AreaOfficeSchema {
   dateCreated: Date;
 }
 
-export class CreateAreaOffice extends OmitType(AreaOfficeSchema, [
-  'id',
-  'dateCreated',
-]) {}
+export class CreateAreaOffice extends OmitType(AreaOfficeSchema, ['id', 'dateCreated']) {}
 
 export class UpdateAreaOffice extends PartialType(
   OmitType(AreaOfficeSchema, ['id', 'dateCreated']),

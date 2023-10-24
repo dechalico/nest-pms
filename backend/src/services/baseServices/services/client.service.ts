@@ -16,14 +16,10 @@ export class ClientService {
     private readonly areaOfficeRepository: AreaOfficeRepository,
   ) {}
 
-  async createClientAsync(
-    args: CreateClientSchema,
-  ): Promise<AppResult<ClientSchema>> {
+  async createClientAsync(args: CreateClientSchema): Promise<AppResult<ClientSchema>> {
     try {
       // check area office repository
-      const areaChkRes = await this.areaOfficeRepository.getByIdAsync(
-        args.areaOfficeId,
-      );
+      const areaChkRes = await this.areaOfficeRepository.getByIdAsync(args.areaOfficeId);
       if (!areaChkRes.Succeeded || !areaChkRes.Result) {
         return AppResult.createFailed(
           new Error('Invalid area office id.'),
@@ -59,15 +55,11 @@ export class ClientService {
     }
   }
 
-  async updateClientAsync(
-    args: UpdateClientSchema,
-  ): Promise<AppResult<ClientSchema>> {
+  async updateClientAsync(args: UpdateClientSchema): Promise<AppResult<ClientSchema>> {
     try {
       if (args.areaOfficeId) {
         // check area office repository
-        const areaChkRes = await this.areaOfficeRepository.getByIdAsync(
-          args.areaOfficeId,
-        );
+        const areaChkRes = await this.areaOfficeRepository.getByIdAsync(args.areaOfficeId);
         if (!areaChkRes.Succeeded || !areaChkRes.Result) {
           return AppResult.createFailed(
             new Error('Invalid area office id.'),
@@ -103,9 +95,7 @@ export class ClientService {
     }
   }
 
-  async getAllClients(
-    args: GetAllArgs,
-  ): Promise<AppResult<Array<ClientSchema>>> {
+  async getAllClients(args: GetAllArgs): Promise<AppResult<Array<ClientSchema>>> {
     try {
       const filter: any = {};
       if (args.areaOfficeId) {
@@ -121,10 +111,7 @@ export class ClientService {
       }
 
       const result: Array<ClientSchema> = getClientsRes.Result;
-      return AppResult.createSucceeded(
-        result,
-        'Successfully get list of clients.',
-      );
+      return AppResult.createSucceeded(result, 'Successfully get list of clients.');
     } catch (error) {
       return AppResult.createFailed(
         error,

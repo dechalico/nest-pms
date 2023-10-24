@@ -1,9 +1,6 @@
 import { AppErrorCodes, AppResult } from '../../../../common/app.result';
 import { ICreateClientHandler } from '../handlers/iCreateClientHandler';
-import {
-  CreateClientArgs,
-  CreateClientResult,
-} from '../interactors/createClientInteractor';
+import { CreateClientArgs, CreateClientResult } from '../interactors/createClientInteractor';
 import { Injectable } from '@nestjs/common';
 import { ICurrentUserHandler } from '../../../authServices/handlers/ICurrentUserHandler';
 import { ClientService } from '../../../baseServices/services/client.service';
@@ -15,16 +12,11 @@ export class CreateClientHandler implements ICreateClientHandler {
     private readonly clientService: ClientService,
   ) {}
 
-  async executeAsync(
-    args: CreateClientArgs,
-  ): Promise<AppResult<CreateClientResult>> {
+  async executeAsync(args: CreateClientArgs): Promise<AppResult<CreateClientResult>> {
     try {
       const currentUserRes = await this.currentUserHandler.executeAsync({});
       if (!currentUserRes.Succeeded || !currentUserRes.Result) {
-        return AppResult.createFailed(
-          new Error(currentUserRes.Message),
-          currentUserRes.Message,
-        );
+        return AppResult.createFailed(new Error(currentUserRes.Message), currentUserRes.Message);
       }
       const currentUser = currentUserRes.Result;
 
@@ -34,10 +26,7 @@ export class CreateClientHandler implements ICreateClientHandler {
         name: args.name,
       });
       if (!createClientRes.Succeeded || !createClientRes.Result) {
-        return AppResult.createFailed(
-          new Error(createClientRes.Message),
-          createClientRes.Message,
-        );
+        return AppResult.createFailed(new Error(createClientRes.Message), createClientRes.Message);
       }
       const created = createClientRes.Result;
 

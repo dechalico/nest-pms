@@ -6,13 +6,7 @@ import {
 import { AppResult } from '../../../common/app.result';
 
 export abstract class ICreateLoginTokenHandler
-  implements
-    IAsyncInteractorHandler<
-      CreateLoginTokenArgs,
-      AppResult<CreateLoginTokenResult>
-    >
+  implements IAsyncInteractorHandler<CreateLoginTokenArgs, AppResult<CreateLoginTokenResult>>
 {
-  abstract executeAsync(
-    args: CreateLoginTokenArgs,
-  ): Promise<AppResult<CreateLoginTokenResult>>;
+  abstract executeAsync(args: CreateLoginTokenArgs): Promise<AppResult<CreateLoginTokenResult>>;
 }

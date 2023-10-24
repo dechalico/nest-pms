@@ -6,15 +6,9 @@ import {
 } from '../interactors/createUserInviteInteractor';
 
 export abstract class ICreateUserInviteHandler
-  implements
-    IAsyncInteractorHandler<
-      CreateUserInviteArgs,
-      AppResult<CreateUserInviteResult>
-    >
+  implements IAsyncInteractorHandler<CreateUserInviteArgs, AppResult<CreateUserInviteResult>>
 {
-  executeAsync(
-    args: CreateUserInviteArgs,
-  ): Promise<AppResult<CreateUserInviteResult>> {
+  executeAsync(args: CreateUserInviteArgs): Promise<AppResult<CreateUserInviteResult>> {
     throw new Error('Method not implemented.');
   }
 }

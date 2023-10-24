@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  CanActivate,
-  ExecutionContext,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { AppConfigService } from '../../../config/appConfig.service';
@@ -19,10 +14,10 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const isAllowAnonymous = this.reflector.getAllAndOverride<boolean>(
-      IS_ALLOW_ANONYMOUS,
-      [context.getHandler(), context.getClass()],
-    );
+    const isAllowAnonymous = this.reflector.getAllAndOverride<boolean>(IS_ALLOW_ANONYMOUS, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
 
     // skip public routes
     if (isAllowAnonymous) {

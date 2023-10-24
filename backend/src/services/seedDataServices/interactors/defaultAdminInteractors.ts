@@ -18,10 +18,7 @@ export class DefaultAdminArgs {
   roles: Array<string>;
 }
 
-export class DefaultAdminResult extends OmitType(DefaultAdminArgs, [
-  'password',
-  'roles',
-]) {
+export class DefaultAdminResult extends OmitType(DefaultAdminArgs, ['password', 'roles']) {
   @Expose()
   hashedPassword: string;
 }

@@ -1,9 +1,6 @@
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
 import { IRegisterUserHandler } from '../handlers/iRegisterUserHandler';
-import {
-  RegisterUserArgs,
-  RegisterUserResult,
-} from '../interactors/registerUserInteractor';
+import { RegisterUserArgs, RegisterUserResult } from '../interactors/registerUserInteractor';
 import { Injectable } from '@nestjs/common';
 import { IValidateUserInviteHandler } from '../handlers/IValidateUserInviteHandler';
 import { UserService } from '../../baseServices/services/user.service';
@@ -17,9 +14,7 @@ export class RegisterUserHandler implements IRegisterUserHandler {
     private readonly inviteTokenService: InviteTokenService,
   ) {}
 
-  async executeAsync(
-    args: RegisterUserArgs,
-  ): Promise<AppResult<RegisterUserResult>> {
+  async executeAsync(args: RegisterUserArgs): Promise<AppResult<RegisterUserResult>> {
     try {
       const validateTokenRes = await this.validateToken.executeAsync({
         guid: args.guid,
@@ -30,10 +25,7 @@ export class RegisterUserHandler implements IRegisterUserHandler {
         !validateTokenRes.Result ||
         !validateTokenRes.Result.isvalid
       ) {
-        return AppResult.createFailed(
-          new Error('Invalid request.'),
-          'Invalid request.',
-        );
+        return AppResult.createFailed(new Error('Invalid request.'), 'Invalid request.');
       }
       const { areaOfficeId, id: tokenId } = validateTokenRes.Result;
 
@@ -56,13 +48,12 @@ export class RegisterUserHandler implements IRegisterUserHandler {
       const createdUser = createUserRes.Result;
 
       const now = new Date();
-      const updateTokenRes =
-        await this.inviteTokenService.updateInviteTokenAsync({
-          id: tokenId,
-          dateUsed: now,
-          isUsed: true,
-          usedBy: createdUser.id,
-        });
+      const updateTokenRes = await this.inviteTokenService.updateInviteTokenAsync({
+        id: tokenId,
+        dateUsed: now,
+        isUsed: true,
+        usedBy: createdUser.id,
+      });
       if (!updateTokenRes.Succeeded || !updateTokenRes.Result) {
         return AppResult.createFailed(
           new Error(updateTokenRes.Message),

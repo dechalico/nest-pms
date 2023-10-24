@@ -1,14 +1,5 @@
-import {
-  Controller,
-  Post,
-  Get,
-  Body,
-  BadRequestException,
-} from '@nestjs/common';
-import {
-  CreateClientArgs,
-  CreateClientResult,
-} from './client.dtos/createClient.dto';
+import { Controller, Post, Get, Body, BadRequestException } from '@nestjs/common';
+import { CreateClientArgs, CreateClientResult } from './client.dtos/createClient.dto';
 import { GetClientsResult } from './client.dtos/getClient.dto';
 import { ICreateClientHandler } from '../../services/adminServices/pmsServices/handlers/iCreateClientHandler';
 import { IGetClientsHandler } from '../../services/adminServices/pmsServices/handlers/iGetClientsHandler';
@@ -22,9 +13,7 @@ export class ClientController {
   ) {}
 
   @Post()
-  async createClient(
-    @Body() args: CreateClientArgs,
-  ): Promise<CreateClientResult> {
+  async createClient(@Body() args: CreateClientArgs): Promise<CreateClientResult> {
     const createClientRes = await this.createClientHandler.executeAsync(args);
     if (!createClientRes.Succeeded || !createClientRes.Result) {
       throw new BadRequestException(createClientRes.Message);

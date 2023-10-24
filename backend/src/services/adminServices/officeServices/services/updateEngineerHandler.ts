@@ -3,10 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { EngineerService } from '../../../baseServices/services/engineer.service';
 import { IUpdateEngineerHandler } from '../handlers/iUpdateEngineerHandler';
 import { AppResult, AppErrorCodes } from '../../../../common/app.result';
-import {
-  UpdateEngineerArgs,
-  UpdateEngineerResult,
-} from '../interactors/updateEngineerInteractor';
+import { UpdateEngineerArgs, UpdateEngineerResult } from '../interactors/updateEngineerInteractor';
 
 @Injectable()
 export class UpdateEngineerHandler implements IUpdateEngineerHandler {
@@ -15,9 +12,7 @@ export class UpdateEngineerHandler implements IUpdateEngineerHandler {
     private readonly engineerService: EngineerService,
   ) {}
 
-  async executeAsync(
-    args: UpdateEngineerArgs,
-  ): Promise<AppResult<UpdateEngineerResult>> {
+  async executeAsync(args: UpdateEngineerArgs): Promise<AppResult<UpdateEngineerResult>> {
     try {
       const currentUserRes = await this.currentUserHandler.executeAsync({});
       if (!currentUserRes.Succeeded || !currentUserRes.Result) {

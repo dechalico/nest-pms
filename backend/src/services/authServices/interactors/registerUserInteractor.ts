@@ -10,10 +10,6 @@ export class RegisterUserArgs {
   guid: string;
 }
 
-export class RegisterUserResult extends OmitType(RegisterUserArgs, [
-  'password',
-  'token',
-  'guid',
-]) {
+export class RegisterUserResult extends OmitType(RegisterUserArgs, ['password', 'token', 'guid']) {
   id: string;
 }

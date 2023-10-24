@@ -1,19 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { AreaOfficeRepository } from '../../repository/services/areaOfficeRepository.service';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
-import {
-  CreateAreaOffice,
-  AreaOfficeSchema,
-  UpdateAreaOffice,
-} from '../schemas/areaOffice.schema';
+import { CreateAreaOffice, AreaOfficeSchema, UpdateAreaOffice } from '../schemas/areaOffice.schema';
 
 @Injectable()
 export class AreaOfficeService {
   constructor(private readonly areaOfficeRepo: AreaOfficeRepository) {}
 
-  async createAreaOfficeAsync(
-    payload: CreateAreaOffice,
-  ): Promise<AppResult<AreaOfficeSchema>> {
+  async createAreaOfficeAsync(payload: CreateAreaOffice): Promise<AppResult<AreaOfficeSchema>> {
     try {
       const now = new Date();
       const createdRes = await this.areaOfficeRepo.createAsync({
@@ -24,35 +18,21 @@ export class AreaOfficeService {
         _id: undefined,
       });
       if (!createdRes.Succeeded || !createdRes.Result) {
-        return AppResult.createFailed(
-          new Error(createdRes.Message),
-          createdRes.Message,
-        );
+        return AppResult.createFailed(new Error(createdRes.Message), createdRes.Message);
       }
 
       const result: AreaOfficeSchema = createdRes.Result;
-      return AppResult.createSucceeded(
-        result,
-        'Area Office successfully created.',
-      );
+      return AppResult.createSucceeded(result, 'Area Office successfully created.');
     } catch (error) {
-      return AppResult.createFailed(
-        error,
-        'An error occured when creating area office',
-      );
+      return AppResult.createFailed(error, 'An error occured when creating area office');
     }
   }
 
-  async updateAreaOfficeAsync(
-    payload: UpdateAreaOffice,
-  ): Promise<AppResult<AreaOfficeSchema>> {
+  async updateAreaOfficeAsync(payload: UpdateAreaOffice): Promise<AppResult<AreaOfficeSchema>> {
     try {
       const checkRes = await this.areaOfficeRepo.getByIdAsync(payload.id);
       if (!checkRes.Succeeded || !checkRes.Result) {
-        return AppResult.createFailed(
-          new Error(checkRes.Message),
-          checkRes.Message,
-        );
+        return AppResult.createFailed(new Error(checkRes.Message), checkRes.Message);
       }
 
       const now = new Date();
@@ -64,22 +44,13 @@ export class AreaOfficeService {
       });
 
       if (!updateRes.Succeeded || !updateRes.Result) {
-        return AppResult.createFailed(
-          new Error(updateRes.Message),
-          updateRes.Message,
-        );
+        return AppResult.createFailed(new Error(updateRes.Message), updateRes.Message);
       }
 
       const result: AreaOfficeSchema = updateRes.Result;
-      return AppResult.createSucceeded(
-        result,
-        'Area Office successfully updated.',
-      );
+      return AppResult.createSucceeded(result, 'Area Office successfully updated.');
     } catch (error) {
-      return AppResult.createFailed(
-        error,
-        'An error occured when trying to update Area Office',
-      );
+      return AppResult.createFailed(error, 'An error occured when trying to update Area Office');
     }
   }
 
@@ -94,10 +65,7 @@ export class AreaOfficeService {
         );
       }
       const result: Array<AreaOfficeSchema> = getAllRes.Result;
-      return AppResult.createSucceeded(
-        result,
-        'Successfully get all area offices',
-      );
+      return AppResult.createSucceeded(result, 'Successfully get all area offices');
     } catch (error) {
       return AppResult.createFailed(
         error,

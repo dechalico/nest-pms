@@ -10,11 +10,7 @@ export class ErrorInfo {
   readonly code: AppErrorCodes;
   readonly error: Error;
 
-  constructor(opts: {
-    description: string;
-    code: AppErrorCodes;
-    error: Error;
-  }) {
+  constructor(opts: { description: string; code: AppErrorCodes; error: Error }) {
     this.description = opts.description;
     this.code = opts.code;
     this.error = opts.error;

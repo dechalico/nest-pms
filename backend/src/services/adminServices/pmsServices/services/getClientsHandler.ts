@@ -1,10 +1,6 @@
 import { AppResult, AppErrorCodes } from '../../../../common/app.result';
 import { IGetClientsHandler } from '../handlers/iGetClientsHandler';
-import {
-  Client,
-  GetClientArgs,
-  GetClientResult,
-} from '../interactors/getClientsInteractor';
+import { Client, GetClientArgs, GetClientResult } from '../interactors/getClientsInteractor';
 import { Injectable } from '@nestjs/common';
 import { ClientService } from '../../../baseServices/services/client.service';
 import { ICurrentUserHandler } from '../../../authServices/handlers/ICurrentUserHandler';

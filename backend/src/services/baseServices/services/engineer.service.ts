@@ -112,18 +112,11 @@ export class EngineerService {
     try {
       const getRes = await this.engineerRepo.getAllAsync();
       if (!getRes.Succeeded || !getRes.Result) {
-        return AppResult.createFailed(
-          new Error(getRes.Message),
-          getRes.Message,
-          getRes.Error.code,
-        );
+        return AppResult.createFailed(new Error(getRes.Message), getRes.Message, getRes.Error.code);
       }
 
       const result: Array<EngineerSchema> = getRes.Result;
-      return AppResult.createSucceeded(
-        result,
-        'Successfully get all engineers.',
-      );
+      return AppResult.createSucceeded(result, 'Successfully get all engineers.');
     } catch (error) {
       return AppResult.createFailed(
         error,
@@ -144,10 +137,7 @@ export class EngineerService {
         );
       }
       const result: EngineerSchema = getEngineerRes.Result;
-      return AppResult.createSucceeded(
-        result,
-        'Successfully get engineer by id.',
-      );
+      return AppResult.createSucceeded(result, 'Successfully get engineer by id.');
     } catch (error) {
       return AppResult.createFailed(
         error,

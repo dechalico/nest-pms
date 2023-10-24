@@ -15,9 +15,7 @@ export class RegisterEngineerHandler implements IRegisterEngineerHandler {
     private readonly engineerService: EngineerService,
   ) {}
 
-  async executeAsync(
-    args: RegisterEngineerArgs,
-  ): Promise<AppResult<RegisterEngineerResult>> {
+  async executeAsync(args: RegisterEngineerArgs): Promise<AppResult<RegisterEngineerResult>> {
     try {
       const currentUserUres = await this.currentUserHandler.executeAsync({});
       if (!currentUserUres.Succeeded || !currentUserUres.Result) {

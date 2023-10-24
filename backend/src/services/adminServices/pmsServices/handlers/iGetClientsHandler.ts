@@ -1,8 +1,5 @@
 import { IAsyncInteractorHandler } from '../../../../common/asyncInteractorHandler';
-import {
-  GetClientArgs,
-  GetClientResult,
-} from '../interactors/getClientsInteractor';
+import { GetClientArgs, GetClientResult } from '../interactors/getClientsInteractor';
 import { AppResult } from '../../../../common/app.result';
 
 export abstract class IGetClientsHandler

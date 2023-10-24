@@ -17,9 +17,7 @@ export class CreateUserInviteHandler implements ICreateUserInviteHandler {
     private readonly currentUser: ICurrentUserHandler,
   ) {}
 
-  async executeAsync(
-    args: CreateUserInviteArgs,
-  ): Promise<AppResult<CreateUserInviteResult>> {
+  async executeAsync(args: CreateUserInviteArgs): Promise<AppResult<CreateUserInviteResult>> {
     try {
       const currentUserRes = await this.currentUser.executeAsync({});
       if (!currentUserRes.Succeeded || !currentUserRes.Result) {
@@ -41,16 +39,15 @@ export class CreateUserInviteHandler implements ICreateUserInviteHandler {
         );
       }
       const { token, uuid } = generateRes.Result;
-      const createInviteToken =
-        await this.inviteTokenService.createInviteTokenAsync({
-          areaOfficeId: args.areaOfficeId,
-          createdBy: currentUser.id,
-          dateUsed: undefined,
-          guid: uuid,
-          isUsed: false,
-          token,
-          usedBy: undefined,
-        });
+      const createInviteToken = await this.inviteTokenService.createInviteTokenAsync({
+        areaOfficeId: args.areaOfficeId,
+        createdBy: currentUser.id,
+        dateUsed: undefined,
+        guid: uuid,
+        isUsed: false,
+        token,
+        usedBy: undefined,
+      });
       if (!createInviteToken.Succeeded || !createInviteToken.Result) {
         return AppResult.createFailed(
           new Error(createInviteToken.Message),

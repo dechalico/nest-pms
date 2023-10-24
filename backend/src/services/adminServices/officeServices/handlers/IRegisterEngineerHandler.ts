@@ -8,15 +8,9 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export abstract class IRegisterEngineerHandler
-  implements
-    IAsyncInteractorHandler<
-      RegisterEngineerArgs,
-      AppResult<RegisterEngineerResult>
-    >
+  implements IAsyncInteractorHandler<RegisterEngineerArgs, AppResult<RegisterEngineerResult>>
 {
-  executeAsync(
-    args: RegisterEngineerArgs,
-  ): Promise<AppResult<RegisterEngineerResult>> {
+  executeAsync(args: RegisterEngineerArgs): Promise<AppResult<RegisterEngineerResult>> {
     throw new Error('Method not implemented.');
   }
 }

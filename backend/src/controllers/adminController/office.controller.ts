@@ -1,14 +1,5 @@
-import {
-  Controller,
-  Body,
-  Post,
-  Get,
-  BadRequestException,
-} from '@nestjs/common';
-import {
-  CreateOffice,
-  CreateOfficeResult,
-} from './office.dtos/create.office.dto';
+import { Controller, Body, Post, Get, BadRequestException } from '@nestjs/common';
+import { CreateOffice, CreateOfficeResult } from './office.dtos/create.office.dto';
 import { ICreateOfficeHandler } from '../../services/adminServices/officeServices/handlers/iCreateOfficeHandler';
 import { plainToInstance } from 'class-transformer';
 import { GetOfficeResult } from './office.dtos/get.office.dto';

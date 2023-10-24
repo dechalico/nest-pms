@@ -16,9 +16,7 @@ export class UserService {
       // lowercase username
       user.username = user.username.toLowerCase();
 
-      const checkUser = await this.userRepository.getByUsernameAsync(
-        user.username,
-      );
+      const checkUser = await this.userRepository.getByUsernameAsync(user.username);
 
       if (checkUser.Succeeded) {
         return AppResult.createFailed(
@@ -28,10 +26,7 @@ export class UserService {
         );
       }
 
-      if (
-        !checkUser.Succeeded &&
-        checkUser.Error.code !== AppErrorCodes.NotFound
-      ) {
+      if (!checkUser.Succeeded && checkUser.Error.code !== AppErrorCodes.NotFound) {
         return AppResult.createFailed(
           new Error(checkUser.Message),
           checkUser.Message,
@@ -39,9 +34,7 @@ export class UserService {
         );
       }
 
-      const hashedPasswordRes = await this.passwordHasher.hashPassword(
-        user.password,
-      );
+      const hashedPasswordRes = await this.passwordHasher.hashPassword(user.password);
       if (!hashedPasswordRes.Succeeded || !hashedPasswordRes.Result) {
         return AppResult.createFailed(
           new Error(hashedPasswordRes.Message),
@@ -74,10 +67,7 @@ export class UserService {
       }
 
       const userSchema: UserSchema = createdRes.Result;
-      return AppResult.createSucceeded(
-        userSchema,
-        'User successfully created.',
-      );
+      return AppResult.createSucceeded(userSchema, 'User successfully created.');
     } catch (error) {
       return AppResult.createFailed(
         error,
@@ -87,16 +77,11 @@ export class UserService {
     }
   }
 
-  async getUserByUsernameAsync(
-    username: string,
-  ): Promise<AppResult<UserSchema>> {
+  async getUserByUsernameAsync(username: string): Promise<AppResult<UserSchema>> {
     try {
       const getUserRes = await this.userRepository.getByUsernameAsync(username);
 
-      if (
-        !getUserRes.Succeeded &&
-        getUserRes.Error.code === AppErrorCodes.NotFound
-      ) {
+      if (!getUserRes.Succeeded && getUserRes.Error.code === AppErrorCodes.NotFound) {
         return AppResult.createFailed(
           new Error("Can't find user by username."),
           "Can't find user by username.",
@@ -113,10 +98,7 @@ export class UserService {
       }
 
       const userSchema: UserSchema = getUserRes.Result;
-      return AppResult.createSucceeded(
-        userSchema,
-        'Successfully get user by username',
-      );
+      return AppResult.createSucceeded(userSchema, 'Successfully get user by username');
     } catch (error) {
       return AppResult.createFailed(
         error,
@@ -130,10 +112,7 @@ export class UserService {
     try {
       const getUserRes = await this.userRepository.getByIdAsync(id);
 
-      if (
-        !getUserRes.Succeeded &&
-        getUserRes.Error.code === AppErrorCodes.NotFound
-      ) {
+      if (!getUserRes.Succeeded && getUserRes.Error.code === AppErrorCodes.NotFound) {
         return AppResult.createFailed(
           new Error("Can't find user by user id."),
           "Can't find user by user id.",
@@ -150,10 +129,7 @@ export class UserService {
       }
 
       const userSchema: UserSchema = getUserRes.Result;
-      return AppResult.createSucceeded(
-        userSchema,
-        'Successfully get user by user id',
-      );
+      return AppResult.createSucceeded(userSchema, 'Successfully get user by user id');
     } catch (error) {
       return AppResult.createFailed(
         error,
@@ -196,10 +172,7 @@ export class UserService {
       }
 
       const userSchema: UserSchema = updateRes.Result;
-      return AppResult.createSucceeded(
-        userSchema,
-        'User successfully updated.',
-      );
+      return AppResult.createSucceeded(userSchema, 'User successfully updated.');
     } catch (error) {
       return AppResult.createFailed(
         error,
@@ -220,10 +193,7 @@ export class UserService {
         );
       }
       const userSchema: Array<UserSchema> = usersRes.Result;
-      return AppResult.createSucceeded(
-        userSchema,
-        'Successfully get all users',
-      );
+      return AppResult.createSucceeded(userSchema, 'Successfully get all users');
     } catch (error) {
       return AppResult.createFailed(
         error,

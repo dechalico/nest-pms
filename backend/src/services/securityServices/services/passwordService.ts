@@ -19,16 +19,10 @@ export class PasswordHasher {
     }
   }
 
-  async validatePassword(
-    password: string,
-    hashedPassword: string,
-  ): Promise<AppResult<boolean>> {
+  async validatePassword(password: string, hashedPassword: string): Promise<AppResult<boolean>> {
     try {
       const isMatch = await bcrypt.compare(password, hashedPassword);
-      return AppResult.createSucceeded(
-        isMatch,
-        'Password successfully validated.',
-      );
+      return AppResult.createSucceeded(isMatch, 'Password successfully validated.');
     } catch (error) {
       return AppResult.createFailed(
         error,

@@ -33,16 +33,9 @@ export class UserSchema {
   areaOfficeId: string;
 }
 
-export class CreateUser extends OmitType(UserSchema, [
-  'id',
-  'dateCreated',
-  'dateUpdated',
-]) {}
+export class CreateUser extends OmitType(UserSchema, ['id', 'dateCreated', 'dateUpdated']) {}
 
-export class UpdateUser extends OmitType(PartialType(UserSchema), [
-  'dateCreated',
-  'dateUpdated',
-]) {
+export class UpdateUser extends OmitType(PartialType(UserSchema), ['dateCreated', 'dateUpdated']) {
   @Expose()
   id: string;
 }
