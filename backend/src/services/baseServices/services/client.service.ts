@@ -20,7 +20,7 @@ export class ClientService {
     try {
       // check area office repository
       const areaChkRes = await this.areaOfficeRepository.getByIdAsync(args.areaOfficeId);
-      if (!areaChkRes.Succeeded || !areaChkRes.Result) {
+      if (!areaChkRes.succeeded || !areaChkRes.result) {
         return AppResult.createFailed(
           new Error('Invalid area office id.'),
           'Invalid area office id.',
@@ -36,15 +36,15 @@ export class ClientService {
         date_updated: undefined,
         name: args.name,
       });
-      if (!createRes.Succeeded || !createRes.Result) {
+      if (!createRes.succeeded || !createRes.result) {
         return AppResult.createFailed(
-          new Error(createRes.Message),
-          createRes.Message,
-          createRes.Error.code,
+          new Error(createRes.message),
+          createRes.message,
+          createRes.error.code,
         );
       }
 
-      const result: ClientSchema = createRes.Result;
+      const result: ClientSchema = createRes.result;
       return AppResult.createSucceeded(result, 'Client successfully created.');
     } catch (error) {
       return AppResult.createFailed(
@@ -60,7 +60,7 @@ export class ClientService {
       if (args.areaOfficeId) {
         // check area office repository
         const areaChkRes = await this.areaOfficeRepository.getByIdAsync(args.areaOfficeId);
-        if (!areaChkRes.Succeeded || !areaChkRes.Result) {
+        if (!areaChkRes.succeeded || !areaChkRes.result) {
           return AppResult.createFailed(
             new Error('Invalid area office id.'),
             'Invalid area office id.',
@@ -76,15 +76,15 @@ export class ClientService {
         date_updated: new Date(),
         name: args.city,
       });
-      if (!updateRes.Succeeded || !updateRes.Result) {
+      if (!updateRes.succeeded || !updateRes.result) {
         return AppResult.createFailed(
-          new Error(updateRes.Message),
-          updateRes.Message,
-          updateRes.Error.code,
+          new Error(updateRes.message),
+          updateRes.message,
+          updateRes.error.code,
         );
       }
 
-      const result: ClientSchema = updateRes.Result;
+      const result: ClientSchema = updateRes.result;
       return AppResult.createSucceeded(result, 'Client successfully updated');
     } catch (error) {
       return AppResult.createFailed(
@@ -102,15 +102,15 @@ export class ClientService {
         filter.area_office_id = args.areaOfficeId;
       }
       const getClientsRes = await this.clientRepository.getAllAsync({ filter });
-      if (!getClientsRes.Succeeded || !getClientsRes.Result) {
+      if (!getClientsRes.succeeded || !getClientsRes.result) {
         return AppResult.createFailed(
-          new Error(getClientsRes.Message),
-          getClientsRes.Message,
-          getClientsRes.Error.code,
+          new Error(getClientsRes.message),
+          getClientsRes.message,
+          getClientsRes.error.code,
         );
       }
 
-      const result: Array<ClientSchema> = getClientsRes.Result;
+      const result: Array<ClientSchema> = getClientsRes.result;
       return AppResult.createSucceeded(result, 'Successfully get list of clients.');
     } catch (error) {
       return AppResult.createFailed(

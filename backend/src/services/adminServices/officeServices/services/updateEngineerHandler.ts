@@ -15,24 +15,24 @@ export class UpdateEngineerHandler implements IUpdateEngineerHandler {
   async executeAsync(args: UpdateEngineerArgs): Promise<AppResult<UpdateEngineerResult>> {
     try {
       const currentUserRes = await this.currentUserHandler.executeAsync({});
-      if (!currentUserRes.Succeeded || !currentUserRes.Result) {
+      if (!currentUserRes.succeeded || !currentUserRes.result) {
         return AppResult.createFailed(
-          new Error(currentUserRes.Message),
-          currentUserRes.Message,
-          currentUserRes.Error.code,
+          new Error(currentUserRes.message),
+          currentUserRes.message,
+          currentUserRes.error.code,
         );
       }
-      const user = currentUserRes.Result;
+      const user = currentUserRes.result;
 
       const engineerRes = await this.engineerService.getEngineerAsync(args.id);
-      if (!engineerRes.Succeeded || !engineerRes.Result) {
+      if (!engineerRes.succeeded || !engineerRes.result) {
         return AppResult.createFailed(
-          new Error(engineerRes.Message),
-          engineerRes.Message,
+          new Error(engineerRes.message),
+          engineerRes.message,
           AppErrorCodes.InvalidRequest,
         );
       }
-      const engineer = engineerRes.Result;
+      const engineer = engineerRes.result;
 
       // user can only update engineer with the same area office id
       if (user.areaOfficeId !== engineer.areaOfficeId) {
@@ -44,14 +44,14 @@ export class UpdateEngineerHandler implements IUpdateEngineerHandler {
       }
 
       const updateRes = await this.engineerService.updateEngineerAsync(args);
-      if (!updateRes.Succeeded || !updateRes.Result) {
+      if (!updateRes.succeeded || !updateRes.result) {
         return AppResult.createFailed(
-          new Error(updateRes.Message),
-          updateRes.Message,
-          updateRes.Error.code,
+          new Error(updateRes.message),
+          updateRes.message,
+          updateRes.error.code,
         );
       }
-      const updated = updateRes.Result;
+      const updated = updateRes.result;
       return AppResult.createSucceeded(
         {
           areaOfficeId: updated.areaOfficeId,

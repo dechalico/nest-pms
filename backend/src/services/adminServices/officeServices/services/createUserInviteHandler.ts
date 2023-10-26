@@ -20,25 +20,25 @@ export class CreateUserInviteHandler implements ICreateUserInviteHandler {
   async executeAsync(args: CreateUserInviteArgs): Promise<AppResult<CreateUserInviteResult>> {
     try {
       const currentUserRes = await this.currentUser.executeAsync({});
-      if (!currentUserRes.Succeeded || !currentUserRes.Result) {
+      if (!currentUserRes.succeeded || !currentUserRes.result) {
         return AppResult.createFailed(
-          new Error(currentUserRes.Message),
-          currentUserRes.Message,
-          currentUserRes.Error.code,
+          new Error(currentUserRes.message),
+          currentUserRes.message,
+          currentUserRes.error.code,
         );
       }
-      const currentUser = currentUserRes.Result;
+      const currentUser = currentUserRes.result;
 
       // generate token
       const generateRes = await this.tokenService.generateTokenAsync(true);
-      if (!generateRes.Succeeded || !generateRes.Result) {
+      if (!generateRes.succeeded || !generateRes.result) {
         return AppResult.createFailed(
-          new Error(generateRes.Message),
-          generateRes.Message,
-          generateRes.Error.code,
+          new Error(generateRes.message),
+          generateRes.message,
+          generateRes.error.code,
         );
       }
-      const { token, uuid } = generateRes.Result;
+      const { token, uuid } = generateRes.result;
       const createInviteToken = await this.inviteTokenService.createInviteTokenAsync({
         areaOfficeId: args.areaOfficeId,
         createdBy: currentUser.id,
@@ -48,11 +48,11 @@ export class CreateUserInviteHandler implements ICreateUserInviteHandler {
         token,
         usedBy: undefined,
       });
-      if (!createInviteToken.Succeeded || !createInviteToken.Result) {
+      if (!createInviteToken.succeeded || !createInviteToken.result) {
         return AppResult.createFailed(
-          new Error(createInviteToken.Message),
-          createInviteToken.Message,
-          createInviteToken.Error.code,
+          new Error(createInviteToken.message),
+          createInviteToken.message,
+          createInviteToken.error.code,
         );
       }
 

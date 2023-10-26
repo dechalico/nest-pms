@@ -26,14 +26,14 @@ export class DefaultAdminService implements IDefaultAdminHandler, OnModuleInit {
   async executeAsync(args: DefaultAdminArgs): Promise<AppResult<DefaultAdminResult>> {
     try {
       const checkUsers = await this.userService.getAllUsers();
-      if (!checkUsers.Succeeded || !checkUsers.Result) {
+      if (!checkUsers.succeeded || !checkUsers.result) {
         return AppResult.createFailed(
-          new Error(checkUsers.Message),
-          checkUsers.Message,
-          checkUsers.Error.code,
+          new Error(checkUsers.message),
+          checkUsers.message,
+          checkUsers.error.code,
         );
       }
-      const users = checkUsers.Result;
+      const users = checkUsers.result;
       if (users.length > 0) {
         return AppResult.createFailed(
           new Error('Already have registered user. Unable to create default user.'),
@@ -45,28 +45,28 @@ export class DefaultAdminService implements IDefaultAdminHandler, OnModuleInit {
       // create default area office
       let areaOfficeId: string = undefined;
       const getAllAreaRes = await this.areaOfficeService.getAllAreaOffices();
-      if (!getAllAreaRes.Succeeded || !getAllAreaRes.Result) {
+      if (!getAllAreaRes.succeeded || !getAllAreaRes.result) {
         return AppResult.createFailed(
-          new Error(getAllAreaRes.Message),
-          getAllAreaRes.Message,
-          getAllAreaRes.Error.code,
+          new Error(getAllAreaRes.message),
+          getAllAreaRes.message,
+          getAllAreaRes.error.code,
         );
       }
-      if (getAllAreaRes.Result.length === 0) {
+      if (getAllAreaRes.result.length === 0) {
         const createAreaRes = await this.areaOfficeService.createAreaOfficeAsync({
           city: 'Davao City',
           name: 'MinOne',
         });
-        if (!createAreaRes.Succeeded || !createAreaRes.Result) {
+        if (!createAreaRes.succeeded || !createAreaRes.result) {
           return AppResult.createFailed(
-            new Error(createAreaRes.Message),
-            createAreaRes.Message,
-            createAreaRes.Error.code,
+            new Error(createAreaRes.message),
+            createAreaRes.message,
+            createAreaRes.error.code,
           );
         }
-        areaOfficeId = createAreaRes.Result.id;
+        areaOfficeId = createAreaRes.result.id;
       } else {
-        areaOfficeId = getAllAreaRes.Result[0].id;
+        areaOfficeId = getAllAreaRes.result[0].id;
       }
 
       const createRes = await this.userService.createUserAsync({
@@ -74,14 +74,14 @@ export class DefaultAdminService implements IDefaultAdminHandler, OnModuleInit {
         email: String.Empty,
         areaOfficeId: areaOfficeId,
       });
-      if (!createRes.Succeeded || !createRes.Result) {
+      if (!createRes.succeeded || !createRes.result) {
         return AppResult.createFailed(
-          new Error(createRes.Message),
-          createRes.Message,
-          createRes.Error.code,
+          new Error(createRes.message),
+          createRes.message,
+          createRes.error.code,
         );
       }
-      const created = createRes.Result;
+      const created = createRes.result;
       const result = plainToInstance(DefaultAdminResult, created, {
         excludeExtraneousValues: true,
       });

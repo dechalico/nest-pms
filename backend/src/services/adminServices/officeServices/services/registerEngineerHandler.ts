@@ -18,14 +18,14 @@ export class RegisterEngineerHandler implements IRegisterEngineerHandler {
   async executeAsync(args: RegisterEngineerArgs): Promise<AppResult<RegisterEngineerResult>> {
     try {
       const currentUserUres = await this.currentUserHandler.executeAsync({});
-      if (!currentUserUres.Succeeded || !currentUserUres.Result) {
+      if (!currentUserUres.succeeded || !currentUserUres.result) {
         return AppResult.createFailed(
-          new Error(currentUserUres.Message),
-          currentUserUres.Message,
-          currentUserUres.Error.code,
+          new Error(currentUserUres.message),
+          currentUserUres.message,
+          currentUserUres.error.code,
         );
       }
-      const currentUser = currentUserUres.Result;
+      const currentUser = currentUserUres.result;
 
       const registerRes = await this.engineerService.createEngineerAsync({
         areaOfficeId: currentUser.areaOfficeId,
@@ -34,14 +34,14 @@ export class RegisterEngineerHandler implements IRegisterEngineerHandler {
         lastName: args.lastName,
         middleName: args.middleName,
       });
-      if (!registerRes.Succeeded || !registerRes.Result) {
+      if (!registerRes.succeeded || !registerRes.result) {
         return AppResult.createFailed(
-          new Error(registerRes.Message),
-          registerRes.Message,
-          registerRes.Error.code,
+          new Error(registerRes.message),
+          registerRes.message,
+          registerRes.error.code,
         );
       }
-      const registered = registerRes.Result;
+      const registered = registerRes.result;
 
       return AppResult.createSucceeded(
         {

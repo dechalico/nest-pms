@@ -18,10 +18,10 @@ export class ErrorInfo {
 }
 
 export class AppResult<Type> {
-  protected succeeded: boolean;
-  protected message: string;
-  protected target: Type;
-  protected error: ErrorInfo | undefined;
+  protected _succeeded: boolean;
+  protected _message: string;
+  protected _target: Type;
+  protected _error: ErrorInfo | undefined;
 
   constructor(opts: {
     succeeded: boolean;
@@ -29,26 +29,26 @@ export class AppResult<Type> {
     target: Type;
     error: ErrorInfo | undefined;
   }) {
-    this.succeeded = opts.succeeded;
-    this.message = opts.message;
-    this.target = opts.target;
-    this.error = opts.error;
+    this._succeeded = opts.succeeded;
+    this._message = opts.message;
+    this._target = opts.target;
+    this._error = opts.error;
   }
 
-  get Succeeded(): boolean {
-    return this.succeeded;
+  get succeeded(): boolean {
+    return this._succeeded;
   }
 
-  get Message(): string {
-    return this.message;
+  get message(): string {
+    return this._message;
   }
 
-  get Result(): Type {
-    return this.target;
+  get result(): Type {
+    return this._target;
   }
 
-  get Error(): ErrorInfo {
-    return this.error;
+  get error(): ErrorInfo {
+    return this._error;
   }
 
   static createSucceeded<Type>(result: Type, message: string): AppResult<Type> {

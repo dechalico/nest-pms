@@ -20,10 +20,10 @@ export class AuthController {
   @Post('login')
   async login(@Body() loginArgs: LoginArgs): Promise<LoginResult> {
     const validateResult = await this.createLoginToken.executeAsync(loginArgs);
-    if (!validateResult.Succeeded || !validateResult.Result) {
-      throw new BadRequestException(validateResult.Message);
+    if (!validateResult.succeeded || !validateResult.result) {
+      throw new BadRequestException(validateResult.message);
     }
-    const result = plainToInstance(LoginResult, validateResult.Result, {
+    const result = plainToInstance(LoginResult, validateResult.result, {
       excludeExtraneousValues: true,
     });
     return result;
@@ -35,10 +35,10 @@ export class AuthController {
       guid: query.guid,
       token: query.token,
     });
-    if (!validateRes.Succeeded || !validateRes.Result || !validateRes.Result.isvalid) {
-      throw new BadRequestException(validateRes.Message);
+    if (!validateRes.succeeded || !validateRes.result || !validateRes.result.isvalid) {
+      throw new BadRequestException(validateRes.message);
     }
-    const result = plainToInstance(ValidateInviteResult, validateRes.Result, {
+    const result = plainToInstance(ValidateInviteResult, validateRes.result, {
       excludeExtraneousValues: true,
     });
     return result;
@@ -47,10 +47,10 @@ export class AuthController {
   @Post('register')
   async register(@Body() args: RegisterArgs): Promise<RegisterResult> {
     const registerRes = await this.registerHandler.executeAsync(args);
-    if (!registerRes.Succeeded || !registerRes.Result) {
-      throw new BadRequestException(registerRes.Message);
+    if (!registerRes.succeeded || !registerRes.result) {
+      throw new BadRequestException(registerRes.message);
     }
-    const result = plainToInstance(RegisterResult, registerRes.Result, {
+    const result = plainToInstance(RegisterResult, registerRes.result, {
       excludeExtraneousValues: true,
     });
     return result;

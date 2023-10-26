@@ -21,25 +21,25 @@ export class CreateLoginToken implements ICreateLoginTokenHandler {
     try {
       // check user if existed
       const chkUserRes = await this.userService.getUserByUsernameAsync(args.username);
-      if (!chkUserRes.Succeeded && chkUserRes.Error.code === AppErrorCodes.NotFound) {
+      if (!chkUserRes.succeeded && chkUserRes.error.code === AppErrorCodes.NotFound) {
         return AppResult.createFailed(
           new Error('Invalid username or password.'),
           'Invalid username or password.',
           AppErrorCodes.InvalidRequest,
         );
       }
-      if (!chkUserRes.Succeeded || !chkUserRes.Result) {
+      if (!chkUserRes.succeeded || !chkUserRes.result) {
         return AppResult.createFailed(
-          new Error(chkUserRes.Message),
-          chkUserRes.Message,
-          chkUserRes.Error.code,
+          new Error(chkUserRes.message),
+          chkUserRes.message,
+          chkUserRes.error.code,
         );
       }
-      const user = chkUserRes.Result;
+      const user = chkUserRes.result;
 
       // validate user password
       const chkPassword = await this.passwordHasher.validatePassword(args.password, user.password);
-      if (!chkPassword.Succeeded || !chkPassword.Result) {
+      if (!chkPassword.succeeded || !chkPassword.result) {
         return AppResult.createFailed(
           new Error('Invalid username or password.'),
           'Invalid username or password.',

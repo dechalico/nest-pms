@@ -17,11 +17,11 @@ export class AreaOfficeService {
         date_updated: undefined,
         _id: undefined,
       });
-      if (!createdRes.Succeeded || !createdRes.Result) {
-        return AppResult.createFailed(new Error(createdRes.Message), createdRes.Message);
+      if (!createdRes.succeeded || !createdRes.result) {
+        return AppResult.createFailed(new Error(createdRes.message), createdRes.message);
       }
 
-      const result: AreaOfficeSchema = createdRes.Result;
+      const result: AreaOfficeSchema = createdRes.result;
       return AppResult.createSucceeded(result, 'Area Office successfully created.');
     } catch (error) {
       return AppResult.createFailed(error, 'An error occured when creating area office');
@@ -31,8 +31,8 @@ export class AreaOfficeService {
   async updateAreaOfficeAsync(payload: UpdateAreaOffice): Promise<AppResult<AreaOfficeSchema>> {
     try {
       const checkRes = await this.areaOfficeRepo.getByIdAsync(payload.id);
-      if (!checkRes.Succeeded || !checkRes.Result) {
-        return AppResult.createFailed(new Error(checkRes.Message), checkRes.Message);
+      if (!checkRes.succeeded || !checkRes.result) {
+        return AppResult.createFailed(new Error(checkRes.message), checkRes.message);
       }
 
       const now = new Date();
@@ -43,11 +43,11 @@ export class AreaOfficeService {
         name: payload.name,
       });
 
-      if (!updateRes.Succeeded || !updateRes.Result) {
-        return AppResult.createFailed(new Error(updateRes.Message), updateRes.Message);
+      if (!updateRes.succeeded || !updateRes.result) {
+        return AppResult.createFailed(new Error(updateRes.message), updateRes.message);
       }
 
-      const result: AreaOfficeSchema = updateRes.Result;
+      const result: AreaOfficeSchema = updateRes.result;
       return AppResult.createSucceeded(result, 'Area Office successfully updated.');
     } catch (error) {
       return AppResult.createFailed(error, 'An error occured when trying to update Area Office');
@@ -57,14 +57,14 @@ export class AreaOfficeService {
   async getAllAreaOffices(): Promise<AppResult<Array<AreaOfficeSchema>>> {
     try {
       const getAllRes = await this.areaOfficeRepo.getAllAsync();
-      if (!getAllRes.Succeeded || !getAllRes.Result) {
+      if (!getAllRes.succeeded || !getAllRes.result) {
         return AppResult.createFailed(
-          new Error(getAllRes.Message),
-          getAllRes.Message,
-          getAllRes.Error.code,
+          new Error(getAllRes.message),
+          getAllRes.message,
+          getAllRes.error.code,
         );
       }
-      const result: Array<AreaOfficeSchema> = getAllRes.Result;
+      const result: Array<AreaOfficeSchema> = getAllRes.result;
       return AppResult.createSucceeded(result, 'Successfully get all area offices');
     } catch (error) {
       return AppResult.createFailed(

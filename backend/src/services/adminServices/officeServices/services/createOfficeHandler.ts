@@ -12,14 +12,14 @@ export class CreateOfficeHandler implements ICreateOfficeHandler {
     try {
       const createdRes = await this.areaOfficeService.createAreaOfficeAsync(args);
 
-      if (!createdRes.Succeeded || !createdRes.Result) {
+      if (!createdRes.succeeded || !createdRes.result) {
         return AppResult.createFailed(
-          new Error(createdRes.Message),
-          createdRes.Message,
-          createdRes.Error.code,
+          new Error(createdRes.message),
+          createdRes.message,
+          createdRes.error.code,
         );
       }
-      const created = createdRes.Result;
+      const created = createdRes.result;
       return AppResult.createSucceeded(
         {
           city: created.city,

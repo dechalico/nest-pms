@@ -11,11 +11,11 @@ export class GetOfficesHandler implements IGetOfficesHandler {
   async executeAsync(args: GetOfficesArgs): Promise<AppResult<GetOfficesResult>> {
     try {
       const getRes = await this.areaOfficeService.getAllAreaOffices();
-      if (!getRes.Succeeded || !getRes.Result) {
-        return AppResult.createFailed(new Error(getRes.Message), getRes.Message, getRes.Error.code);
+      if (!getRes.succeeded || !getRes.result) {
+        return AppResult.createFailed(new Error(getRes.message), getRes.message, getRes.error.code);
       }
 
-      const offices: Array<Office> = getRes.Result;
+      const offices: Array<Office> = getRes.result;
       return AppResult.createSucceeded(
         {
           offices,

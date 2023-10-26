@@ -17,14 +17,14 @@ export class CurrentUser implements ICurrentUserHandler {
     try {
       const userId = this.request['user'].id;
       const userRes = await this.userService.getUserByIdAsync(userId);
-      if (!userRes.Succeeded || !userRes.Result) {
+      if (!userRes.succeeded || !userRes.result) {
         return AppResult.createFailed(
           new Error('Unable to determine current user.'),
           'Unable to determine current user.',
           AppErrorCodes.InternalError,
         );
       }
-      const user = userRes.Result;
+      const user = userRes.result;
       return AppResult.createSucceeded(
         {
           id: user.id,

@@ -21,10 +21,10 @@ export class EngineerController {
   @Post()
   async createEngineerAsync(@Body() args: CreateEngineerArgs): Promise<CreateEngineerResult> {
     const registerRes = await this.registerEngineerHandler.executeAsync(args);
-    if (!registerRes.Succeeded || !registerRes.Result) {
-      throw new BadRequestException(registerRes.Message);
+    if (!registerRes.succeeded || !registerRes.result) {
+      throw new BadRequestException(registerRes.message);
     }
-    const result = plainToInstance(CreateEngineerResult, registerRes.Result, {
+    const result = plainToInstance(CreateEngineerResult, registerRes.result, {
       excludeExtraneousValues: true,
     });
     return result;
@@ -33,10 +33,10 @@ export class EngineerController {
   @Get()
   async getAllEngineers(): Promise<GetAllEngineersResult> {
     const getEngineersRes = await this.getEngineersHandler.executeAsync({});
-    if (!getEngineersRes.Succeeded || !getEngineersRes.Result) {
-      throw new BadRequestException(getEngineersRes.Message);
+    if (!getEngineersRes.succeeded || !getEngineersRes.result) {
+      throw new BadRequestException(getEngineersRes.succeeded);
     }
-    const result = plainToInstance(GetAllEngineersResult, getEngineersRes.Result, {
+    const result = plainToInstance(GetAllEngineersResult, getEngineersRes.result, {
       excludeExtraneousValues: true,
     });
     return result;
@@ -51,10 +51,10 @@ export class EngineerController {
       id,
       ...args,
     });
-    if (!updateRes.Succeeded || !updateRes.Result) {
-      throw new BadRequestException(updateRes.Message);
+    if (!updateRes.succeeded || !updateRes.result) {
+      throw new BadRequestException(updateRes.message);
     }
-    const result = plainToInstance(UpdateEngineerResult, updateRes.Result, {
+    const result = plainToInstance(UpdateEngineerResult, updateRes.result, {
       excludeExtraneousValues: true,
     });
     return result;

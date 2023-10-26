@@ -14,13 +14,13 @@ export class ValidateUserInviteHandler implements IValidateUserInviteHandler {
   async executeAsync(args: ValidateUserInviteArgs): Promise<AppResult<ValidateUserInviteResult>> {
     try {
       const getTokenRes = await this.inviteService.getTokenAsync(args.guid, args.token);
-      if (!getTokenRes.Succeeded || !getTokenRes.Result) {
+      if (!getTokenRes.succeeded || !getTokenRes.result) {
         return AppResult.createFailed(
           new Error('Invalid guid and token.'),
           'Invalid guid and token.',
         );
       }
-      const inviteToken = getTokenRes.Result;
+      const inviteToken = getTokenRes.result;
       return AppResult.createSucceeded(
         {
           createdBy: inviteToken.createdBy,

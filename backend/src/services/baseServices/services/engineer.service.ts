@@ -22,7 +22,7 @@ export class EngineerService {
       const areaOfficeRes = await this.areaOfficeRepo.getByIdAsync(
         args.areaOfficeId,
       );
-      if (!areaOfficeRes.Succeeded || !areaOfficeRes.Result) {
+      if (!areaOfficeRes.succeeded || !areaOfficeRes.result) {
         return AppResult.createFailed(
           new Error('Invalid area office id. Invalid request.'),
           'Invalid area office id. Invalid request.',
@@ -40,14 +40,14 @@ export class EngineerService {
         middleName: args.middleName,
         created_by: args.createdBy
       });
-      if (!createRes.Succeeded || !createRes.Result) {
+      if (!createRes.succeeded || !createRes.result) {
         return AppResult.createFailed(
-          new Error(createRes.Message),
-          createRes.Message,
-          createRes.Error.code,
+          new Error(createRes.message),
+          createRes.message,
+          createRes.error.code,
         );
       }
-      const engineerSchema: EngineerSchema = createRes.Result;
+      const engineerSchema: EngineerSchema = createRes.result;
       return AppResult.createSucceeded(
         engineerSchema,
         'Engineer successfully created.',
@@ -69,7 +69,7 @@ export class EngineerService {
         const areaOfficeRes = await this.areaOfficeRepo.getByIdAsync(
           args.areaOfficeId,
         );
-        if (!areaOfficeRes.Succeeded || !areaOfficeRes.Result) {
+        if (!areaOfficeRes.succeeded || !areaOfficeRes.result) {
           return AppResult.createFailed(
             new Error('Invalid area office id. Invalid request.'),
             'Invalid area office id. Invalid request.',
@@ -86,15 +86,15 @@ export class EngineerService {
         lastName: args.lastName,
         middleName: args.middleName,
       });
-      if (!updateRes.Succeeded || !updateRes.Result) {
+      if (!updateRes.succeeded || !updateRes.result) {
         return AppResult.createFailed(
-          new Error(updateRes.Message),
-          updateRes.Message,
-          updateRes.Error.code,
+          new Error(updateRes.message),
+          updateRes.message,
+          updateRes.error.code,
         );
       }
 
-      const engineerSchema: EngineerSchema = updateRes.Result;
+      const engineerSchema: EngineerSchema = updateRes.result;
       return AppResult.createSucceeded(
         engineerSchema,
         'Engineer successfully updated.',
@@ -111,11 +111,11 @@ export class EngineerService {
   async getAllEngineersAsync(): Promise<AppResult<Array<EngineerSchema>>> {
     try {
       const getRes = await this.engineerRepo.getAllAsync();
-      if (!getRes.Succeeded || !getRes.Result) {
-        return AppResult.createFailed(new Error(getRes.Message), getRes.Message, getRes.Error.code);
+      if (!getRes.succeeded || !getRes.result) {
+        return AppResult.createFailed(new Error(getRes.message), getRes.message, getRes.error.code);
       }
 
-      const result: Array<EngineerSchema> = getRes.Result;
+      const result: Array<EngineerSchema> = getRes.result;
       return AppResult.createSucceeded(result, 'Successfully get all engineers.');
     } catch (error) {
       return AppResult.createFailed(
@@ -129,14 +129,14 @@ export class EngineerService {
   async getEngineerAsync(id: string): Promise<AppResult<EngineerSchema>> {
     try {
       const getEngineerRes = await this.engineerRepo.getByIdAsync(id);
-      if (!getEngineerRes.Succeeded || !getEngineerRes.Result) {
+      if (!getEngineerRes.succeeded || !getEngineerRes.result) {
         return AppResult.createFailed(
-          new Error(getEngineerRes.Message),
-          getEngineerRes.Message,
-          getEngineerRes.Error.code,
+          new Error(getEngineerRes.message),
+          getEngineerRes.message,
+          getEngineerRes.error.code,
         );
       }
-      const result: EngineerSchema = getEngineerRes.Result;
+      const result: EngineerSchema = getEngineerRes.result;
       return AppResult.createSucceeded(result, 'Successfully get engineer by id.');
     } catch (error) {
       return AppResult.createFailed(

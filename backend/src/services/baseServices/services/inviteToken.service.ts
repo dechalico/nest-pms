@@ -21,7 +21,7 @@ export class InviteTokenService {
     try {
       // check area office if existed
       const chkAreaRes = await this.areaOfficeRepo.getByIdAsync(args.areaOfficeId);
-      if (!chkAreaRes.Succeeded || !chkAreaRes.Result) {
+      if (!chkAreaRes.succeeded || !chkAreaRes.result) {
         return AppResult.createFailed(
           new Error('Invalid area office id.'),
           'Invalid area office id.',
@@ -31,7 +31,7 @@ export class InviteTokenService {
 
       // check created by user
       const chkCreatedRes = await this.userRepo.getByIdAsync(args.createdBy);
-      if (!chkCreatedRes.Succeeded || !chkCreatedRes.Result) {
+      if (!chkCreatedRes.succeeded || !chkCreatedRes.result) {
         return AppResult.createFailed(
           new Error('Invalid created by id.'),
           'Invalid created by id.',
@@ -52,11 +52,11 @@ export class InviteTokenService {
         guid: args.guid,
         token: args.token,
       });
-      if (!createRes.Succeeded || !createRes.Result) {
-        return AppResult.createFailed(new Error(createRes.Message), createRes.Message);
+      if (!createRes.succeeded || !createRes.result) {
+        return AppResult.createFailed(new Error(createRes.message), createRes.message);
       }
 
-      const objResult: InvitedTokenSchema = createRes.Result;
+      const objResult: InvitedTokenSchema = createRes.result;
       return AppResult.createSucceeded(objResult, 'Invited token successfully created.');
     } catch (error) {
       return AppResult.createFailed(
@@ -72,7 +72,7 @@ export class InviteTokenService {
       // check area office if existed
       if (args.areaOfficeId) {
         const chkAreaRes = await this.areaOfficeRepo.getByIdAsync(args.areaOfficeId);
-        if (!chkAreaRes.Succeeded || !chkAreaRes.Result) {
+        if (!chkAreaRes.succeeded || !chkAreaRes.result) {
           return AppResult.createFailed(
             new Error('Invalid area office id.'),
             'Invalid area office id.',
@@ -84,7 +84,7 @@ export class InviteTokenService {
       // check created by user
       if (args.createdBy) {
         const chkCreatedRes = await this.userRepo.getByIdAsync(args.createdBy);
-        if (!chkCreatedRes.Succeeded || !chkCreatedRes.Result) {
+        if (!chkCreatedRes.succeeded || !chkCreatedRes.result) {
           return AppResult.createFailed(
             new Error('Invalid created by id.'),
             'Invalid created by id.',
@@ -104,15 +104,15 @@ export class InviteTokenService {
         guid: args.guid,
         token: args.token,
       });
-      if (!updatedRes.Succeeded || !updatedRes.Result) {
+      if (!updatedRes.succeeded || !updatedRes.result) {
         return AppResult.createFailed(
-          new Error(updatedRes.Message),
-          updatedRes.Message,
-          updatedRes.Error.code,
+          new Error(updatedRes.message),
+          updatedRes.message,
+          updatedRes.error.code,
         );
       }
 
-      const objResult: InvitedTokenSchema = updatedRes.Result;
+      const objResult: InvitedTokenSchema = updatedRes.result;
       return AppResult.createSucceeded(objResult, 'Invited token successfully updated.');
     } catch (error) {
       return AppResult.createFailed(
@@ -126,11 +126,11 @@ export class InviteTokenService {
   async getTokenAsync(guid: string, token: string): Promise<AppResult<InvitedTokenSchema>> {
     try {
       const getRes = await this.inviteTokenRepo.getTokenAsync(guid, token);
-      if (!getRes.Succeeded || !getRes.Result) {
-        return AppResult.createFailed(new Error(getRes.Message), getRes.Message, getRes.Error.code);
+      if (!getRes.succeeded || !getRes.result) {
+        return AppResult.createFailed(new Error(getRes.message), getRes.message, getRes.error.code);
       }
 
-      const obj: InvitedTokenSchema = getRes.Result;
+      const obj: InvitedTokenSchema = getRes.result;
       return AppResult.createSucceeded(obj, 'Successfully get token.');
     } catch (error) {
       return AppResult.createFailed(

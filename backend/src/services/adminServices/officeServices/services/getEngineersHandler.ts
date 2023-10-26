@@ -15,14 +15,14 @@ export class GetEngineersHandler implements IGetEngineersHandler {
   async executeAsync(args: GetEngineersArgs): Promise<AppResult<GetEngineersResult>> {
     try {
       const engineerRes = await this.engineerService.getAllEngineersAsync();
-      if (!engineerRes.Succeeded || !engineerRes.Result) {
+      if (!engineerRes.succeeded || !engineerRes.result) {
         return AppResult.createFailed(
-          new Error(engineerRes.Message),
-          engineerRes.Message,
-          engineerRes.Error.code,
+          new Error(engineerRes.message),
+          engineerRes.message,
+          engineerRes.error.code,
         );
       }
-      const result: Array<Engineer> = engineerRes.Result;
+      const result: Array<Engineer> = engineerRes.result;
       return AppResult.createSucceeded({ engineers: result }, 'Successfully get all engineers');
     } catch (error) {
       return AppResult.createFailed(

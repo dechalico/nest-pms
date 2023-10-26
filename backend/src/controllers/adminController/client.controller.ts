@@ -15,20 +15,20 @@ export class ClientController {
   @Post()
   async createClient(@Body() args: CreateClientArgs): Promise<CreateClientResult> {
     const createClientRes = await this.createClientHandler.executeAsync(args);
-    if (!createClientRes.Succeeded || !createClientRes.Result) {
-      throw new BadRequestException(createClientRes.Message);
+    if (!createClientRes.succeeded || !createClientRes.result) {
+      throw new BadRequestException(createClientRes.message);
     }
-    const result = plainToInstance(CreateClientResult, createClientRes.Result);
+    const result = plainToInstance(CreateClientResult, createClientRes.result);
     return result;
   }
 
   @Get()
   async getClients(): Promise<GetClientsResult> {
     const getClientsRes = await this.getClientsHandler.executeAsync({});
-    if (!getClientsRes.Succeeded || !getClientsRes.Result) {
-      throw new BadRequestException(getClientsRes.Message);
+    if (!getClientsRes.succeeded || !getClientsRes.result) {
+      throw new BadRequestException(getClientsRes.message);
     }
-    const result = plainToInstance(GetClientsResult, getClientsRes.Result);
+    const result = plainToInstance(GetClientsResult, getClientsRes.result);
     return result;
   }
 }

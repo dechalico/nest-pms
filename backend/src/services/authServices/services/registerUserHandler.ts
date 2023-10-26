@@ -21,13 +21,13 @@ export class RegisterUserHandler implements IRegisterUserHandler {
         token: args.token,
       });
       if (
-        !validateTokenRes.Succeeded ||
-        !validateTokenRes.Result ||
-        !validateTokenRes.Result.isvalid
+        !validateTokenRes.succeeded ||
+        !validateTokenRes.result ||
+        !validateTokenRes.result.isvalid
       ) {
         return AppResult.createFailed(new Error('Invalid request.'), 'Invalid request.');
       }
-      const { areaOfficeId, id: tokenId } = validateTokenRes.Result;
+      const { areaOfficeId, id: tokenId } = validateTokenRes.result;
 
       const createUserRes = await this.userService.createUserAsync({
         areaOfficeId,
@@ -38,14 +38,14 @@ export class RegisterUserHandler implements IRegisterUserHandler {
         roles: [],
         username: args.username,
       });
-      if (!createUserRes.Succeeded || !createUserRes.Result) {
+      if (!createUserRes.succeeded || !createUserRes.result) {
         return AppResult.createFailed(
-          new Error(createUserRes.Message),
-          createUserRes.Message,
-          createUserRes.Error.code,
+          new Error(createUserRes.message),
+          createUserRes.message,
+          createUserRes.error.code,
         );
       }
-      const createdUser = createUserRes.Result;
+      const createdUser = createUserRes.result;
 
       const now = new Date();
       const updateTokenRes = await this.inviteTokenService.updateInviteTokenAsync({
@@ -54,11 +54,11 @@ export class RegisterUserHandler implements IRegisterUserHandler {
         isUsed: true,
         usedBy: createdUser.id,
       });
-      if (!updateTokenRes.Succeeded || !updateTokenRes.Result) {
+      if (!updateTokenRes.succeeded || !updateTokenRes.result) {
         return AppResult.createFailed(
-          new Error(updateTokenRes.Message),
-          updateTokenRes.Message,
-          updateTokenRes.Error.code,
+          new Error(updateTokenRes.message),
+          updateTokenRes.message,
+          updateTokenRes.error.code,
         );
       }
 

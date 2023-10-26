@@ -15,20 +15,20 @@ export class CreateClientHandler implements ICreateClientHandler {
   async executeAsync(args: CreateClientArgs): Promise<AppResult<CreateClientResult>> {
     try {
       const currentUserRes = await this.currentUserHandler.executeAsync({});
-      if (!currentUserRes.Succeeded || !currentUserRes.Result) {
-        return AppResult.createFailed(new Error(currentUserRes.Message), currentUserRes.Message);
+      if (!currentUserRes.succeeded || !currentUserRes.result) {
+        return AppResult.createFailed(new Error(currentUserRes.message), currentUserRes.message);
       }
-      const currentUser = currentUserRes.Result;
+      const currentUser = currentUserRes.result;
 
       const createClientRes = await this.clientService.createClientAsync({
         areaOfficeId: currentUser.areaOfficeId,
         city: args.city,
         name: args.name,
       });
-      if (!createClientRes.Succeeded || !createClientRes.Result) {
-        return AppResult.createFailed(new Error(createClientRes.Message), createClientRes.Message);
+      if (!createClientRes.succeeded || !createClientRes.result) {
+        return AppResult.createFailed(new Error(createClientRes.message), createClientRes.message);
       }
-      const created = createClientRes.Result;
+      const created = createClientRes.result;
 
       return AppResult.createSucceeded(
         {

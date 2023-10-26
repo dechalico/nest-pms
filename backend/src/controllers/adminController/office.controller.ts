@@ -15,10 +15,10 @@ export class OfficeController {
   @Post()
   async createOffice(@Body() args: CreateOffice): Promise<CreateOfficeResult> {
     const result = await this.createOfficeHandler.executeAsync(args);
-    if (!result.Succeeded || !result.Result) {
-      throw new BadRequestException(result.Message);
+    if (!result.succeeded || !result.result) {
+      throw new BadRequestException(result.message);
     }
-    const objResult = plainToInstance(CreateOfficeResult, result.Result, {
+    const objResult = plainToInstance(CreateOfficeResult, result.result, {
       excludeExtraneousValues: true,
     });
     return objResult;
@@ -27,11 +27,11 @@ export class OfficeController {
   @Get()
   async getOffices(): Promise<GetOfficeResult> {
     const result = await this.getOfficesHandler.executeAsync({});
-    if (!result.Succeeded || !result.Result) {
-      throw new BadRequestException(result.Message);
+    if (!result.succeeded || !result.result) {
+      throw new BadRequestException(result.message);
     }
 
-    const objResult = plainToInstance(GetOfficeResult, result.Result);
+    const objResult = plainToInstance(GetOfficeResult, result.result);
     return objResult;
   }
 }

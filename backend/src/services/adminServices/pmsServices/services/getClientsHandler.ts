@@ -15,27 +15,27 @@ export class GetClientsHandler implements IGetClientsHandler {
   async executeAsync(args: GetClientArgs): Promise<AppResult<GetClientResult>> {
     try {
       const currentUserRes = await this.currentUserHandler.executeAsync({});
-      if (!currentUserRes.Succeeded || !currentUserRes.Result) {
+      if (!currentUserRes.succeeded || !currentUserRes.result) {
         return AppResult.createFailed(
-          new Error(currentUserRes.Message),
-          currentUserRes.Message,
-          currentUserRes.Error.code,
+          new Error(currentUserRes.message),
+          currentUserRes.message,
+          currentUserRes.error.code,
         );
       }
-      const currentUser = currentUserRes.Result;
+      const currentUser = currentUserRes.result;
 
       const clientsRes = await this.clientService.getAllClients({
         areaOfficeId: currentUser.areaOfficeId,
       });
-      if (!clientsRes.Succeeded || !clientsRes.Result) {
+      if (!clientsRes.succeeded || !clientsRes.result) {
         return AppResult.createFailed(
-          new Error(clientsRes.Message),
-          clientsRes.Message,
-          clientsRes.Error.code,
+          new Error(clientsRes.message),
+          clientsRes.message,
+          clientsRes.error.code,
         );
       }
 
-      const result: Array<Client> = clientsRes.Result;
+      const result: Array<Client> = clientsRes.result;
       return AppResult.createSucceeded(
         {
           clients: result,
