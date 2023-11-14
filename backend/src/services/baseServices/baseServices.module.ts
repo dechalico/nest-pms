@@ -6,10 +6,25 @@ import { InviteTokenService } from './services/inviteToken.service';
 import { SecurityModule } from '../securityServices/sercurity.module';
 import { EngineerService } from './services/engineer.service';
 import { ClientService } from './services/client.service';
+import { EquipmentBrandService } from './services/equipmentBrand.service';
 
 @Module({
   imports: [RepositoryModule, SecurityModule],
-  providers: [UserService, AreaOfficeService, InviteTokenService, EngineerService, ClientService],
-  exports: [UserService, AreaOfficeService, InviteTokenService, EngineerService, ClientService],
+  providers: [
+    UserService,
+    AreaOfficeService,
+    InviteTokenService,
+    EngineerService,
+    ClientService,
+    EquipmentBrandService,
+  ],
+  exports: [
+    UserService,
+    AreaOfficeService,
+    InviteTokenService,
+    EngineerService,
+    ClientService,
+    EquipmentBrandService,
+  ],
 })
 export class BaseServicesModule {}
