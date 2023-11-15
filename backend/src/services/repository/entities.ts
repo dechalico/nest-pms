@@ -80,6 +80,22 @@ export class User extends BaseEntity {
   area_office_id: ObjectId | string;
 }
 
+/**
+ * This is the algorithm format value
+ * for future reference.
+ *
+ * {D|W|M|Y}|{interval}|{D|W|M|Y}|{Duration}
+ * D=day
+ * W=week
+ * M=month
+ * Y=year
+ * interval= number of intervals in a specified day
+ * duration= number of warranty durations in a specified day
+ * Example:
+ * M|3|Y|1
+ *
+ *
+ **/
 export class WarrantyType extends BaseEntity {
   @Expose()
   name: string;
