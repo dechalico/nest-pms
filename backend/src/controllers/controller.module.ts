@@ -6,6 +6,7 @@ import { AdminModule } from '../services/adminServices/admin.module';
 import { UserController } from './adminController/user.controller';
 import { EngineerController } from './adminController/engineer.controler';
 import { ClientController } from './adminController/client.controller';
+import { EquipmentBrandController } from './adminController/equipmentBrand.controller';
 
 @Module({
   imports: [AuthModule, AdminModule],
@@ -15,6 +16,7 @@ import { ClientController } from './adminController/client.controller';
     UserController,
     EngineerController,
     ClientController,
+    EquipmentBrandController,
   ],
 })
 export class ControllerModule {}

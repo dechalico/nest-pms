@@ -18,6 +18,8 @@ import { ICreateClientHandler } from './pmsServices/handlers/iCreateClientHandle
 import { CreateClientHandler } from './pmsServices/services/createClientHandler';
 import { GetClientsHandler } from './pmsServices/services/getClientsHandler';
 import { IGetClientsHandler } from './pmsServices/handlers/iGetClientsHandler';
+import { ICreateEquipmentBrandHandler } from './pmsServices/handlers/iCreateEquipmentBrandHandler';
+import { CreateEquipmentBrandHandler } from './pmsServices/services/createEquipmentBrandHandler';
 
 @Module({
   imports: [BaseServicesModule, SecurityModule, AuthModule],
@@ -54,6 +56,10 @@ import { IGetClientsHandler } from './pmsServices/handlers/iGetClientsHandler';
       provide: IGetClientsHandler,
       useClass: GetClientsHandler,
     },
+    {
+      provide: ICreateEquipmentBrandHandler,
+      useClass: CreateEquipmentBrandHandler,
+    },
   ],
   exports: [
     ICreateOfficeHandler,
@@ -64,6 +70,7 @@ import { IGetClientsHandler } from './pmsServices/handlers/iGetClientsHandler';
     IUpdateEngineerHandler,
     ICreateClientHandler,
     IGetClientsHandler,
+    ICreateEquipmentBrandHandler,
   ],
 })
 export class AdminModule {}
