@@ -7,6 +7,7 @@ import { SecurityModule } from '../securityServices/sercurity.module';
 import { EngineerService } from './services/engineer.service';
 import { ClientService } from './services/client.service';
 import { EquipmentBrandService } from './services/equipmentBrand.service';
+import { WarrantyTypeService } from './services/warrantyType.service';
 
 @Module({
   imports: [RepositoryModule, SecurityModule],
@@ -17,6 +18,7 @@ import { EquipmentBrandService } from './services/equipmentBrand.service';
     EngineerService,
     ClientService,
     EquipmentBrandService,
+    WarrantyTypeService,
   ],
   exports: [
     UserService,
@@ -25,6 +27,7 @@ import { EquipmentBrandService } from './services/equipmentBrand.service';
     EngineerService,
     ClientService,
     EquipmentBrandService,
+    WarrantyTypeService,
   ],
 })
 export class BaseServicesModule {}

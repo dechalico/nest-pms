@@ -20,4 +20,6 @@ export class WarrantyTypeSchema {
 
 export class CreateWarrantyType extends PickType(WarrantyTypeSchema, ['name', 'algorithm']) {}
 
-export class UpdateWarrantyType extends PartialType(CreateWarrantyType) {}
+export class UpdateWarrantyType extends PartialType(CreateWarrantyType) {
+  id: string;
+}
