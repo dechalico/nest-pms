@@ -8,11 +8,13 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "prod": "node .output/server/index.mjs"
+    "prod": "node .output/server/index.mjs",
+    "format": "prettier --write \"./**/*.(ts|js|vue)\""
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "nuxt": "^3.8.2",
+    "prettier": "^3.1.0",
     "sass": "^1.69.5",
     "typescript": "^5.3.2",
     "vite-plugin-vuetify": "^1.0.2",
