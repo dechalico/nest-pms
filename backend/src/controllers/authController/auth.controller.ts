@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, BadRequestException, Query } from '@nestjs/common';
+import { Controller, Post, Get, Body, BadRequestException, Query, Res } from '@nestjs/common';
 import { LoginArgs, LoginResult } from './dtos/login.dto';
 import { ICreateLoginTokenHandler } from '../../services/authServices/handlers/iCreateLoginTokenHandler';
 import { plainToInstance } from 'class-transformer';
@@ -7,6 +7,7 @@ import { IValidateUserInviteHandler } from '../../services/authServices/handlers
 import { ValidateInviteResult, ValidateInviteArgs } from './dtos/validateInvite.dto';
 import { RegisterArgs, RegisterResult } from './dtos/register.dto';
 import { IRegisterUserHandler } from '../../services/authServices/handlers/iRegisterUserHandler';
+import { Response } from 'express';
 
 @AllowAnonymous()
 @Controller('auth')
@@ -18,7 +19,10 @@ export class AuthController {
   ) {}
 
   @Post('login')
-  async login(@Body() loginArgs: LoginArgs): Promise<LoginResult> {
+  async login(
+    @Body() loginArgs: LoginArgs,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<LoginResult> {
     const validateResult = await this.createLoginToken.executeAsync(loginArgs);
     if (!validateResult.succeeded || !validateResult.result) {
       throw new BadRequestException(validateResult.message);
@@ -26,6 +30,7 @@ export class AuthController {
     const result = plainToInstance(LoginResult, validateResult.result, {
       excludeExtraneousValues: true,
     });
+    response.cookie('auth', result.token, { httpOnly: true, secure: true });
     return result;
   }
 

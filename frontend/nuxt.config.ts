@@ -24,6 +24,7 @@ export default defineNuxtConfig({
         config.plugins?.push(vuetify({ autoImport: true }));
       });
     },
+    '@pinia/nuxt',
   ],
   vite: {
     vue: {
@@ -31,5 +32,22 @@ export default defineNuxtConfig({
         transformAssetUrls,
       },
     },
+    server: {
+      proxy: {
+        '/api/': {
+          target: 'http://localhost:3000/',
+          changeOrigin: true,
+        },
+      },
+    },
   },
+  devServer: {
+    port: 3001,
+  },
+  runtimeConfig: {
+    public: {
+      apiBase: '/api/v1/',
+    },
+  },
+  sourcemap: true,
 });

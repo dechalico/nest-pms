@@ -1,20 +1,14 @@
 <template>
-  <div class="d-flex align-center text-center mb-6">
-    <div class="text-h6 w-100 px-5 font-weight-regular auth-divider position-relative">
-      <span class="bg-surface px-5 py-3 position-relative text-subtitle-1 text-grey100"
-        >Your Social Campaigns</span
-      >
-    </div>
-  </div>
-  <div>
+  <v-form v-model="vFormModelValid" validate-on="blur" @submit.prevent="handleSubmit">
     <v-row class="mb-3">
       <v-col cols="12">
         <v-label class="font-weight-medium mb-1">Username</v-label>
         <v-text-field
           variant="outlined"
           class="pwdInput"
-          hide-details
           color="primary"
+          v-model="username.model"
+          :rules="username.rules"
         ></v-text-field>
       </v-col>
       <v-col cols="12">
@@ -23,8 +17,9 @@
           variant="outlined"
           class="border-borderColor"
           type="password"
-          hide-details
           color="primary"
+          v-model="password.model"
+          :rules="password.rules"
         ></v-text-field>
       </v-col>
       <v-col cols="12 " class="py-0">
@@ -55,10 +50,38 @@
         >
       </v-col>
     </v-row>
-  </div>
+  </v-form>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import type { FormInput } from '@/types/pages/form';
+import { useAuthStore } from '@/stores/auth';
+
 const checkbox = ref(false);
+
+const username = reactive<FormInput<string>>({
+  model: '',
+  disabled: false,
+  rules: [(v: string) => !!v || 'Username required. Please try again.'],
+});
+
+const password = reactive<FormInput<string>>({
+  model: '',
+  disabled: false,
+  rules: [(v: string) => !!v || 'Password required. Please try again.'],
+});
+
+const vFormModelValid = ref<boolean | undefined>(undefined);
+
+const authStore = useAuthStore();
+
+const handleSubmit = async () => {
+  if (vFormModelValid.value) {
+    const success = await authStore.loginAccount(username.model, password.model);
+    if (success) {
+      navigateTo('/');
+    }
+  }
+};
 </script>

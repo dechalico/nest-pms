@@ -12,8 +12,13 @@ export interface Jwt {
   issuer: string;
 }
 
+export interface Cookie {
+  secret: string;
+}
+
 export interface Config {
   port: number;
   database: Database;
   jwt: Jwt;
+  cookie: Cookie;
 }

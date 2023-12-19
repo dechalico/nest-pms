@@ -6,6 +6,9 @@
         <v-container fluid class="page-wrapper bg-background px-sm-5 px-4 pt-12 rounded-xl">
           <div class="maxWidth">
             <NuxtPage />
+            <ClientOnly>
+              <ErrorHolder />
+            </ClientOnly>
           </div>
         </v-container>
       </v-main>
@@ -15,6 +18,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import ErrorHolder from './widgets/errorHolder.vue';
 
 const title = ref('spikeadmin Nuxt 3 - Vuetify 3 - vite - Typescript Based Free Dashboard');
 useHead({
