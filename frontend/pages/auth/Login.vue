@@ -29,11 +29,4 @@
 definePageMeta({
   layout: 'blank',
 });
-
-import { usePageErrorStore } from '@/stores/error';
-const pageErrorStore = usePageErrorStore();
-pageErrorStore.showError(
-  'Error Occured!',
-  'An error occured. Please try again later or contact support.',
-);
 </script>

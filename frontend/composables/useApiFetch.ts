@@ -1,22 +1,46 @@
+import { usePageErrorStore } from '@/stores/error';
+
 interface ApiOptions {
-  pick?: never[];
-  showError?: Boolean;
+  pick: never[];
+  showError: boolean;
+  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+  data: any;
 }
 
-export const useApiFetch = async (route: string, options?: ApiOptions): Promise<any> => {
+interface ApiFetchResult {
+  success: boolean;
+  data?: any;
+  pending: Ref<boolean>;
+  error?: any;
+  refresh: (opts: any) => Promise<any>;
+}
+
+export const useApiFetch = async (
+  route: string,
+  options: Partial<ApiOptions>,
+): Promise<ApiFetchResult> => {
   const config = useRuntimeConfig();
-  const url = new URL(route, config.public.apiBase);
-  const { data, error, pending, refresh } = await useFetch(url.toString(), {
-    pick: options?.pick,
+  const url = config.public.apiBase + route;
+
+  const { data, error, pending, refresh } = await useFetch(url, {
+    pick: options.pick,
+    method: options.method ?? 'get',
+    body: options.data,
   });
 
-  if (options?.showError && error) {
+  if (options?.showError && error.value) {
+    const errorPageStore = usePageErrorStore();
+    errorPageStore.showError(
+      error.value?.data.title ?? 'An error occured.',
+      error.value?.data.message ?? error.value?.message,
+    );
   }
 
   return {
-    data,
-    error,
+    success: !!!error.value,
     pending,
-    refresh,
+    error: error,
+    data: data,
+    refresh: refresh,
   };
 };
