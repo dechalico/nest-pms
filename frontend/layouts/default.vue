@@ -29,4 +29,8 @@ useHead({
       : 'spikeadmin Nuxt 3 - Vuetify 3 - vite - Typescript Based Free Dashboard';
   },
 });
+
+definePageMeta({
+  middleware: 'auth',
+});
 </script>

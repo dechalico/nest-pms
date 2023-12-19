@@ -80,6 +80,7 @@ const handleSubmit = async () => {
   if (vFormModelValid.value) {
     const success = await authStore.loginAccount(username.model, password.model);
     if (success) {
+      navigateTo('/');
     }
   }
 };
