@@ -14,7 +14,6 @@
                 <div class="d-flex justify-center mb-5">
                   <LayoutFullLogoDark />
                 </div>
-                <!-- <div class="text-h6 text-medium-emphasis text-center mb-6">Your Social Campaigns</div> -->
                 <AuthLoginForm />
               </v-card-item>
             </v-card>
@@ -30,4 +29,11 @@
 definePageMeta({
   layout: 'blank',
 });
+
+import { usePageErrorStore } from '@/stores/error';
+const pageErrorStore = usePageErrorStore();
+pageErrorStore.showError(
+  'Error Occured!',
+  'An error occured. Please try again later or contact support.',
+);
 </script>
