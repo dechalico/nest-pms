@@ -8,6 +8,7 @@ import {
   MoodHappyIcon,
   ApertureIcon,
   UserPlusIcon,
+  BuildingIcon,
 } from 'vue-tabler-icons';
 
 export interface menu {
@@ -28,6 +29,12 @@ export interface menu {
 }
 
 const sidebarItem: menu[] = [
+  { header: 'Management' },
+  {
+    title: 'Office Branch',
+    icon: BuildingIcon,
+    to: '/management/offices',
+  },
   { header: 'Home' },
   {
     title: 'Dashboard',
