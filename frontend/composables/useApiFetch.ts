@@ -1,10 +1,12 @@
 import { usePageErrorStore } from '@/stores/error';
+import appendToPathUrl from '@/utils/appendPathToUrl';
 
 interface ApiOptions {
   pick: never[];
   showError: boolean;
   method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   data: any;
+  headers: Record<string, string>;
 }
 
 interface ApiFetchResult {
@@ -20,12 +22,12 @@ export const useApiFetch = async (
   options: Partial<ApiOptions>,
 ): Promise<ApiFetchResult> => {
   const config = useRuntimeConfig();
-  const url = config.public.apiBase + route;
-
+  const url = appendToPathUrl(config.public.apiBase, route);
   const { data, error, pending, refresh } = await useFetch(url, {
     pick: options.pick,
     method: options.method ?? 'get',
     body: options.data,
+    headers: options.headers,
   });
 
   if (options?.showError && error.value) {

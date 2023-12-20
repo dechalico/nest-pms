@@ -8,9 +8,12 @@ import { ConfigService } from '@nestjs/config';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // register cookie and set cookie secret
+  // get config values
   const configService = app.get(ConfigService);
-  app.use(cookieParser(configService.get('cookie').secret));
+  const port = configService.get<string>('port');
+  const cookieSecret = configService.get<string>('cookie.secret');
+
+  app.use(cookieParser(cookieSecret));
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -30,6 +33,6 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api/v1');
 
-  await app.listen(3000);
+  await app.listen(port);
 }
 bootstrap();

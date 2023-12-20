@@ -16,7 +16,6 @@ export const useAuthStore = defineStore('auth', () => {
     if (success && data) {
       currentUser.authenticated = true;
       currentUser.logginDate = new Date();
-      currentUser.token = data.token;
       currentUser.user = {
         firstName: data.firstName,
         lastName: data.lastName,
