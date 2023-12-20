@@ -6,7 +6,6 @@ export interface User {
 
 export interface CurrentLogUser {
   user?: Partial<User>;
-  token?: string;
   logginDate?: Date;
   authenticated: Boolean;
 }

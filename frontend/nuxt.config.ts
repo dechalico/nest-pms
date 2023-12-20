@@ -46,7 +46,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiBase: '/api/v1/',
+      apiBase: 'http://localhost:3001/api/v1/',
     },
   },
   sourcemap: true,
