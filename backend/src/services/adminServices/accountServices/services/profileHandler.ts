@@ -2,7 +2,9 @@ import { AppResult, AppErrorCodes } from '../../../../common/app.result';
 import { IProfileHandler } from '../handlers/iProfileHandler';
 import { ProfileArgs, ProfileResult } from '../interactors/profileInteractor';
 import { ICurrentUserHandler } from '../../../authServices/handlers/ICurrentUserHandler';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class ProfileHandler implements IProfileHandler {
   constructor(private readonly currentUserHandler: ICurrentUserHandler) {}
 
