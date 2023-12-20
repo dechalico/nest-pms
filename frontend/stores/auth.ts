@@ -25,27 +25,8 @@ export const useAuthStore = defineStore('auth', () => {
     return success;
   };
 
-  const setCurrentLoginAccount = async (token: string): Promise<boolean> => {
-    const { success, data } = await useApiFetch('/admin/users/current-login', {
-      method: 'GET',
-      showError: false,
-      headers: { authorization: `Bearer ${token}` },
-    });
-    if (success && data) {
-      currentUser.authenticated = true;
-      currentUser.logginDate = new Date();
-      currentUser.user = {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        roles: data.roles,
-      };
-    }
-    return success;
-  };
-
   return {
     currentUser,
     loginAccount,
-    setCurrentLoginAccount,
   };
 });
