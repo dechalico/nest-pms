@@ -1,24 +1,26 @@
 import { useAuthStore } from '@/stores/auth';
-import { parseCookies } from 'h3';
+import type { User } from '@/types/account/user';
 
 export default defineNuxtPlugin(async (nuxtApp) => {
   if (!nuxtApp.ssrContext) return;
 
   const authStore = useAuthStore();
-  const { auth } = parseCookies(nuxtApp.ssrContext.event);
-  const { success, data } = await useApiFetch('/admin/users/current-login', {
+  const auth = useCookie('auth');
+
+  const { error, data } = await useApiFetch<User>('/admin/users/current-login', {
     method: 'GET',
     showError: false,
-    headers: { authorization: `Bearer ${auth}` },
+    headers: { authorization: `Bearer ${auth.value}` },
   });
-  if (success && data) {
+
+  if (!error.value && data.value) {
     const currentUser = authStore.currentUser;
     currentUser.authenticated = true;
     currentUser.logginDate = new Date();
     currentUser.user = {
-      firstName: data.firstName,
-      lastName: data.lastName,
-      roles: data.roles,
+      firstName: data.value.firstName,
+      lastName: data.value.lastName,
+      roles: data.value.roles,
     };
   }
 });
