@@ -45,5 +45,7 @@ export class UpdateUser extends OmitType(PartialType(UserSchema), ['dateCreated'
 }
 
 export class GetUsersArgs {
-  includeOffice?: boolean;
+  includes?: {
+    areaOffice?: boolean;
+  };
 }

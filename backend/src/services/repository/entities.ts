@@ -221,5 +221,5 @@ export class InvitedToken extends BaseEntity {
 
 export class GetAllArgs {
   filter?: any;
-  include?: Record<string, any>;
+  include?: any;
 }

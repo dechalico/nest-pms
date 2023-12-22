@@ -184,33 +184,20 @@ export class UserService {
 
   async getAllUsers(args: GetUsersArgs = {}): Promise<AppResult<Array<UserSchema>>> {
     try {
-      let usersResult;
-
-      if (!args.includeOffice) {
-        const usersRes = await this.userRepository.getAllAsync();
-        if (!usersRes.succeeded || !usersRes.result) {
-          return AppResult.createFailed(
-            new Error(usersRes.message),
-            usersRes.message,
-            usersRes.error.code,
-          );
-        }
-        usersResult = usersRes.result;
+      const usersRes = await this.userRepository.getAllAsync({
+        include: {
+          area_office: args.includes.areaOffice,
+        },
+      });
+      if (!usersRes.succeeded || !usersRes.result) {
+        return AppResult.createFailed(
+          new Error(usersRes.message),
+          usersRes.message,
+          usersRes.error.code,
+        );
       }
 
-      if (args.includeOffice) {
-        const usersRes = await this.userRepository.getUsersWithOffice();
-        if (!usersRes.succeeded || !usersRes.result) {
-          return AppResult.createFailed(
-            new Error(usersRes.message),
-            usersRes.message,
-            usersRes.error.code,
-          );
-        }
-        usersResult = usersRes.result;
-      }
-
-      const userSchema: Array<UserSchema> = usersResult.result;
+      const userSchema: Array<UserSchema> = usersRes.result;
       return AppResult.createSucceeded(userSchema, 'Successfully get all users');
     } catch (error) {
       return AppResult.createFailed(

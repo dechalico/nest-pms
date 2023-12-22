@@ -55,31 +55,49 @@ export class UserRepository extends BaseRepositoryService<User> {
     }
   }
 
-  async getUsersWithOffice(): Promise<AppResult<any>> {
+  async getAllAsync(args?: GetAllArgs): Promise<AppResult<any>> {
     try {
-      const cursor = this.table.aggregate<User>([
-        {
+      const stages = [];
+      stages.push({
+        $match: {},
+      });
+
+      if (args.include.area_office) {
+        stages.push({
           $lookup: {
             from: 'area_offices',
             localField: 'area_office_id',
             foreignField: '_id',
             as: 'result',
           },
-        },
-        {
+        });
+
+        stages.push({
           $project: {
             email: 1,
             username: 1,
             firstName: 1,
             lastName: 1,
+            date_created: 1,
+            date_updated: 1,
+            roles: 1,
+            area_office_id: 1,
             area_office: {
-              _id: { $first: '$result._id' },
-              city: { $first: '$result.city' },
-              name: { $first: '$result.name' },
+              _id: {
+                $first: '$result._id',
+              },
+              city: {
+                $first: '$result.city',
+              },
+              name: {
+                $first: '$result.name',
+              },
             },
           },
-        },
-      ]);
+        });
+      }
+
+      const cursor = this.table.aggregate<User>(stages);
       const result: User[] = [];
       for await (const doc of cursor) {
         const obj = new this.Wrapper();
