@@ -122,7 +122,7 @@ const branchName = reactive<FormInput<string>>({
 const branchLocation = reactive<FormInput<string>>({
   model: '',
   disabled: false,
-  rules: [(v: string) => !!v || 'Provide valida branch location.'],
+  rules: [(v: string) => !!v || 'Provide valid branch location.'],
 });
 
 const { data: officeResult, refresh } = await useApiFetch<OfficeResult>('admin/offices', {
