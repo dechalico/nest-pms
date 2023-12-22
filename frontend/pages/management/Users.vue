@@ -8,7 +8,7 @@
               <v-btn
                 v-bind="props"
                 class="text-capitalize"
-                text="Create Invite"
+                text="Invite User"
                 color="primary"
                 rounded
                 elevation="0"
@@ -16,7 +16,7 @@
               </v-btn>
             </template>
             <template v-slot:default="{ isActive }">
-              <UiParentCard title="New Office">
+              <UiParentCard title="Generate Link">
                 <template #action>
                   <v-btn
                     :icon="XIcon"
@@ -25,27 +25,11 @@
                     variant="text"
                   />
                 </template>
-                <!-- <v-form
-                  v-model="vFormModel"
-                  @submit.prevent="createNewOfficeBranch"
-                  validate-on="blur"
-                  class="pb-3"
-                >
+                <v-form v-model="vFormModel" @submit.prevent="" validate-on="blur" class="pb-3">
                   <div>
-                    <v-text-field
-                      v-model.trim="branchName.model"
-                      :rules="branchName.rules"
-                      label="Name"
-                      variant="outlined"
-                      class="mb-5"
-                    ></v-text-field>
-                    <v-text-field
-                      v-model.trim="branchLocation.model"
-                      :rules="branchLocation.rules"
-                      label="Location"
-                      variant="outlined"
-                      class="mb-5"
-                    ></v-text-field>
+                    <v-text-field label="First Name" variant="outlined" class="mb-5"></v-text-field>
+                    <v-text-field label="Last Name" variant="outlined" class="mb-5"></v-text-field>
+                    <v-text-field label="Location" variant="outlined" class="mb-5"></v-text-field>
                   </div>
                   <div class="d-flex justify-end">
                     <v-btn color="primary" rounded text="Submit" class="mr-2" type="submit"></v-btn>
@@ -56,7 +40,7 @@
                       @click="isActive.value = false"
                     ></v-btn>
                   </div>
-                </v-form> -->
+                </v-form>
               </UiParentCard>
             </template>
           </v-dialog>
