@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from '../../repository/services/userRepository.service';
-import { UserSchema, CreateUser, UpdateUser } from '../schemas/user.schema';
+import { UserSchema, CreateUser, UpdateUser, GetUsersArgs } from '../schemas/user.schema';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
 import { PasswordHasher } from '../../securityServices/services/passwordService';
 
@@ -182,17 +182,35 @@ export class UserService {
     }
   }
 
-  async getAllUsers(): Promise<AppResult<Array<UserSchema>>> {
+  async getAllUsers(args: GetUsersArgs = {}): Promise<AppResult<Array<UserSchema>>> {
     try {
-      const usersRes = await this.userRepository.getAllAsync();
-      if (!usersRes.succeeded || !usersRes.result) {
-        return AppResult.createFailed(
-          new Error(usersRes.message),
-          usersRes.message,
-          usersRes.error.code,
-        );
+      let usersResult;
+
+      if (!args.includeOffice) {
+        const usersRes = await this.userRepository.getAllAsync();
+        if (!usersRes.succeeded || !usersRes.result) {
+          return AppResult.createFailed(
+            new Error(usersRes.message),
+            usersRes.message,
+            usersRes.error.code,
+          );
+        }
+        usersResult = usersRes.result;
       }
-      const userSchema: Array<UserSchema> = usersRes.result;
+
+      if (args.includeOffice) {
+        const usersRes = await this.userRepository.getUsersWithOffice();
+        if (!usersRes.succeeded || !usersRes.result) {
+          return AppResult.createFailed(
+            new Error(usersRes.message),
+            usersRes.message,
+            usersRes.error.code,
+          );
+        }
+        usersResult = usersRes.result;
+      }
+
+      const userSchema: Array<UserSchema> = usersResult.result;
       return AppResult.createSucceeded(userSchema, 'Successfully get all users');
     } catch (error) {
       return AppResult.createFailed(

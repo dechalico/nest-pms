@@ -78,6 +78,9 @@ export class User extends BaseEntity {
   @Expose({ name: 'areaOfficeId' })
   @Transform(({ value }: { value: ObjectId }) => value.toString())
   area_office_id: ObjectId | string;
+
+  @Expose()
+  area_office?: Record<string, any>;
 }
 
 /**
@@ -218,4 +221,5 @@ export class InvitedToken extends BaseEntity {
 
 export class GetAllArgs {
   filter?: any;
+  include?: Record<string, any>;
 }

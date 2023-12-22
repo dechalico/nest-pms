@@ -1,5 +1,5 @@
 import { BaseRepositoryService } from './baseRepository.service';
-import { User } from '../entities';
+import { GetAllArgs, User } from '../entities';
 import { Injectable, Inject } from '@nestjs/common';
 import { Db } from 'mongodb';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
@@ -50,6 +50,51 @@ export class UserRepository extends BaseRepositoryService<User> {
       return AppResult.createFailed(
         error,
         'An error occured when getting user by username.',
+        AppErrorCodes.InternalError,
+      );
+    }
+  }
+
+  async getUsersWithOffice(): Promise<AppResult<any>> {
+    try {
+      const cursor = this.table.aggregate<User>([
+        {
+          $lookup: {
+            from: 'area_offices',
+            localField: 'area_office_id',
+            foreignField: '_id',
+            as: 'result',
+          },
+        },
+        {
+          $project: {
+            email: 1,
+            username: 1,
+            firstName: 1,
+            lastName: 1,
+            area_office: {
+              _id: { $first: '$result._id' },
+              city: { $first: '$result.city' },
+              name: { $first: '$result.name' },
+            },
+          },
+        },
+      ]);
+      const result: User[] = [];
+      for await (const doc of cursor) {
+        const obj = new this.Wrapper();
+        Object.assign(obj, doc);
+        result.push(obj);
+      }
+
+      return AppResult.createSucceeded(
+        instanceToPlain(result, { excludeExtraneousValues: true }),
+        'Successfully get all users',
+      );
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'An error occured when getting all users',
         AppErrorCodes.InternalError,
       );
     }

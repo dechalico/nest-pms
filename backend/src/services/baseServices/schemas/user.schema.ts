@@ -1,5 +1,6 @@
 import { OmitType, PartialType } from '@nestjs/mapped-types';
 import { Expose } from 'class-transformer';
+import { AreaOfficeSchema } from './areaOffice.schema';
 
 export class UserSchema {
   @Expose()
@@ -31,6 +32,9 @@ export class UserSchema {
 
   @Expose()
   areaOfficeId: string;
+
+  @Expose()
+  areaOffice?: AreaOfficeSchema;
 }
 
 export class CreateUser extends OmitType(UserSchema, ['id', 'dateCreated', 'dateUpdated']) {}
@@ -38,4 +42,8 @@ export class CreateUser extends OmitType(UserSchema, ['id', 'dateCreated', 'date
 export class UpdateUser extends OmitType(PartialType(UserSchema), ['dateCreated', 'dateUpdated']) {
   @Expose()
   id: string;
+}
+
+export class GetUsersArgs {
+  includeOffice?: boolean;
 }
