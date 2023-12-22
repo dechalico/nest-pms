@@ -96,15 +96,11 @@ import type { Office } from '@/types/management/office';
 
 let offices: Office[] = reactive([]);
 
-const authStore = useAuthStore();
-
 const loadOfficeBranches = async () => {
-  console.log(authStore.currentUser);
-  const { data, error, success } = await useApiFetch('admin/offices', {
+  const { data, error } = await useApiFetch('admin/offices', {
     method: 'GET',
     showError: true,
   });
-  console.dir(data.value.offices);
 };
 
 onMounted(() => {

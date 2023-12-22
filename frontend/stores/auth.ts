@@ -1,4 +1,4 @@
-import type { CurrentLogUser } from '@/types/account/user';
+import type { CurrentLogUser, User } from '@/types/account/user';
 
 export const useAuthStore = defineStore('auth', () => {
   const currentUser = reactive<CurrentLogUser>({ authenticated: false });
@@ -8,21 +8,22 @@ export const useAuthStore = defineStore('auth', () => {
       username,
       password,
     };
-    const { success, data } = await useApiFetch('/auth/login', {
-      data: payload,
+    const { error, data } = await useApiFetch<User>('/auth/login', {
+      body: payload,
       method: 'POST',
       showError: true,
     });
-    if (success && data) {
+    if (!error.value && data.value) {
       currentUser.authenticated = true;
       currentUser.logginDate = new Date();
       currentUser.user = {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        roles: data.roles,
+        firstName: data.value.firstName,
+        lastName: data.value.lastName,
+        roles: data.value.roles,
       };
     }
-    return success;
+
+    return !!data.value;
   };
 
   return {
