@@ -1,48 +1,39 @@
 import { usePageErrorStore } from '@/stores/error';
-import appendToPathUrl from '@/utils/appendPathToUrl';
+import type { UseFetchOptions } from '#app';
+import { defu } from 'defu';
 
-interface ApiOptions {
-  pick: never[];
-  showError: boolean;
-  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
-  data: any;
-  headers: Record<string, string>;
+interface ApiOptions<T> extends UseFetchOptions<T> {
+  showError?: boolean;
 }
 
-interface ApiFetchResult {
-  success: boolean;
-  data?: any;
-  pending: Ref<boolean>;
-  error?: any;
-  refresh: (opts: any) => Promise<any>;
-}
-
-export const useApiFetch = async (
-  route: string,
-  options: Partial<ApiOptions>,
-): Promise<ApiFetchResult> => {
+export function useApiFetch<T>(url: string, options: ApiOptions<T> = {}) {
   const config = useRuntimeConfig();
-  const url = appendToPathUrl(config.public.apiBase, route);
-  const { data, error, pending, refresh } = await useFetch(url, {
-    pick: options.pick,
-    method: options.method ?? 'get',
-    body: options.data,
-    headers: options.headers,
-  });
+  const defaults: ApiOptions<T> = {
+    baseURL: config.public.apiBase,
+    // this overrides the default key generation, which includes a hash of
+    // url, method, headers, etc. - this should be used with care as the key
+    // is how Nuxt decides how responses should be deduplicated between
+    // client and server
+    key: url,
 
-  if (options?.showError && error.value) {
-    const errorPageStore = usePageErrorStore();
-    errorPageStore.showError(
-      error.value?.data.title ?? 'An error occured.',
-      error.value?.data.message ?? error.value?.message,
-    );
-  }
+    onResponse(_ctx) {
+      // _ctx.response._data = new myBusinessResponse(_ctx.response._data)
+    },
 
-  return {
-    success: !!!error.value,
-    pending,
-    error: error,
-    data: data,
-    refresh: refresh,
+    onResponseError(_ctx) {
+      // throw new myBusinessError()
+      if (options.showError) {
+        const errorPageStore = usePageErrorStore();
+        errorPageStore.showError(
+          _ctx.response._data?.title ?? 'An error occured.',
+          _ctx.response._data?.message ?? _ctx.error?.message,
+        );
+      }
+    },
   };
-};
+
+  // for nice deep defaults, please use unjs/defu
+  const params = defu(options, defaults);
+
+  return useFetch(url, params);
+}
