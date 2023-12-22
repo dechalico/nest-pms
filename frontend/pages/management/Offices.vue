@@ -3,7 +3,7 @@
     <v-col cols="12" md="12">
       <UiParentCard title="Branches">
         <template #action>
-          <v-dialog max-width="400">
+          <v-dialog v-model="dialogModel" max-width="400">
             <template v-slot:activator="{ props }">
               <v-btn
                 v-bind="props"
@@ -25,20 +25,30 @@
                     variant="text"
                   />
                 </template>
-                <v-form @submit.prevent="" class="pb-3">
+                <v-form
+                  v-model="vFormModel"
+                  @submit.prevent="createNewOfficeBranch"
+                  validate-on="blur"
+                  class="pb-3"
+                >
                   <div>
-                    <v-text-field label="Name" variant="outlined"></v-text-field>
-                    <v-text-field label="Location" variant="outlined"></v-text-field>
+                    <v-text-field
+                      v-model.trim="branchName.model"
+                      :rules="branchName.rules"
+                      label="Name"
+                      variant="outlined"
+                      class="mb-5"
+                    ></v-text-field>
+                    <v-text-field
+                      v-model.trim="branchLocation.model"
+                      :rules="branchLocation.rules"
+                      label="Location"
+                      variant="outlined"
+                      class="mb-5"
+                    ></v-text-field>
                   </div>
                   <div class="d-flex justify-end">
-                    <v-btn
-                      color="primary"
-                      rounded
-                      text="Submit"
-                      @click="isActive.value = false"
-                      class="mr-2"
-                      type="submit"
-                    ></v-btn>
+                    <v-btn color="primary" rounded text="Submit" class="mr-2" type="submit"></v-btn>
                     <v-btn
                       color="error"
                       rounded
@@ -62,7 +72,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(item, count) in offices" :key="item.id">
+              <tr v-for="(item, count) in officeResult?.offices" :key="item.id">
                 <td>
                   <p class="text-15 font-weight-medium">{{ count + 1 }}</p>
                 </td>
@@ -93,17 +103,53 @@
 import UiParentCard from '@/components/shared/UiParentCard.vue';
 import { PencilIcon, TrashIcon, XIcon } from 'vue-tabler-icons';
 import type { Office } from '@/types/management/office';
+import type { FormInput } from '@/types/pages/form';
 
-let offices: Office[] = reactive([]);
-
-const loadOfficeBranches = async () => {
-  const { data, error } = await useApiFetch('admin/offices', {
-    method: 'GET',
-    showError: true,
-  });
+type OfficeResult = {
+  offices: Office[];
 };
 
-onMounted(() => {
-  loadOfficeBranches();
+const dialogModel = ref<boolean>(false);
+const vFormModel = ref<boolean>(false);
+const userAction = ref<'edit' | 'create'>('create');
+
+const branchName = reactive<FormInput<string>>({
+  model: '',
+  disabled: false,
+  rules: [(v: string) => !!v || 'Provide valid branch name.'],
 });
+
+const branchLocation = reactive<FormInput<string>>({
+  model: '',
+  disabled: false,
+  rules: [(v: string) => !!v || 'Provide valida branch location.'],
+});
+
+const { data: officeResult, refresh } = await useApiFetch<OfficeResult>('admin/offices', {
+  showError: true,
+});
+
+const createNewOfficeBranch = async () => {
+  userAction.value = 'create';
+  if (!vFormModel.value) return;
+
+  const { status } = await useApiFetch('admin/offices', {
+    method: 'POST',
+    body: {
+      name: branchName.model,
+      city: branchLocation.model,
+    },
+    showError: true,
+  });
+  if (status.value === 'success') {
+    resetFields();
+    dialogModel.value = false;
+    refresh();
+  }
+};
+
+const resetFields = () => {
+  branchLocation.model = '';
+  branchName.model = '';
+};
 </script>

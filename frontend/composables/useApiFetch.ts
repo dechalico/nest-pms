@@ -8,6 +8,8 @@ interface ApiOptions<T> extends UseFetchOptions<T> {
 
 export function useApiFetch<T>(url: string, options: ApiOptions<T> = {}) {
   const config = useRuntimeConfig();
+  const auth = useCookie('auth');
+
   const defaults: ApiOptions<T> = {
     baseURL: config.public.apiBase,
     // this overrides the default key generation, which includes a hash of
@@ -15,6 +17,7 @@ export function useApiFetch<T>(url: string, options: ApiOptions<T> = {}) {
     // is how Nuxt decides how responses should be deduplicated between
     // client and server
     key: url,
+    headers: auth.value ? { authorization: 'Bearer ' + auth.value } : undefined,
 
     onResponse(_ctx) {
       // _ctx.response._data = new myBusinessResponse(_ctx.response._data)

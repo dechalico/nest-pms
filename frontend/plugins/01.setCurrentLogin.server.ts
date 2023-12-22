@@ -6,10 +6,11 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
   const authStore = useAuthStore();
   const auth = useCookie('auth');
+
   const { error, data } = await useApiFetch<User>('/admin/users/current-login', {
     method: 'GET',
     showError: false,
-    headers: { authorization: `Bearer ${auth}` },
+    headers: { authorization: `Bearer ${auth.value}` },
   });
 
   if (!error.value && data.value) {
