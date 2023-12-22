@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from '../../repository/services/userRepository.service';
-import { UserSchema, CreateUser, UpdateUser } from '../schemas/user.schema';
+import { UserSchema, CreateUser, UpdateUser, GetUsersArgs } from '../schemas/user.schema';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
 import { PasswordHasher } from '../../securityServices/services/passwordService';
 
@@ -182,9 +182,13 @@ export class UserService {
     }
   }
 
-  async getAllUsers(): Promise<AppResult<Array<UserSchema>>> {
+  async getAllUsers(args: GetUsersArgs = {}): Promise<AppResult<Array<UserSchema>>> {
     try {
-      const usersRes = await this.userRepository.getAllAsync();
+      const usersRes = await this.userRepository.getAllAsync({
+        include: {
+          area_office: args.includes.areaOffice,
+        },
+      });
       if (!usersRes.succeeded || !usersRes.result) {
         return AppResult.createFailed(
           new Error(usersRes.message),
@@ -192,6 +196,7 @@ export class UserService {
           usersRes.error.code,
         );
       }
+
       const userSchema: Array<UserSchema> = usersRes.result;
       return AppResult.createSucceeded(userSchema, 'Successfully get all users');
     } catch (error) {

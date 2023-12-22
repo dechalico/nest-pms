@@ -1,4 +1,4 @@
-import { Module, Scope } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { BaseServicesModule } from '../baseServices/baseServices.module';
 import { CreateOfficeHandler } from './officeServices/services/createOfficeHandler';
 import { ICreateOfficeHandler } from './officeServices/handlers/iCreateOfficeHandler';
@@ -26,6 +26,8 @@ import { IUpdateWarrantyTypeHandler } from './pmsServices/handlers/iUpdateWarran
 import { UpdateWarrantyTypeHandler } from './pmsServices/services/updateWarrantyTypeHandler';
 import { IProfileHandler } from './accountServices/handlers/iProfileHandler';
 import { ProfileHandler } from './accountServices/services/profileHandler';
+import { IGetUsersHandler } from './officeServices/handlers/iGetUsersHandler';
+import { GetUsersHandler } from './officeServices/services/getUsersHandler';
 
 @Module({
   imports: [BaseServicesModule, SecurityModule, AuthModule],
@@ -78,6 +80,10 @@ import { ProfileHandler } from './accountServices/services/profileHandler';
       provide: IProfileHandler,
       useClass: ProfileHandler,
     },
+    {
+      provide: IGetUsersHandler,
+      useClass: GetUsersHandler,
+    },
   ],
   exports: [
     ICreateOfficeHandler,
@@ -92,6 +98,7 @@ import { ProfileHandler } from './accountServices/services/profileHandler';
     ICreateWarrantyType,
     IUpdateWarrantyTypeHandler,
     IProfileHandler,
+    IGetUsersHandler,
   ],
 })
 export class AdminModule {}
