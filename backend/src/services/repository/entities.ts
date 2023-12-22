@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { Transform, Expose } from 'class-transformer';
+import { Transform, Expose, Type } from 'class-transformer';
 
 export abstract class BaseEntity {
   @Expose({ name: 'id' })
@@ -79,7 +79,8 @@ export class User extends BaseEntity {
   @Transform(({ value }: { value: ObjectId }) => value.toString())
   area_office_id: ObjectId | string;
 
-  @Expose()
+  @Expose({ name: 'areaOffice' })
+  @Type(() => AreaOffice)
   area_office?: Record<string, any>;
 }
 

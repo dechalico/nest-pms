@@ -1,19 +1,38 @@
-import { Controller, Post, Body, BadRequestException, Get } from '@nestjs/common';
+import { Controller, Post, Body, BadRequestException, Get, Query } from '@nestjs/common';
 import { ICreateUserInviteHandler } from '../../services/adminServices/officeServices/handlers/iCreateUserInviteHandler';
 import {
   CreateUserInviteResult,
   CreateUserInviteArgs,
 } from './user.dtos/createUserInvite.user.dto';
+import { GetUsersResult, GetUsersArgs } from './user.dtos/getUsers.dto';
 import { CurrentLoginResult } from './user.dtos/currentLogin.dto';
 import { plainToInstance } from 'class-transformer';
 import { IProfileHandler } from '../../services/adminServices/accountServices/handlers/iProfileHandler';
+import { IGetUsersHandler } from '../../services/adminServices/officeServices/handlers/iGetUsersHandler';
 
 @Controller('/admin/users')
 export class UserController {
   constructor(
     private readonly creaUserInviteHandler: ICreateUserInviteHandler,
     private readonly profileHandler: IProfileHandler,
+    private readonly getUsersHandler: IGetUsersHandler,
   ) {}
+
+  @Get()
+  async getUsers(@Query() args: GetUsersArgs): Promise<GetUsersResult> {
+    const getUsersResult = await this.getUsersHandler.executeAsync({
+      includes: {
+        areaOffice: args.includeOffice,
+      },
+    });
+    if (!getUsersResult.succeeded || !getUsersResult.result) {
+      throw new BadRequestException(getUsersResult.message);
+    }
+    const obj = plainToInstance(GetUsersResult, getUsersResult.result, {
+      excludeExtraneousValues: true,
+    });
+    return obj;
+  }
 
   @Post('create-invite')
   async createUserInvite(@Body() args: CreateUserInviteArgs): Promise<CreateUserInviteResult> {

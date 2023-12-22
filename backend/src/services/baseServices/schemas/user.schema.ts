@@ -1,5 +1,5 @@
 import { OmitType, PartialType } from '@nestjs/mapped-types';
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import { AreaOfficeSchema } from './areaOffice.schema';
 
 export class UserSchema {
@@ -34,6 +34,7 @@ export class UserSchema {
   areaOfficeId: string;
 
   @Expose()
+  @Type(() => AreaOfficeSchema)
   areaOffice?: AreaOfficeSchema;
 }
 
