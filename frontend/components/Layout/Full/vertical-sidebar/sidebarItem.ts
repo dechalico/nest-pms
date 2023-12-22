@@ -9,6 +9,7 @@ import {
   ApertureIcon,
   UserPlusIcon,
   BuildingIcon,
+  UsersIcon,
 } from 'vue-tabler-icons';
 
 export interface menu {
@@ -34,6 +35,11 @@ const sidebarItem: menu[] = [
     title: 'Office Branch',
     icon: BuildingIcon,
     to: '/management/offices',
+  },
+  {
+    title: 'Users',
+    icon: UsersIcon,
+    to: '/management/users',
   },
   { header: 'Home' },
   {
