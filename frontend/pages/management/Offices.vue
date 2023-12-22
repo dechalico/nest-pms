@@ -62,9 +62,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in productPerformance" :key="item.name">
+              <tr v-for="(item, count) in offices" :key="item.id">
                 <td>
-                  <p class="text-15 font-weight-medium">{{ item.id }}</p>
+                  <p class="text-15 font-weight-medium">{{ count + 1 }}</p>
                 </td>
                 <td>
                   <div class="">
@@ -72,7 +72,7 @@
                   </div>
                 </td>
                 <td>
-                  <h6 class="text-body-1 text-muted">{{ item.pname }}</h6>
+                  <h6 class="text-body-1 text-muted">{{ item.city }}</h6>
                 </td>
                 <td>
                   <div class="d-flex">
@@ -91,6 +91,23 @@
 
 <script setup lang="ts">
 import UiParentCard from '@/components/shared/UiParentCard.vue';
-import { productPerformance } from '@/data/dashboard/dashboardData';
 import { PencilIcon, TrashIcon, XIcon } from 'vue-tabler-icons';
+import type { Office } from '@/types/management/office';
+
+let offices: Office[] = reactive([]);
+
+const authStore = useAuthStore();
+
+const loadOfficeBranches = async () => {
+  console.log(authStore.currentUser);
+  const { data, error, success } = await useApiFetch('admin/offices', {
+    method: 'GET',
+    showError: true,
+  });
+  console.dir(data.value.offices);
+};
+
+onMounted(() => {
+  loadOfficeBranches();
+});
 </script>
