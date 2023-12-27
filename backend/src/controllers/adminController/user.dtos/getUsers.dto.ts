@@ -4,6 +4,7 @@ import { IsBoolean, IsOptional } from 'class-validator';
 export class GetUsersArgs {
   @IsBoolean()
   @IsOptional()
+  @Transform(({ value }: { value: string }) => value.toLowerCase() === 'true')
   includeOffice: boolean;
 }
 
