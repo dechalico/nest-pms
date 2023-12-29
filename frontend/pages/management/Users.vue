@@ -3,7 +3,7 @@
     <v-col cols="12" md="12">
       <UiParentCard title="Users">
         <template #action>
-          <v-dialog v-model="dialogModel" max-width="400">
+          <v-dialog v-model="dialogModel" max-width="400" persistent>
             <template v-slot:activator="{ props }">
               <v-btn
                 v-bind="props"
@@ -44,6 +44,7 @@
                     <p
                       v-if="generatedLink"
                       class="mb-5 whitespace-nowrap overflow-hidden text-overflow-ellipsis cursor-pointer"
+                      @click="handleCopyLink"
                     >
                       {{ generatedLink }}
                     </p>
@@ -162,8 +163,8 @@ const officeFetch = useApiFetch<OfficeResult>('admin/offices', {
 });
 
 const [users, offices] = await Promise.all([userFetch, officeFetch]);
-const { data: usersResult, refresh: refreshUsers } = users;
-const { data: officeResult, refresh: refreshOffices } = offices;
+const { data: usersResult } = users;
+const { data: officeResult } = offices;
 
 if (officeResult.value && officeResult.value.offices.length > 0) {
   selectedBranch.model = officeResult.value.offices[0].id;
@@ -203,5 +204,10 @@ const handleGenerateLink = async () => {
       clearInterval(intervalRes);
     }, 1000 * 10);
   }
+};
+
+const handleCopyLink = async () => {
+  await useCopyToClipboard(generatedLink.value);
+  showMessage('Copied!', 'Generated link copied to clipboard');
 };
 </script>
