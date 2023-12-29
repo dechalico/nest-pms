@@ -121,6 +121,7 @@ import { PencilIcon, TrashIcon, XIcon } from 'vue-tabler-icons';
 import type { User } from '@/types/management/user';
 import type { FormInput } from '@/types/pages/form';
 import type { Office } from '@/types/management/office';
+import { useGlobalMessageStore } from '@/stores/globalMessage';
 
 type UsersResult = {
   users: User[];
@@ -133,6 +134,7 @@ type OfficeResult = {
 type InviteResult = {
   guid: string;
   token: string;
+  generatedUrl: string;
 };
 
 const dialogModel = ref<boolean>(false);
@@ -149,6 +151,8 @@ const generateBtnState = reactive({
   text: 'generate link',
   diabled: false,
 });
+
+const { showMessage } = useGlobalMessageStore();
 
 const userFetch = useApiFetch<UsersResult>('admin/users/?includeOffice=true', {
   showError: true,
@@ -178,8 +182,14 @@ const handleGenerateLink = async () => {
     showError: true,
   });
   generateBtnState.loading = false;
+
+  if (status.value !== 'success') {
+    generateBtnState.diabled = false;
+    return;
+  }
+
   if (status.value === 'success') {
-    generatedLink.value = `https://google.com/auth/?token=${data.value?.guid}&guid=${data.value?.token}`;
+    generatedLink.value = data.value?.generatedUrl ?? '';
 
     let countdown = 10;
     const intervalRes = setInterval(() => {
