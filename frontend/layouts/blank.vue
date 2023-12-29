@@ -2,11 +2,11 @@
   <v-app>
     <NuxtPage />
     <ClientOnly>
-      <ErrorHolder />
+      <GlobalMessage />
     </ClientOnly>
   </v-app>
 </template>
 
 <script setup lang="ts">
-import ErrorHolder from './widgets/errorHolder.vue';
+import GlobalMessage from './widgets/globalMessageHolder.vue';
 </script>

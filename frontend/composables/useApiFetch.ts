@@ -1,4 +1,4 @@
-import { usePageErrorStore } from '@/stores/error';
+import { useGlobalMessageStore } from '@/stores/globalMessage';
 import type { UseFetchOptions } from '#app';
 import { defu } from 'defu';
 
@@ -26,10 +26,11 @@ export function useApiFetch<T>(url: string, options: ApiOptions<T> = {}) {
     onResponseError(_ctx) {
       // throw new myBusinessError()
       if (options.showError) {
-        const errorPageStore = usePageErrorStore();
-        errorPageStore.showError(
+        const messageStore = useGlobalMessageStore();
+        messageStore.showMessage(
           _ctx.response._data?.title ?? 'An error occured.',
           _ctx.response._data?.message ?? _ctx.error?.message,
+          'error',
         );
       }
     },

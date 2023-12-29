@@ -7,7 +7,7 @@
           <div class="maxWidth">
             <NuxtPage />
             <ClientOnly>
-              <ErrorHolder />
+              <GlobalMessage />
             </ClientOnly>
           </div>
         </v-container>
@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import ErrorHolder from './widgets/errorHolder.vue';
+import GlobalMessage from './widgets/globalMessageHolder.vue';
 
 const title = ref('spikeadmin Nuxt 3 - Vuetify 3 - vite - Typescript Based Free Dashboard');
 useHead({
