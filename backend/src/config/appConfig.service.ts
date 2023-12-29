@@ -5,8 +5,8 @@ import { Database, Config, Jwt } from './interfaces';
 @Injectable()
 export class AppConfigService {
   constructor(private readonly configService: ConfigService) {}
-  getConfig(): Config {
-    return this.configService.get<Config>('');
+  getConfig<TResult>(path: string): TResult {
+    return this.configService.get<TResult>(path);
   }
   getDatabaseConfig(): Database {
     return this.configService.get<Database>('database');

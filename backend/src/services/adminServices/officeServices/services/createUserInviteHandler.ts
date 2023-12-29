@@ -8,6 +8,8 @@ import { Injectable } from '@nestjs/common';
 import { TokenService } from '../../../securityServices/services/tokenService';
 import { InviteTokenService } from '../../../baseServices/services/inviteToken.service';
 import { ICurrentUserHandler } from '../../../authServices/handlers/ICurrentUserHandler';
+import { AppConfigService } from '../../../../config/appConfig.service';
+import * as path from 'path';
 
 @Injectable()
 export class CreateUserInviteHandler implements ICreateUserInviteHandler {
@@ -15,6 +17,7 @@ export class CreateUserInviteHandler implements ICreateUserInviteHandler {
     private readonly tokenService: TokenService,
     private readonly inviteTokenService: InviteTokenService,
     private readonly currentUser: ICurrentUserHandler,
+    private readonly config: AppConfigService,
   ) {}
 
   async executeAsync(args: CreateUserInviteArgs): Promise<AppResult<CreateUserInviteResult>> {
@@ -56,10 +59,14 @@ export class CreateUserInviteHandler implements ICreateUserInviteHandler {
         );
       }
 
+      const frontendUrl = this.config.getConfig<string>('frontendUrl');
+      const generatedUrl = path.join(frontendUrl, `auth/register/?token=${token}&guid=${uuid}`);
+
       return AppResult.createSucceeded(
         {
           guid: uuid,
           token: token,
+          generatedUrl,
         },
         'Invite token successfully generated.',
       );

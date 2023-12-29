@@ -5,4 +5,5 @@ export class CreateUserInviteArgs {
 export class CreateUserInviteResult {
   token: string;
   guid: string;
+  generatedUrl: string;
 }
