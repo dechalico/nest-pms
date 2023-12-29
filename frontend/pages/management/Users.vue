@@ -3,12 +3,12 @@
     <v-col cols="12" md="12">
       <UiParentCard title="Users">
         <template #action>
-          <v-dialog v-model="dialogModel" max-width="400">
+          <v-dialog v-model="dialogModel" max-width="400" persistent>
             <template v-slot:activator="{ props }">
               <v-btn
                 v-bind="props"
                 class="text-capitalize"
-                text="Create Invite"
+                text="Invite User"
                 color="primary"
                 rounded
                 elevation="0"
@@ -16,7 +16,7 @@
               </v-btn>
             </template>
             <template v-slot:default="{ isActive }">
-              <UiParentCard title="New Office">
+              <UiParentCard title="Generate Link">
                 <template #action>
                   <v-btn
                     :icon="XIcon"
@@ -25,30 +25,40 @@
                     variant="text"
                   />
                 </template>
-                <!-- <v-form
+                <v-form
                   v-model="vFormModel"
-                  @submit.prevent="createNewOfficeBranch"
+                  @submit.prevent="handleGenerateLink"
                   validate-on="blur"
                   class="pb-3"
                 >
                   <div>
-                    <v-text-field
-                      v-model.trim="branchName.model"
-                      :rules="branchName.rules"
-                      label="Name"
+                    <v-select
+                      label="Area Office"
                       variant="outlined"
-                      class="mb-5"
-                    ></v-text-field>
-                    <v-text-field
-                      v-model.trim="branchLocation.model"
-                      :rules="branchLocation.rules"
-                      label="Location"
-                      variant="outlined"
-                      class="mb-5"
-                    ></v-text-field>
+                      class=""
+                      :items="officeResult?.offices"
+                      item-title="name"
+                      item-value="id"
+                      v-model="selectedBranch.model"
+                    ></v-select>
+                    <p
+                      v-if="generatedLink"
+                      class="mb-5 whitespace-nowrap overflow-hidden text-overflow-ellipsis cursor-pointer"
+                      @click="handleCopyLink"
+                    >
+                      {{ generatedLink }}
+                    </p>
                   </div>
                   <div class="d-flex justify-end">
-                    <v-btn color="primary" rounded text="Submit" class="mr-2" type="submit"></v-btn>
+                    <v-btn
+                      color="primary"
+                      rounded
+                      :text="generateBtnState.text"
+                      class="mr-2"
+                      type="submit"
+                      :loading="generateBtnState.loading"
+                      :disabled="generateBtnState.diabled"
+                    ></v-btn>
                     <v-btn
                       color="error"
                       rounded
@@ -56,7 +66,7 @@
                       @click="isActive.value = false"
                     ></v-btn>
                   </div>
-                </v-form> -->
+                </v-form>
               </UiParentCard>
             </template>
           </v-dialog>
@@ -111,18 +121,93 @@ import UiParentCard from '@/components/shared/UiParentCard.vue';
 import { PencilIcon, TrashIcon, XIcon } from 'vue-tabler-icons';
 import type { User } from '@/types/management/user';
 import type { FormInput } from '@/types/pages/form';
+import type { Office } from '@/types/management/office';
+import { useGlobalMessageStore } from '@/stores/globalMessage';
 
 type UsersResult = {
   users: User[];
 };
 
+type OfficeResult = {
+  offices: Office[];
+};
+
+type InviteResult = {
+  guid: string;
+  token: string;
+  generatedUrl: string;
+};
+
 const dialogModel = ref<boolean>(false);
 const vFormModel = ref<boolean>(false);
+const selectedBranch = reactive<FormInput<string>>({
+  model: '',
+  rules: [(v: string) => !!v || 'Select area office to assign'],
+});
 
-const { data: usersResult, refresh } = await useApiFetch<UsersResult>(
-  'admin/users/?includeOffice=true',
-  {
+const generatedLink = ref<string>('');
+
+const generateBtnState = reactive({
+  loading: false,
+  text: 'generate link',
+  diabled: false,
+});
+
+const { showMessage } = useGlobalMessageStore();
+
+const userFetch = useApiFetch<UsersResult>('admin/users/?includeOffice=true', {
+  showError: true,
+});
+const officeFetch = useApiFetch<OfficeResult>('admin/offices', {
+  showError: true,
+});
+
+const [users, offices] = await Promise.all([userFetch, officeFetch]);
+const { data: usersResult } = users;
+const { data: officeResult } = offices;
+
+if (officeResult.value && officeResult.value.offices.length > 0) {
+  selectedBranch.model = officeResult.value.offices[0].id;
+}
+
+const handleGenerateLink = async () => {
+  if (!vFormModel.value) return;
+
+  generateBtnState.loading = true;
+  generateBtnState.diabled = true;
+  const { status, data } = await useApiFetch<InviteResult>('admin/users/create-invite', {
+    method: 'POST',
+    body: {
+      areaOfficeId: selectedBranch.model,
+    },
     showError: true,
-  },
-);
+  });
+  generateBtnState.loading = false;
+
+  if (status.value !== 'success') {
+    generateBtnState.diabled = false;
+    return;
+  }
+
+  if (status.value === 'success') {
+    generatedLink.value = data.value?.generatedUrl ?? '';
+
+    let countdown = 10;
+    const intervalRes = setInterval(() => {
+      generateBtnState.text = `Generate again in ${countdown}`;
+      countdown--;
+    }, 1000);
+
+    setTimeout(() => {
+      generateBtnState.diabled = false;
+      generateBtnState.text = 'generate link';
+      clearInterval(intervalRes);
+    }, 1000 * 10);
+  }
+};
+
+const handleCopyLink = async () => {
+  await useCopyToClipboard(generatedLink.value);
+  showMessage('Copied!', 'Generated link copied to clipboard');
+};
 </script>

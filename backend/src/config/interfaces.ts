@@ -18,6 +18,7 @@ export interface Cookie {
 
 export interface Config {
   port: number;
+  frontendUrl: string;
   database: Database;
   jwt: Jwt;
   cookie: Cookie;
