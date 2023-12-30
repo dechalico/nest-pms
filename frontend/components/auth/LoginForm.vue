@@ -58,8 +58,6 @@ import { ref } from 'vue';
 import type { FormInput } from '@/types/pages/form';
 import { useAuthStore } from '@/stores/auth';
 
-const checkbox = ref(false);
-
 const username = reactive<FormInput<string>>({
   model: '',
   disabled: false,
