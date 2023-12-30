@@ -25,7 +25,10 @@ export class RegisterUserHandler implements IRegisterUserHandler {
         !validateTokenRes.result ||
         !validateTokenRes.result.isvalid
       ) {
-        return AppResult.createFailed(new Error('Invalid request.'), 'Invalid request.');
+        return AppResult.createFailed(
+          new Error('Invalid request. Token already expired.'),
+          'Invalid request. Token already expired.',
+        );
       }
       const { areaOfficeId, id: tokenId } = validateTokenRes.result;
 
