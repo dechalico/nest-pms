@@ -10,6 +10,7 @@ import {
   UserPlusIcon,
   BuildingIcon,
   UsersIcon,
+  FriendsIcon
 } from 'vue-tabler-icons';
 
 export interface menu {
@@ -40,6 +41,11 @@ const sidebarItem: menu[] = [
     title: 'Users',
     icon: UsersIcon,
     to: '/management/users',
+  },
+  {
+    title: 'Engineers',
+    icon: FriendsIcon,
+    to: '/management/engineers',
   },
   { header: 'Home' },
   {
