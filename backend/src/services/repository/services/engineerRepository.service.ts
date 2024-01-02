@@ -14,6 +14,7 @@ export class EngineerRepository extends BaseRepositoryService<Engineer> {
   async createAsync(entity: Engineer): Promise<AppResult<any>> {
     try {
       entity.area_office_id = objectIdCreator(entity.area_office_id);
+      entity.created_by = objectIdCreator(entity.created_by);
       return super.createAsync(entity);
     } catch (error) {
       return AppResult.createFailed(
