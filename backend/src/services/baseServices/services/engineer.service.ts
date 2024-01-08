@@ -5,6 +5,7 @@ import {
   EngineerSchema,
   CreateEngineerSchema,
   UpdateEngineerSchema,
+  GetEngineersArgs,
 } from '../schemas/engineer.schema';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
 
@@ -108,9 +109,15 @@ export class EngineerService {
     }
   }
 
-  async getAllEngineersAsync(): Promise<AppResult<Array<EngineerSchema>>> {
+  async getAllEngineersAsync(
+    args: GetEngineersArgs = {},
+  ): Promise<AppResult<Array<EngineerSchema>>> {
     try {
-      const getRes = await this.engineerRepo.getAllAsync();
+      const getRes = await this.engineerRepo.getAllAsync({
+        include: {
+          area_office: args.includes?.areaOffice,
+        },
+      });
       if (!getRes.succeeded || !getRes.result) {
         return AppResult.createFailed(new Error(getRes.message), getRes.message, getRes.error.code);
       }

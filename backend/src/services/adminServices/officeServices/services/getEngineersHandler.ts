@@ -12,9 +12,11 @@ import { EngineerService } from '../../../baseServices/services/engineer.service
 export class GetEngineersHandler implements IGetEngineersHandler {
   constructor(private readonly engineerService: EngineerService) {}
 
-  async executeAsync(args: GetEngineersArgs): Promise<AppResult<GetEngineersResult>> {
+  async executeAsync(args: GetEngineersArgs = {}): Promise<AppResult<GetEngineersResult>> {
     try {
-      const engineerRes = await this.engineerService.getAllEngineersAsync();
+      const engineerRes = await this.engineerService.getAllEngineersAsync({
+        includes: args.includes,
+      });
       if (!engineerRes.succeeded || !engineerRes.result) {
         return AppResult.createFailed(
           new Error(engineerRes.message),

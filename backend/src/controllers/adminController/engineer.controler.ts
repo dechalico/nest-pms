@@ -1,8 +1,18 @@
-import { Controller, BadRequestException, Post, Body, Get, Put, Param } from '@nestjs/common';
+import {
+  Controller,
+  BadRequestException,
+  Post,
+  Body,
+  Get,
+  Put,
+  Param,
+  Query,
+} from '@nestjs/common';
 import {
   CreateEngineerArgs,
   CreateEngineerResult,
   GetAllEngineersResult,
+  GetAllEngineersArgs,
 } from './engineer.dtos/createEngineer.dto';
 import { UpdateEngineerArgs, UpdateEngineerResult } from './engineer.dtos/updateEngineer.dto';
 import { IRegisterEngineerHandler } from '../../services/adminServices/officeServices/handlers/IRegisterEngineerHandler';
@@ -31,8 +41,12 @@ export class EngineerController {
   }
 
   @Get()
-  async getAllEngineers(): Promise<GetAllEngineersResult> {
-    const getEngineersRes = await this.getEngineersHandler.executeAsync({});
+  async getAllEngineers(@Query() args: GetAllEngineersArgs): Promise<GetAllEngineersResult> {
+    const getEngineersRes = await this.getEngineersHandler.executeAsync({
+      includes: {
+        areaOffice: args.includeOffice,
+      },
+    });
     if (!getEngineersRes.succeeded || !getEngineersRes.result) {
       throw new BadRequestException(getEngineersRes.succeeded);
     }

@@ -1,5 +1,5 @@
-import { Expose } from 'class-transformer';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { Expose, Transform } from 'class-transformer';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { OmitType } from '@nestjs/mapped-types';
 
 class Engineer {
@@ -29,4 +29,11 @@ export class CreateEngineerResult extends Engineer {}
 export class GetAllEngineersResult {
   @Expose()
   engineers: Array<Engineer>;
+}
+
+export class GetAllEngineersArgs {
+  @IsBoolean()
+  @IsOptional()
+  @Transform(({ value }: { value: string }) => value.toLowerCase() === 'true')
+  includeOffice: boolean;
 }
