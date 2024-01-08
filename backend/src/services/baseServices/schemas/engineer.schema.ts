@@ -37,3 +37,9 @@ export class UpdateEngineerSchema extends PartialType(CreateEngineerSchema) {
   @Expose()
   id: string;
 }
+
+export class GetEngineersArgs {
+  includes?: {
+    areaOffice?: boolean;
+  };
+}

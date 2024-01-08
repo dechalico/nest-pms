@@ -49,6 +49,10 @@ export class Engineer extends BaseEntity {
   @Expose({ name: 'createdBy' })
   @Transform(({ value }: { value: ObjectId }) => value.toString())
   created_by: ObjectId | string;
+
+  @Expose({ name: 'areaOffice' })
+  @Type(() => AreaOffice)
+  area_office?: Record<string, any>;
 }
 
 export class EquipmentBrand extends BaseEntity {

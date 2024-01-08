@@ -8,7 +8,11 @@ export class Engineer {
   dateUpdated: Date;
 }
 
-export class GetEngineersArgs {}
+export class GetEngineersArgs {
+  includes?: {
+    areaOffice?: boolean;
+  };
+}
 
 export class GetEngineersResult {
   engineers: Array<Engineer>;

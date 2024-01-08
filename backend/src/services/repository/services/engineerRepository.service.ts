@@ -1,9 +1,10 @@
 import { BaseRepositoryService } from './baseRepository.service';
-import { Engineer } from '../entities';
+import { Engineer, GetAllArgs } from '../entities';
 import { Injectable, Inject } from '@nestjs/common';
 import { Db } from 'mongodb';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
 import { objectIdCreator } from '../helper';
+import { instanceToPlain } from 'class-transformer';
 
 @Injectable()
 export class EngineerRepository extends BaseRepositoryService<Engineer> {
@@ -14,6 +15,7 @@ export class EngineerRepository extends BaseRepositoryService<Engineer> {
   async createAsync(entity: Engineer): Promise<AppResult<any>> {
     try {
       entity.area_office_id = objectIdCreator(entity.area_office_id);
+      entity.created_by = objectIdCreator(entity.created_by);
       return super.createAsync(entity);
     } catch (error) {
       return AppResult.createFailed(
@@ -34,6 +36,63 @@ export class EngineerRepository extends BaseRepositoryService<Engineer> {
       return AppResult.createFailed(
         error,
         'An error occured when updating engineer',
+        AppErrorCodes.InternalError,
+      );
+    }
+  }
+
+  async getAllAsync(args?: GetAllArgs): Promise<AppResult<any>> {
+    try {
+      const stages = [];
+      stages.push({
+        $match: {},
+      });
+
+      if (args.include?.area_office) {
+        stages.push({
+          $lookup: {
+            from: 'area_offices',
+            localField: 'area_office_id',
+            foreignField: '_id',
+            as: 'result',
+          },
+        });
+
+        stages.push({
+          $project: {
+            _id: 1,
+            area_office_id: 1,
+            date_created: 1,
+            date_updated: 1,
+            firstName: 1,
+            lastName: 1,
+            middleName: 1,
+            created_by: 1,
+            area_office: {
+              _id: { $first: '$result._id' },
+              city: { $first: '$result.city' },
+              name: { $first: '$result.name' },
+            },
+          },
+        });
+      }
+
+      const cursor = this.table.aggregate<Engineer>(stages);
+      const result: Engineer[] = [];
+      for await (const doc of cursor) {
+        const obj = new this.Wrapper();
+        Object.assign(obj, doc);
+        result.push(obj);
+      }
+
+      return AppResult.createSucceeded(
+        instanceToPlain(result, { excludeExtraneousValues: true }),
+        'Successfully get all users',
+      );
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'An error occured when getting all users',
         AppErrorCodes.InternalError,
       );
     }
