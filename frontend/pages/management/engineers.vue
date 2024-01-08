@@ -72,7 +72,9 @@
                   </div>
                 </td>
                 <td>
-                  <h6 class="text-body-1 text-muted">{{ item.areaOfficeId }}</h6>
+                  <h6 class="text-body-1 text-muted text-capitalize">
+                    {{ item.areaOffice?.name }} - {{ item.areaOffice?.city }}
+                  </h6>
                 </td>
                 <td>
                   <div class="d-flex">
@@ -101,7 +103,10 @@ type EngineerResult = {
 const dialogModel = ref<boolean>(false);
 const vFormModel = ref<boolean>(false);
 
-const { data: engineerResult, refresh } = await useApiFetch<EngineerResult>('admin/engineers', {
-  showError: true,
-});
+const { data: engineerResult, refresh } = await useApiFetch<EngineerResult>(
+  'admin/engineers/?includeOffice=true',
+  {
+    showError: true,
+  },
+);
 </script>
