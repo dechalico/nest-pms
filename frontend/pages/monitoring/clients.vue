@@ -78,11 +78,13 @@
                 </td>
                 <td>
                   <div class="">
-                    <h6 class="text-subtitle-1 font-weight-bold">{{ item.name }}</h6>
+                    <h6 class="text-subtitle-1 font-weight-bold text-capitalize">
+                      {{ item.name }}
+                    </h6>
                   </div>
                 </td>
                 <td>
-                  <h6 class="text-body-1 text-muted">{{ item.city }}</h6>
+                  <h6 class="text-body-1 text-muted text-capitalize">{{ item.city }}</h6>
                 </td>
                 <td>
                   <div class="d-flex">
