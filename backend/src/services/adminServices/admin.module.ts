@@ -87,7 +87,7 @@ import { GetEquipmentBrandsHandler } from './pmsServices/services/getEquipmentBr
       useClass: GetUsersHandler,
     },
     {
-      provide: IGetEngineersHandler,
+      provide: IGetEquipmentBrandHandler,
       useClass: GetEquipmentBrandsHandler,
     },
   ],
