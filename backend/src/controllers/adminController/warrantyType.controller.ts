@@ -6,7 +6,7 @@ import {
 import { ICreateWarrantyType } from '../../services/adminServices/pmsServices/handlers/iCreateWarrantyTypeHandler';
 import { plainToInstance } from 'class-transformer';
 
-@Controller('/admin/warranty-type')
+@Controller('/admin/warranty-types')
 export class WarrantyTypeController {
   constructor(private readonly createWarrantyService: ICreateWarrantyType) {}
 

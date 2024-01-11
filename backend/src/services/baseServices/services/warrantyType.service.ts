@@ -162,9 +162,7 @@ export class WarrantyTypeService {
     const intervalIndex = expectedValues.indexOf(interval);
     const durationIndex = expectedValues.indexOf(duration);
 
-    // if interval or duration character is invalid and interval is greater than duration
-    if (intervalIndex === -1 || durationIndex === -1 || intervalIndex > durationIndex) return false;
-
-    return true;
+    // if interval or duration character is invalid
+    return intervalIndex !== -1 && durationIndex !== -1;
   }
 }
