@@ -14,10 +14,10 @@ export class ClientRepository extends BaseRepositoryService<Client> {
 
   async createAsync(entity: Client): Promise<AppResult<any>> {
     try {
-      const { area_office_id } = entity;
+      const { area_office_id, ...rest } = entity;
       return super.createAsync({
         area_office_id: objectIdCreator(area_office_id),
-        ...entity,
+        ...rest,
       });
     } catch (error) {
       return AppResult.createFailed(

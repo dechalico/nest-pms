@@ -28,6 +28,8 @@ import { IProfileHandler } from './accountServices/handlers/iProfileHandler';
 import { ProfileHandler } from './accountServices/services/profileHandler';
 import { IGetUsersHandler } from './officeServices/handlers/iGetUsersHandler';
 import { GetUsersHandler } from './officeServices/services/getUsersHandler';
+import { IGetEquipmentBrandHandler } from './pmsServices/handlers/iGetEquipmentBrandsHandler';
+import { GetEquipmentBrandsHandler } from './pmsServices/services/getEquipmentBrandsHandler';
 
 @Module({
   imports: [BaseServicesModule, SecurityModule, AuthModule],
@@ -84,6 +86,10 @@ import { GetUsersHandler } from './officeServices/services/getUsersHandler';
       provide: IGetUsersHandler,
       useClass: GetUsersHandler,
     },
+    {
+      provide: IGetEquipmentBrandHandler,
+      useClass: GetEquipmentBrandsHandler,
+    },
   ],
   exports: [
     ICreateOfficeHandler,
@@ -99,6 +105,7 @@ import { GetUsersHandler } from './officeServices/services/getUsersHandler';
     IUpdateWarrantyTypeHandler,
     IProfileHandler,
     IGetUsersHandler,
+    IGetEquipmentBrandHandler,
   ],
 })
 export class AdminModule {}

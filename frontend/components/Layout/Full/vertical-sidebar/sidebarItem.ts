@@ -10,7 +10,9 @@ import {
   UserPlusIcon,
   BuildingIcon,
   UsersIcon,
-  FriendsIcon
+  FriendsIcon,
+  BuildingHospitalIcon,
+  AppsFilledIcon,
 } from 'vue-tabler-icons';
 
 export interface menu {
@@ -31,6 +33,17 @@ export interface menu {
 }
 
 const sidebarItem: menu[] = [
+  { header: 'Monitoring' },
+  {
+    title: 'Clients',
+    icon: BuildingHospitalIcon,
+    to: '/monitoring/clients',
+  },
+  {
+    title: 'Principals',
+    icon: AppsFilledIcon,
+    to: '/monitoring/principals',
+  },
   { header: 'Management' },
   {
     title: 'Office Branch',
