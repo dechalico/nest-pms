@@ -6,6 +6,7 @@ import {
 } from '../schemas/warrantyType.schema';
 import { AppResult, AppErrorCodes } from '../../../common/app.result';
 import { WarrantyTypeRepository } from '../../repository/services/warrantyTypeRepository.service';
+import { algoToMessage } from '../../../utils/warrantyHelper';
 
 /**
  * This is the algorithm format value
@@ -118,7 +119,11 @@ export class WarrantyTypeService {
         );
       }
 
-      const result: Array<WarrantyTypeSchema> = getAllRes.result;
+      let result: Array<WarrantyTypeSchema> = getAllRes.result;
+      result = result.map((w) => {
+        w.algoMessage = algoToMessage(w.algorithm);
+        return w;
+      });
       return AppResult.createSucceeded(result, 'Successfully get all warranty types');
     } catch (error) {
       return AppResult.createFailed(

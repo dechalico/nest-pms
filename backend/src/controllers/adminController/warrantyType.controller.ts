@@ -23,8 +23,9 @@ export class WarrantyTypeController {
     if (!result.succeeded || !result.result) {
       throw new BadRequestException(result.message);
     }
-    const obj = plainToInstance(CreateWarrantyTypeResult, result.result);
-    return obj;
+    return plainToInstance(CreateWarrantyTypeResult, result.result, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Get()
@@ -33,6 +34,6 @@ export class WarrantyTypeController {
     if (!result.succeeded || !result.result) {
       throw new BadRequestException(result.message);
     }
-    return plainToInstance(GetWarrantyTypeResult, result.result);
+    return plainToInstance(GetWarrantyTypeResult, result.result, { excludeExtraneousValues: true });
   }
 }
