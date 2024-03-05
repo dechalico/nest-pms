@@ -13,6 +13,7 @@ import {
   FriendsIcon,
   BuildingHospitalIcon,
   AppsFilledIcon,
+  ReceiptIcon,
 } from 'vue-tabler-icons';
 
 export interface menu {
@@ -44,9 +45,14 @@ const sidebarItem: menu[] = [
     icon: AppsFilledIcon,
     to: '/monitoring/principals',
   },
+  {
+    title: 'Warranties',
+    icon: ReceiptIcon,
+    to: '/monitoring/warranty-types',
+  },
   { header: 'Management' },
   {
-    title: 'Office Branch',
+    title: 'Offices',
     icon: BuildingIcon,
     to: '/management/offices',
   },

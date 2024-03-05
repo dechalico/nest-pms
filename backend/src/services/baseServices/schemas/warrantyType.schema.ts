@@ -12,6 +12,9 @@ export class WarrantyTypeSchema {
   algorithm: string;
 
   @Expose()
+  algoMessage: string;
+
+  @Expose()
   dateCreated: Date;
 
   @Expose()
