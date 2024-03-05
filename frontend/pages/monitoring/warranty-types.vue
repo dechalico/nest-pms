@@ -25,12 +25,81 @@
                     variant="text"
                   />
                 </template>
-                <v-form v-model="vFormModel" validate-on="blur" class="pb-3">
+                <v-form
+                  v-model="vFormModel"
+                  @submit.prevent="createWarrantyType"
+                  validate-on="blur"
+                  class="pb-3"
+                >
                   <div>
-                    <v-text-field label="Name" variant="outlined" class="mb-5"></v-text-field>
-                    <v-text-field label="Location" variant="outlined" class="mb-5"></v-text-field>
+                    <v-row>
+                      <v-col cols="12">
+                        <v-label for="warranty-name" class="font-weight-medium mb-1"
+                          >Warranty Name</v-label
+                        >
+                        <v-text-field
+                          id="warranty-name"
+                          v-model="warrantyName.model"
+                          variant="outlined"
+                          :rules="warrantyName.rules"
+                        >
+                        </v-text-field>
+                      </v-col>
+                    </v-row>
                   </div>
-                  <div class="d-flex justify-end">
+                  <div>
+                    <v-label for="interval" class="font-weight-medium mb-1">Interval</v-label>
+                    <v-row>
+                      <v-col cols="6">
+                        <v-select
+                          id="interval"
+                          :items="intervals"
+                          item-title="text"
+                          item-value="value"
+                          variant="outlined"
+                          v-model="selectedInterval.model"
+                        ></v-select>
+                      </v-col>
+                      <v-col cols="6"
+                        ><v-text-field
+                          type="number"
+                          min="1"
+                          variant="outlined"
+                          v-model="numberInterval.model"
+                          :rules="numberInterval.rules"
+                          :hint="numberInterval.hint"
+                          persistent-hint
+                        ></v-text-field
+                      ></v-col>
+                    </v-row>
+                  </div>
+                  <div>
+                    <v-label for="duration" class="font-weight-medium mb-1">Duration</v-label>
+                    <v-row>
+                      <v-col cols="6"
+                        ><v-select
+                          id="duration"
+                          :items="durations"
+                          item-title="text"
+                          item-value="value"
+                          variant="outlined"
+                          v-model="selectedDuration.model"
+                        ></v-select
+                      ></v-col>
+                      <v-col cols="6"
+                        ><v-text-field
+                          type="number"
+                          min="1"
+                          v-model="numberDuration.model"
+                          :rules="numberDuration.rules"
+                          :hint="numberDuration.hint"
+                          variant="outlined"
+                          persistent-hint
+                        ></v-text-field
+                      ></v-col>
+                    </v-row>
+                  </div>
+                  <div class="d-flex justify-end mt-4">
                     <v-btn color="primary" rounded text="Submit" class="mr-2" type="submit"></v-btn>
                     <v-btn
                       color="error"
@@ -94,11 +163,78 @@ type WarrantyTypeResult = {
   warrantyTypes: WarrantyType[];
 };
 
+type Interval = {
+  text: string;
+  value: string;
+};
+
+type Duration = {
+  text: string;
+  value: string;
+};
+
 const dialogModel = ref<boolean>(false);
 const vFormModel = ref<boolean>(false);
+
+const intervals: Interval[] = [
+  { text: 'Day', value: 'D' },
+  { text: 'Week', value: 'W' },
+  { text: 'Month', value: 'M' },
+  { text: 'Year', value: 'Y' },
+];
+const selectedInterval = reactive<FormInput<Interval>>({
+  model: { text: 'Month', value: 'M' },
+  disabled: false,
+});
+
+const numberInterval = reactive<FormInput<Number>>({
+  model: 1,
+  rules: [(val: number) => val > 0 || 'Value must be a number and greater than zero.'],
+  hint: 'Number of times to skip',
+});
+
+const durations: Duration[] = [
+  { text: 'Month', value: 'M' },
+  { text: 'Year', value: 'Y' },
+];
+const selectedDuration = reactive<FormInput<Duration>>({
+  model: { text: 'Year', value: 'Y' },
+  disabled: false,
+});
+
+const numberDuration = reactive<FormInput<Number>>({
+  model: 1,
+  rules: [(val: number) => val > 0 || 'Value must be a number and greater than zero.'],
+  hint: 'Number of how long the duration is',
+});
+
+const warrantyName = reactive<FormInput<String>>({
+  model: '',
+  disabled: false,
+  rules: [(v: string) => !!v || 'Provide valid warranty name.'],
+});
 
 const { data: warrantyTypeResult, refresh: loadWarranties } = await useApiFetch<WarrantyTypeResult>(
   '/admin/warranty-types',
   { showError: true },
 );
+
+const createWarrantyType = async () => {
+  if (!vFormModel.value) return;
+
+  const payload = {
+    name: warrantyName.model,
+    algorithm: `${selectedInterval.model.value}|${numberInterval.model}|${selectedDuration.model.value}|${numberDuration.model}`,
+  };
+
+  const { status } = await useApiFetch('/admin/warranty-types', {
+    method: 'post',
+    body: payload,
+    showError: true,
+  });
+  if (status.value === 'success') {
+    dialogModel.value = false;
+    loadWarranties();
+  }
+};
 </script>
