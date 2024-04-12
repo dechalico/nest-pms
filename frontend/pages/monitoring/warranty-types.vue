@@ -182,8 +182,8 @@ const intervals: Interval[] = [
   { text: 'Month', value: 'M' },
   { text: 'Year', value: 'Y' },
 ];
-const selectedInterval = reactive<FormInput<Interval>>({
-  model: { text: 'Month', value: 'M' },
+const selectedInterval = reactive<FormInput<string>>({
+  model: 'M',
   disabled: false,
 });
 
@@ -197,8 +197,8 @@ const durations: Duration[] = [
   { text: 'Month', value: 'M' },
   { text: 'Year', value: 'Y' },
 ];
-const selectedDuration = reactive<FormInput<Duration>>({
-  model: { text: 'Year', value: 'Y' },
+const selectedDuration = reactive<FormInput<string>>({
+  model: 'Y',
   disabled: false,
 });
 
@@ -224,7 +224,7 @@ const createWarrantyType = async () => {
 
   const payload = {
     name: warrantyName.model,
-    algorithm: `${selectedInterval.model.value}|${numberInterval.model}|${selectedDuration.model.value}|${numberDuration.model}`,
+    algorithm: `${selectedInterval.model}|${numberInterval.model}|${selectedDuration.model}|${numberDuration.model}`,
   };
 
   const { status } = await useApiFetch('/admin/warranty-types', {
