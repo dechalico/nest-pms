@@ -113,89 +113,30 @@ export class WarrantyType extends BaseEntity {
 }
 
 interface Warranty {
-  id?: ObjectId | string;
+  _id: ObjectId | string;
   name: string;
   warranty_date: Date;
-  engineers: Array<string>;
+  engineers: Array<ObjectId | string>;
   isDone: boolean;
 }
 
-interface WarrantyHistory {
-  id?: ObjectId | string;
-  date_extended: Date;
+export class WarrantyHistory extends BaseEntity {
+  warranty_type_id: ObjectId | string;
+  pms_id: ObjectId | string;
   isLock: boolean;
   warranties: Array<Warranty>;
-}
-
-interface EngineerPms {
-  firstName: string;
-  lastName: string;
-  middleName: string;
-  area_office_id: ObjectId | string;
-  id: ObjectId | string;
-  date_created: Date;
-  date_updated: Date;
-}
-
-interface PmsPayload {
-  id?: ObjectId | string;
-  date_created: Date;
-  date_updated: Date;
-  client: {
-    name: string;
-    city: string;
-    area_office_id: ObjectId | string;
-    id: ObjectId | string;
-    date_created: Date;
-    date_updated: Date;
-  };
-  equipmentBrand: {
-    name: string;
-    id: ObjectId | string;
-    date_created: Date;
-    date_updated: Date;
-  };
-  model: string;
-  serialNumber: string;
-  fsrNumber: string;
-  engineers: Array<EngineerPms>;
-  dateInstalled: Date;
-  remarks: string;
-  status: string;
-  warranties: Array<WarrantyHistory>;
 }
 
 export class Pms extends BaseEntity {
   client: Client;
   equipmentBrand: EquipmentBrand;
   model: string;
-  serialNumber: string;
+  serialNumbers: Array<string>;
   fsrNumber: string;
-  engineers: Array<Engineer>;
+  engineers: Array<ObjectId | string>;
   dateInstalled: Date;
   remarks: string;
   status: string;
-  warranties: Array<WarrantyHistory>;
-
-  // constructor(payload: PmsPayload) {
-  //   super(payload);
-  //   this.client = new Client(payload.client);
-  //   this.equipmentBrand = new EquipmentBrand(payload.equipmentBrand);
-  //   this.model = payload.model;
-  //   this.serialNumber = payload.serialNumber;
-  //   this.fsrNumber = payload.fsrNumber;
-  //   this.engineers = payload.engineers.map((e) => new Engineer(e));
-  //   this.dateInstalled = payload.dateInstalled;
-  //   this.remarks = payload.remarks;
-  //   this.warranties = payload.warranties.map((w) => {
-  //     w.id = !w.id ? new ObjectId() : objectIdCreator(w.id);
-  //     w.warranties = w.warranties.map((e) => {
-  //       e.id = !e.id ? new ObjectId() : objectIdCreator(e.id);
-  //       return e;
-  //     });
-  //     return w;
-  //   });
-  // }
 }
 
 export class InvitedToken extends BaseEntity {
