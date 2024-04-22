@@ -112,30 +112,71 @@ export class WarrantyType extends BaseEntity {
   algorithm: string;
 }
 
-interface Warranty {
+export class Warranty {
+  @Expose({ name: 'id' })
+  @Transform(({ value }: { value: ObjectId }) => value.toString())
   _id: ObjectId | string;
+
+  @Expose()
   name: string;
+
+  @Expose({ name: 'warrantyDate' })
   warranty_date: Date;
-  engineers: Array<ObjectId | string>;
+
+  @Expose({ name: 'engineersId' })
+  @Transform(({ value }: { value: Array<ObjectId> }) => value.map((v) => v.toString()))
+  engineers_id: Array<ObjectId | string>;
+
+  @Expose()
   isDone: boolean;
 }
 
 export class WarrantyHistory extends BaseEntity {
+  @Expose({ name: 'warrantyTypeId' })
+  @Transform(({ value }: { value: ObjectId }) => value.toString())
   warranty_type_id: ObjectId | string;
+
+  @Expose({ name: 'pmsId' })
+  @Transform(({ value }: { value: ObjectId }) => value.toString())
   pms_id: ObjectId | string;
+
+  @Expose()
   isLock: boolean;
+
+  @Expose()
+  @Type(() => Warranty)
   warranties: Array<Warranty>;
 }
 
 export class Pms extends BaseEntity {
+  @Expose()
+  @Type(() => Client)
   client: Client;
+
+  @Expose()
+  @Type(() => EquipmentBrand)
   equipmentBrand: EquipmentBrand;
+
+  @Expose()
   model: string;
+
+  @Expose()
   serialNumbers: Array<string>;
+
+  @Expose()
   fsrNumber: string;
-  engineers: Array<ObjectId | string>;
+
+  @Expose({ name: 'engineersId' })
+  @Transform(({ value }: { value: Array<ObjectId> }) => value.map((v) => v.toString()))
+  engineers_id: Array<ObjectId | string>;
+
+  @Expose()
   dateInstalled: Date;
+
+  @Expose()
   remarks: string;
+
+  @Expose()
   status: string;
 }
 
