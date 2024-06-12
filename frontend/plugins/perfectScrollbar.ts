@@ -1,5 +1,5 @@
-import PerfectScrollbar from 'vue3-perfect-scrollbar';
+import { PerfectScrollbarPlugin } from 'vue3-perfect-scrollbar';
 
 export default defineNuxtPlugin((app) => {
-  app.vueApp.use(PerfectScrollbar);
+  app.vueApp.use(PerfectScrollbarPlugin);
 });
