@@ -47,7 +47,7 @@ export class PmsService {
       if (
         !checkEngineersRes.succeeded ||
         !checkEngineersRes.result ||
-        checkEngineersRes.result.length != args.clientId.length
+        checkEngineersRes.result.length != args.engineersId.length
       ) {
         return AppResult.createFailed(
           new Error('Invalid engineer ids.'),
@@ -62,11 +62,8 @@ export class PmsService {
         area_office_id: args.areaOfficeId,
         client: {
           _id: client.id,
-          area_office_id: client.areaOfficeId,
           city: client.city,
           name: client.name,
-          date_created: undefined,
-          date_updated: undefined,
         },
         date_created: new Date(),
         dateInstalled: args.dateInstalled,
@@ -79,14 +76,12 @@ export class PmsService {
         equipmentBrand: {
           _id: equipmentBrand.id,
           name: equipmentBrand.name,
-          date_created: undefined,
-          date_updated: undefined,
         },
         fsrNumber: args.fsrNumber,
         model: args.model,
         remarks: args.remarks,
         serialNumbers: args.serialNumbers,
-        status: 'ongoing',
+        status: args.status,
         date_updated: undefined,
       });
     } catch (error) {

@@ -34,7 +34,7 @@ export class CreatePmsHandler implements ICreatePmsHandler {
         model: args.model,
         remarks: args.remarks,
         serialNumbers: args.serialNumbers,
-        status: 'Active',
+        status: 'active',
       });
       if (!createRes.succeeded || !createRes.result) {
         return AppResult.createFailed(

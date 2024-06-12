@@ -8,6 +8,7 @@ import { EngineerController } from './adminController/engineer.controler';
 import { ClientController } from './adminController/client.controller';
 import { EquipmentBrandController } from './adminController/equipmentBrand.controller';
 import { WarrantyTypeController } from './adminController/warrantyType.controller';
+import { PmsController } from './adminController/pms.controller';
 
 @Module({
   imports: [AuthModule, AdminModule],
@@ -19,6 +20,7 @@ import { WarrantyTypeController } from './adminController/warrantyType.controlle
     ClientController,
     EquipmentBrandController,
     WarrantyTypeController,
+    PmsController,
   ],
 })
 export class ControllerModule {}

@@ -48,13 +48,11 @@ export class EngineerRepository extends BaseRepositoryService<Engineer> {
       const filter = {};
 
       if (args.filter?._id) {
-        filter['$match'] = {
-          _id: {
-            $in:
-              args.filter?._id instanceof Array
-                ? args.filter._id.map((i) => objectIdCreator(i))
-                : [objectIdCreator(args.filter._id)],
-          },
+        filter['_id'] = {
+          $in:
+            args.filter?._id instanceof Array
+              ? args.filter._id.map((i) => objectIdCreator(i))
+              : [objectIdCreator(args.filter._id)],
         };
       }
 
@@ -101,12 +99,12 @@ export class EngineerRepository extends BaseRepositoryService<Engineer> {
 
       return AppResult.createSucceeded(
         instanceToPlain(result, { excludeExtraneousValues: true }),
-        'Successfully get all users',
+        'Successfully get all engineers',
       );
     } catch (error) {
       return AppResult.createFailed(
         error,
-        'An error occured when getting all users',
+        'An error occured when getting all engineers',
         AppErrorCodes.InternalError,
       );
     }

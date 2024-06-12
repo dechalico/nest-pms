@@ -3,7 +3,7 @@ import { Transform, Expose, Type } from 'class-transformer';
 
 export abstract class BaseEntity {
   @Expose({ name: 'id' })
-  @Transform(({ value }: { value: ObjectId }) => value.toString())
+  @Transform(({ value }: { value: ObjectId }) => value?.toString())
   _id: ObjectId | string;
 
   @Expose({ name: 'dateCreated' })
@@ -28,7 +28,7 @@ export class Client extends BaseEntity {
   city: string;
 
   @Expose({ name: 'areaOfficeId' })
-  @Transform(({ value }: { value: ObjectId }) => value.toString())
+  @Transform(({ value }: { value: ObjectId }) => value?.toString())
   area_office_id: ObjectId | string;
 }
 
@@ -43,11 +43,11 @@ export class Engineer extends BaseEntity {
   middleName: string;
 
   @Expose({ name: 'areaOfficeId' })
-  @Transform(({ value }: { value: ObjectId }) => value.toString())
+  @Transform(({ value }: { value: ObjectId }) => value?.toString())
   area_office_id: ObjectId | string;
 
   @Expose({ name: 'createdBy' })
-  @Transform(({ value }: { value: ObjectId }) => value.toString())
+  @Transform(({ value }: { value: ObjectId }) => value?.toString())
   created_by: ObjectId | string;
 
   @Expose({ name: 'areaOffice' })
@@ -80,7 +80,7 @@ export class User extends BaseEntity {
   roles: Array<string>;
 
   @Expose({ name: 'areaOfficeId' })
-  @Transform(({ value }: { value: ObjectId }) => value.toString())
+  @Transform(({ value }: { value: ObjectId }) => value?.toString())
   area_office_id: ObjectId | string;
 
   @Expose({ name: 'areaOffice' })
@@ -114,7 +114,7 @@ export class WarrantyType extends BaseEntity {
 
 export class Warranty {
   @Expose({ name: 'id' })
-  @Transform(({ value }: { value: ObjectId }) => value.toString())
+  @Transform(({ value }: { value: ObjectId }) => value?.toString())
   _id: ObjectId | string;
 
   @Expose()
@@ -124,7 +124,7 @@ export class Warranty {
   warranty_date: Date;
 
   @Expose({ name: 'engineersId' })
-  @Transform(({ value }: { value: Array<ObjectId> }) => value.map((v) => v.toString()))
+  @Transform(({ value }: { value: Array<ObjectId> }) => value.map((v) => v?.toString()))
   engineers_id: Array<ObjectId | string>;
 
   @Expose()
@@ -133,11 +133,11 @@ export class Warranty {
 
 export class WarrantyHistory extends BaseEntity {
   @Expose({ name: 'warrantyTypeId' })
-  @Transform(({ value }: { value: ObjectId }) => value.toString())
+  @Transform(({ value }: { value: ObjectId }) => value?.toString())
   warranty_type_id: ObjectId | string;
 
   @Expose({ name: 'pmsId' })
-  @Transform(({ value }: { value: ObjectId }) => value.toString())
+  @Transform(({ value }: { value: ObjectId }) => value?.toString())
   pms_id: ObjectId | string;
 
   @Expose()
@@ -151,12 +151,13 @@ export class WarrantyHistory extends BaseEntity {
 export class Pms extends BaseEntity {
   @Expose()
   @Type(() => Client)
-  client: Client;
+  client: Partial<Client>;
 
   @Expose()
   @Type(() => EquipmentBrand)
-  equipmentBrand: EquipmentBrand;
+  equipmentBrand: Partial<EquipmentBrand>;
 
+  @Expose()
   @Type(() => Engineer)
   engineers: Array<Engineer>;
 
@@ -170,7 +171,7 @@ export class Pms extends BaseEntity {
   fsrNumber: string;
 
   @Expose({ name: 'areaOfficeId' })
-  @Transform(({ value }: { value: ObjectId }) => value.toString())
+  @Transform(({ value }: { value: ObjectId }) => value?.toString())
   area_office_id: ObjectId | string;
 
   @Expose()
@@ -194,18 +195,18 @@ export class InvitedToken extends BaseEntity {
   is_used: boolean;
 
   @Expose({ name: 'areaOfficeId' })
-  @Transform(({ value }: { value: ObjectId }) => value && value.toString())
+  @Transform(({ value }: { value: ObjectId }) => value?.toString())
   area_office_id: ObjectId | string;
 
   @Expose({ name: 'usedBy' })
-  @Transform(({ value }: { value: ObjectId }) => value && value.toString())
+  @Transform(({ value }: { value: ObjectId }) => value?.toString())
   used_by: ObjectId | string;
 
   @Expose({ name: 'dateUsed' })
   date_used: Date;
 
   @Expose({ name: 'createdBy' })
-  @Transform(({ value }: { value: ObjectId }) => value && value.toString())
+  @Transform(({ value }: { value: ObjectId }) => value?.toString())
   created_by: ObjectId | string;
 }
 
