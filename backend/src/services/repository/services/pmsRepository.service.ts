@@ -3,6 +3,7 @@ import { Pms } from '../entities';
 import { Injectable, Inject } from '@nestjs/common';
 import { Db } from 'mongodb';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
+import { objectIdCreator } from '../helper';
 
 @Injectable()
 export class PmsRepository extends BaseRepositoryService<Pms> {
@@ -10,16 +11,24 @@ export class PmsRepository extends BaseRepositoryService<Pms> {
     super(db, 'pms', Pms);
   }
 
-  async updateAsync(entity: Partial<Pms>): Promise<AppResult<Pms>> {
-    try {
-      const { warranties, ...rest } = entity;
-      return super.updateAsync(rest);
-    } catch (error) {
-      return AppResult.createFailed(
-        error,
-        'An error occured when trying to get all entities.',
-        AppErrorCodes.InternalError,
-      );
-    }
+  createAsync(entity: Pms): Promise<AppResult<any>> {
+    entity.client._id = objectIdCreator(entity.client._id);
+    entity.equipmentBrand._id = objectIdCreator(entity.equipmentBrand._id);
+    entity.engineers.forEach((e) => (e._id = objectIdCreator(e._id)));
+    return super.createAsync({
+      _id: undefined,
+      area_office_id: objectIdCreator(entity.area_office_id),
+      client: entity.client,
+      date_created: entity.date_created,
+      date_updated: entity.date_updated,
+      dateInstalled: entity.dateInstalled,
+      engineers: entity.engineers,
+      equipmentBrand: entity.equipmentBrand,
+      fsrNumber: entity.fsrNumber,
+      model: entity.model,
+      remarks: entity.remarks,
+      serialNumbers: entity.serialNumbers,
+      status: entity.status,
+    });
   }
 }

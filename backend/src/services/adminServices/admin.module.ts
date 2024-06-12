@@ -32,6 +32,8 @@ import { IGetEquipmentBrandHandler } from './pmsServices/handlers/iGetEquipmentB
 import { GetEquipmentBrandsHandler } from './pmsServices/services/getEquipmentBrandsHandler';
 import { IGetWarrantyTypesHandler } from './pmsServices/handlers/iGetWarrantyTypesHandler';
 import { GetWarrantyTypesHandler } from './pmsServices/services/getWarrantyTypesHandler';
+import { ICreatePmsHandler } from './pmsServices/handlers/iCreatePmsHandler';
+import { CreatePmsHandler } from './pmsServices/services/createPmsHandler';
 
 @Module({
   imports: [BaseServicesModule, SecurityModule, AuthModule],
@@ -96,6 +98,10 @@ import { GetWarrantyTypesHandler } from './pmsServices/services/getWarrantyTypes
       provide: IGetWarrantyTypesHandler,
       useClass: GetWarrantyTypesHandler,
     },
+    {
+      provide: ICreatePmsHandler,
+      useClass: CreatePmsHandler,
+    },
   ],
   exports: [
     ICreateOfficeHandler,
@@ -113,6 +119,7 @@ import { GetWarrantyTypesHandler } from './pmsServices/services/getWarrantyTypes
     IGetUsersHandler,
     IGetEquipmentBrandHandler,
     IGetWarrantyTypesHandler,
+    ICreatePmsHandler,
   ],
 })
 export class AdminModule {}

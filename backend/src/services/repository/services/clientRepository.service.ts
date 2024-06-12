@@ -4,7 +4,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { Db } from 'mongodb';
 import { AppResult, AppErrorCodes } from '../../../common/app.result';
 import { objectIdCreator } from '../helper';
-import {} from '../entities';
+import { OmitType } from '@nestjs/mapped-types';
 
 @Injectable()
 export class ClientRepository extends BaseRepositoryService<Client> {
@@ -44,7 +44,7 @@ export class ClientRepository extends BaseRepositoryService<Client> {
     }
   }
 
-  async getAllAsync(args: GetAllArgs = { filter: {} }): Promise<AppResult<any>> {
+  async getAllAsync(args: ClientOptions = { filter: {} }): Promise<AppResult<any>> {
     try {
       if (args.filter?.area_office_id) {
         args.filter.area_office_id = objectIdCreator(args.filter.area_office_id);
@@ -58,4 +58,11 @@ export class ClientRepository extends BaseRepositoryService<Client> {
       );
     }
   }
+}
+
+class ClientOptions extends OmitType(GetAllArgs, ['filter']) {
+  filter: {
+    _id?: any;
+    area_office_id?: any;
+  };
 }
