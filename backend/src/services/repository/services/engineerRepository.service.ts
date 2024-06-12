@@ -44,8 +44,22 @@ export class EngineerRepository extends BaseRepositoryService<Engineer> {
   async getAllAsync(args?: GetAllArgs): Promise<AppResult<any>> {
     try {
       const stages = [];
+
+      const filter = {};
+
+      if (args.filter?._id) {
+        filter['$match'] = {
+          _id: {
+            $in:
+              args.filter?._id instanceof Array
+                ? args.filter._id.map((i) => objectIdCreator(i))
+                : [objectIdCreator(args.filter._id)],
+          },
+        };
+      }
+
       stages.push({
-        $match: {},
+        $match: filter,
       });
 
       if (args.include?.area_office) {

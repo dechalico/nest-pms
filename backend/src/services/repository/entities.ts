@@ -157,6 +157,9 @@ export class Pms extends BaseEntity {
   @Type(() => EquipmentBrand)
   equipmentBrand: EquipmentBrand;
 
+  @Type(() => Engineer)
+  engineers: Array<Engineer>;
+
   @Expose()
   model: string;
 
@@ -166,9 +169,9 @@ export class Pms extends BaseEntity {
   @Expose()
   fsrNumber: string;
 
-  @Expose({ name: 'engineersId' })
-  @Transform(({ value }: { value: Array<ObjectId> }) => value.map((v) => v.toString()))
-  engineers_id: Array<ObjectId | string>;
+  @Expose({ name: 'areaOfficeId' })
+  @Transform(({ value }: { value: ObjectId }) => value.toString())
+  area_office_id: ObjectId | string;
 
   @Expose()
   dateInstalled: Date;
@@ -207,6 +210,8 @@ export class InvitedToken extends BaseEntity {
 }
 
 export class GetAllArgs {
-  filter?: any;
+  filter?: {
+    _id?: any;
+  };
   include?: any;
 }
