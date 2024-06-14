@@ -1,4 +1,3 @@
-import { OmitType } from '@nestjs/mapped-types';
 import { Expose, Type } from 'class-transformer';
 
 class Engineer {
@@ -34,7 +33,7 @@ class EquipmentBrand {
   name: string;
 }
 
-export class PmsSchema {
+class Pms {
   @Expose()
   id: string;
 
@@ -72,17 +71,8 @@ export class PmsSchema {
   status: string;
 }
 
-export class CreatePms extends OmitType(PmsSchema, [
-  'id',
-  'client',
-  'equipmentBrand',
-  'engineers',
-]) {
-  clientId: string;
-  equipmentBrandId: string;
-  engineersId: Array<string>;
-}
+export class GetAllPmsArgs {}
 
-export class GetPmsArgs {
-  areaOfficeId?: string;
+export class GetAllPmsResult {
+  pms: Pms[];
 }

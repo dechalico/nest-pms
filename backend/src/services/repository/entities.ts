@@ -211,8 +211,6 @@ export class InvitedToken extends BaseEntity {
 }
 
 export class GetAllArgs {
-  filter?: {
-    _id?: any;
-  };
+  filter?: any;
   include?: any;
 }
