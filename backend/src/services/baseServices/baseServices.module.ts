@@ -9,6 +9,7 @@ import { ClientService } from './services/client.service';
 import { EquipmentBrandService } from './services/equipmentBrand.service';
 import { WarrantyTypeService } from './services/warrantyType.service';
 import { PmsService } from './services/pms.service';
+import { WarrantyService } from './services/warranty.service';
 
 @Module({
   imports: [RepositoryModule, SecurityModule],
@@ -21,6 +22,7 @@ import { PmsService } from './services/pms.service';
     EquipmentBrandService,
     WarrantyTypeService,
     PmsService,
+    WarrantyService,
   ],
   exports: [
     UserService,
@@ -31,6 +33,7 @@ import { PmsService } from './services/pms.service';
     EquipmentBrandService,
     WarrantyTypeService,
     PmsService,
+    WarrantyService,
   ],
 })
 export class BaseServicesModule {}
