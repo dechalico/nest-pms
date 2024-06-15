@@ -1,5 +1,5 @@
 import { BaseRepositoryService } from './baseRepository.service';
-import { Pms } from '../entities';
+import { GetAllArgs, Pms } from '../entities';
 import { Injectable, Inject } from '@nestjs/common';
 import { Db } from 'mongodb';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
@@ -30,5 +30,14 @@ export class PmsRepository extends BaseRepositoryService<Pms> {
       serialNumbers: entity.serialNumbers,
       status: entity.status,
     });
+  }
+
+  getAllAsync(args?: GetAllArgs): Promise<AppResult<any>> {
+    const filter: Record<string, any> = {};
+    if (args?.filter?.areaOfficeId) {
+      filter.area_office_id = objectIdCreator(args?.filter?.areaOfficeId);
+    }
+
+    return super.getAllAsync(filter);
   }
 }

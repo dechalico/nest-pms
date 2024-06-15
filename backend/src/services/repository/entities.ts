@@ -112,11 +112,7 @@ export class WarrantyType extends BaseEntity {
   algorithm: string;
 }
 
-export class Warranty {
-  @Expose({ name: 'id' })
-  @Transform(({ value }: { value: ObjectId }) => value?.toString())
-  _id: ObjectId | string;
-
+export class Warranty extends BaseEntity {
   @Expose()
   name: string;
 
@@ -211,8 +207,6 @@ export class InvitedToken extends BaseEntity {
 }
 
 export class GetAllArgs {
-  filter?: {
-    _id?: any;
-  };
+  filter?: any;
   include?: any;
 }

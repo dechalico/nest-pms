@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PmsRepository } from '../../repository/services/pmsRepository.service';
-import { CreatePms, PmsSchema } from '../schemas/pms.schema';
+import { CreatePms, GetPmsArgs, PmsSchema } from '../schemas/pms.schema';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
 import { ClientRepository } from '../../repository/services/clientRepository.service';
 import { EquipmentBrandRepository } from '../../repository/services/equipmentBrandRepository.service';
@@ -88,6 +88,28 @@ export class PmsService {
       return AppResult.createFailed(
         error,
         'An error occured when creating pms.',
+        AppErrorCodes.InternalError,
+      );
+    }
+  }
+
+  async getAllPmsAsync(args: GetPmsArgs = {}): Promise<AppResult<PmsSchema[]>> {
+    try {
+      const filter: Record<string, string> = {};
+      if (args.areaOfficeId) {
+        filter.areaOfficeId = args.areaOfficeId;
+      }
+      const allPmsRes = await this.pmsRepository.getAllAsync({ filter: filter });
+      if (!allPmsRes.succeeded || !allPmsRes.result) {
+        return AppResult.createFailed(allPmsRes.error.error, allPmsRes.message);
+      }
+
+      const pms: PmsSchema[] = allPmsRes.result;
+      return AppResult.createSucceeded(pms, 'Successfully get all pms.');
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'An error occured when getting all pms.',
         AppErrorCodes.InternalError,
       );
     }
