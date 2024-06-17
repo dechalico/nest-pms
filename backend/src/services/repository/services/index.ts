@@ -7,6 +7,7 @@ import { WarrantyTypeRepository } from './warrantyTypeRepository.service';
 import { PmsRepository } from './pmsRepository.service';
 import { InvitedTokenRepository } from './invitedTokenRepository.service';
 import { WarrantyRepository } from './warrantyRepository.service';
+import { WarrantyHistoryRepository } from './warrantyHistoryRepository.service';
 
 export default {
   AreaOfficeRepository,
@@ -18,4 +19,5 @@ export default {
   PmsRepository,
   InvitedTokenRepository,
   WarrantyRepository,
+  WarrantyHistoryRepository,
 };
