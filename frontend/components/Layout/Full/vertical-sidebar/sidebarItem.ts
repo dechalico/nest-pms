@@ -14,6 +14,7 @@ import {
   BuildingHospitalIcon,
   AppsFilledIcon,
   ReceiptIcon,
+  HeartRateMonitorIcon,
 } from 'vue-tabler-icons';
 
 export interface menu {
@@ -49,6 +50,11 @@ const sidebarItem: menu[] = [
     title: 'Warranties',
     icon: ReceiptIcon,
     to: '/monitoring/warranty-types',
+  },
+  {
+    title: 'Pms',
+    icon: HeartRateMonitorIcon,
+    to: '/monitoring/pms',
   },
   { header: 'Management' },
   {
