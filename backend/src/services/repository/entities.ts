@@ -141,7 +141,7 @@ export class WarrantyHistory extends BaseEntity {
 
   @Expose()
   @Type(() => Warranty)
-  warranties: Array<Warranty>;
+  warranties: Array<Warranty | ObjectId | string>;
 }
 
 export class Pms extends BaseEntity {

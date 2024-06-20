@@ -1,0 +1,55 @@
+import { Injectable } from '@nestjs/common';
+import { WarrantyHistoryRepository } from '../../repository/services/warrantyHistoryRepository.service';
+import { CreateWarrantyHistory, WarrantyHistorySchema } from '../schemas/warrantyHistory.schema';
+import { AppErrorCodes, AppResult } from '../../../common/app.result';
+import { WarrantyTypeRepository } from '../../repository/services/warrantyTypeRepository.service';
+import { PmsRepository } from '../../repository/services/pmsRepository.service';
+
+@Injectable()
+export class WarrantyHistoryService {
+  constructor(
+    private readonly warrantyHistoryRepo: WarrantyHistoryRepository,
+    private readonly pmsRepo: PmsRepository,
+    private readonly warrantyTypeRepo: WarrantyTypeRepository,
+  ) {}
+
+  async createWarrantyHistory(
+    args: CreateWarrantyHistory,
+  ): Promise<AppResult<WarrantyHistorySchema>> {
+    try {
+      const warrantyTypeRes = await this.warrantyTypeRepo.getByIdAsync(args.warrantyTypeId);
+      if (!warrantyTypeRes.succeeded || !warrantyTypeRes.result) {
+        return AppResult.createFailed(
+          new Error('Invalid warranty type id.'),
+          'Invalid warranty type id.',
+          AppErrorCodes.InvalidRequest,
+        );
+      }
+
+      const pmsRes = await this.pmsRepo.getByIdAsync(args.pmsId);
+      if (!pmsRes.succeeded || !pmsRes.result) {
+        return AppResult.createFailed(
+          new Error('Invalid pms id.'),
+          'Invalid pms id.',
+          AppErrorCodes.InvalidRequest,
+        );
+      }
+
+      return this.warrantyHistoryRepo.createAsync({
+        _id: undefined,
+        pms_id: args.pmsId,
+        warranty_type_id: args.warrantyTypeId,
+        warranties: args.warranties,
+        isLock: args.isLocked,
+        date_created: new Date(),
+        date_updated: undefined,
+      });
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'An error occured when creating warranty history.',
+        AppErrorCodes.InternalError,
+      );
+    }
+  }
+}
