@@ -1,0 +1,6 @@
+.nuxt
+.output
+.gitignore
+node_modules
+Dockerfile
+.prettierrc
