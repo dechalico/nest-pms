@@ -42,6 +42,11 @@ export class CreatePmsArgs {
   @IsDateString()
   @IsNotEmpty()
   dateInstalled: Date;
+
+  @Expose()
+  @IsString()
+  @IsNotEmpty()
+  warrantyTypeId: string;
 }
 
 class Client {

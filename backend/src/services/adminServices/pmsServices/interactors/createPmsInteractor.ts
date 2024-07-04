@@ -39,6 +39,7 @@ export class CreatePmsArgs extends OmitType(Pms, [
   clientId: string;
   equipmentBrandId: string;
   engineersId: string[];
+  warrantyTypeId: string;
 }
 
 export class CreatePmsResult extends Pms {}
