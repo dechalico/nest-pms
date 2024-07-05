@@ -65,10 +65,10 @@ jobs:
         run: echo ${{ secrets.SERVER_USER_PASSWORD }} | ssh -tt ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} 'sudo lxc file push ~/smi/project.tar.gz smi/root/pms/'
 
       - name: Extract compress project inside lxd
-        run: echo ${{ secrets.SERVER_USER_PASSWORD }} | ssh -tt ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} 'sudo lxc exec smi tar zxfv /root/pms/project.tar.gz'
+        run: echo ${{ secrets.SERVER_USER_PASSWORD }} | ssh -tt ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} 'sudo lxc exec smi tar zxfv /root/pms/project.tar.gz /root/pms/'
 
       - name: Running docker compose down inside lxd to stop all services
-        run: echo ${{ secrets.SERVER_USER_PASSWORD }} | ssh -tt ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} 'sudo lxc exec smi docker compose down'
+        run: echo ${{ secrets.SERVER_USER_PASSWORD }} | ssh -tt ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} 'sudo lxc exec smi docker compose -f /root/pms/docker-compose.yml down'
 
       - name: Running docker compose up and build inside lxd
-        run: echo ${{ secrets.SERVER_USER_PASSWORD }} | ssh -tt ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} 'sudo lxc exec smi docker compose up -d -f /root/pms/docker-compose.yml --build'
+        run: echo ${{ secrets.SERVER_USER_PASSWORD }} | ssh -tt ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} 'sudo lxc exec smi docker compose -f /root/pms/docker-compose.yml up -d --build'
