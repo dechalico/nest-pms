@@ -27,16 +27,16 @@ jobs:
           envkey_DATABASE_NAME: ${{ secrets.DB_NAME }}
           envkey_JWT_EXPIRES: 1d
           envkey_JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          envkey_JWT_ISSUER: smi.apps.dexi.me
+          envkey_JWT_ISSUER: pms.apps.dexi.me
           envkey_COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}
-          envkey_FRONTEND_URL: https://smi.apps.dexi.me
+          envkey_FRONTEND_URL: https://pms.apps.dexi.me
           directory: backend
           sort_keys: false
 
       - name: Frontend setup .env file
         uses: SpicyPizza/create-envfile@v2.0
         with:
-          envkey_API_BASE: https://smi.apps.dexi.me/api/v1
+          envkey_API_BASE: https://pms.apps.dexi.me/api/v1
           directory: frontend
           sort_keys: false
 
