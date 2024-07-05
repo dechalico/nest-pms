@@ -1,0 +1,72 @@
+name: smi-production
+
+run-name: ${{ github.actor }} is running the action
+
+on:
+  push:
+    branches: [master]
+
+concurrency:
+  group: "${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Backend setup .env file
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_PORT: 3000
+          envkey_DATABASE_USERNAME: ${{ secrets.DB_USERNAME }}
+          envkey_DATABASE_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          envkey_DATABASE_PORT: ${{ secrets.DB_PORT }}
+          envkey_DATABASE_HOST: ${{ secrets.DB_HOST }}
+          envkey_DATABASE_NAME: ${{ secrets.DB_NAME }}
+          envkey_JWT_EXPIRES: 1d
+          envkey_JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          envkey_JWT_ISSUER: smi.apps.dexi.me
+          envkey_COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}
+          envkey_FRONTEND_URL: https://smi.apps.dexi.me
+          directory: backend
+          sort_keys: false
+
+      - name: Frontend setup .env file
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_API_BASE: https://smi.apps.dexi.me/api/v1
+          directory: frontend
+          sort_keys: false
+
+      - name: Update docker compose file configuration variables
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: ./docker-compose.yml
+        env:
+          services.mongo-db.environment.MONGO_INITDB_ROOT_USERNAME: ${{ secrets.DB_USERNAME }}
+          services.mongo-db.environment.MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          services.mongo-db.environment.MONGO_INITDB_DATABASE: ${{ secrets.DB_NAME }}
+
+      - name: Setup ssh key and known host
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          known_hosts: ${{ secrets.SERVER_KNOWN_HOSTS }}
+
+      - name: Compress and zip project directories
+        run: tar zcfv project.tar.gz backend frontend server docker-compose.yml
+
+      - name: Copy compressed project to server
+        run: scp project.tar.gz ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:~/smi/
+
+      - name: Copy compressed project from server to lxd
+        run: echo ${{ secrets.SERVER_USER_PASSWORD }} | ssh -tt ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} 'sudo lxc file push ~/smi/project.tar.gz smi/root/pms/'
+      
+      - name: Extract compress project inside lxd
+        run: echo ${{ secrets.SERVER_USER_PASSWORD }} | ssh -tt ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} 'sudo lxc exec smi tar zxfv /root/pms/project.tar.gz'
+
+      - name: Running docker compose inside lxd
+        run: echo ${{ secrets.SERVER_USER_PASSWORD }} | ssh -tt ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} 'sudo lxc exec smi docker compose down'
+        run: echo ${{ secrets.SERVER_USER_PASSWORD }} | ssh -tt ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} 'sudo lxc exec smi docker compose up -d -f /root/pms/docker-compose.yml --build'

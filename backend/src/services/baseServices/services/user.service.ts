@@ -184,11 +184,13 @@ export class UserService {
 
   async getAllUsers(args: GetUsersArgs = {}): Promise<AppResult<Array<UserSchema>>> {
     try {
-      const usersRes = await this.userRepository.getAllAsync({
-        include: {
+      const options: Record<string, any> = {};
+      if (args.includes?.areaOffice) {
+        options.include = {
           area_office: args.includes.areaOffice,
-        },
-      });
+        };
+      }
+      const usersRes = await this.userRepository.getAllAsync(options);
       if (!usersRes.succeeded || !usersRes.result) {
         return AppResult.createFailed(
           new Error(usersRes.message),
