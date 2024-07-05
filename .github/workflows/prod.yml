@@ -65,7 +65,7 @@ jobs:
         run: echo ${{ secrets.SERVER_USER_PASSWORD }} | ssh -tt ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} 'sudo lxc file push ~/smi/project.tar.gz smi/root/pms/'
 
       - name: Extract compress project inside lxd
-        run: echo ${{ secrets.SERVER_USER_PASSWORD }} | ssh -tt ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} 'sudo lxc exec smi tar zxfv /root/pms/project.tar.gz /root/pms/'
+        run: echo ${{ secrets.SERVER_USER_PASSWORD }} | ssh -tt ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} 'sudo lxc exec smi tar zxfv /root/pms/ /root/pms/project.tar.gz'
 
       - name: Running docker compose down inside lxd to stop all services
         run: echo ${{ secrets.SERVER_USER_PASSWORD }} | ssh -tt ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} 'sudo lxc exec smi docker compose -f /root/pms/docker-compose.yml down'
