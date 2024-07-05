@@ -36,6 +36,8 @@ services:
     build: ./server/nginx
     networks:
       - app-network
+    ports:
+      - 8080:80
 
 volumes:
   pms-db:
