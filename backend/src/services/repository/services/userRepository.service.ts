@@ -62,7 +62,7 @@ export class UserRepository extends BaseRepositoryService<User> {
         $match: {},
       });
 
-      if (args.include.area_office) {
+      if (args.include?.area_office) {
         stages.push({
           $lookup: {
             from: 'area_offices',

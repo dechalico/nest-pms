@@ -1,0 +1,44 @@
+version: "3.1"
+
+services:
+  mongo-db:
+    container_name: mongo-db
+    image: mongo:7.0.12-jammy
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: pms
+      MONGO_INITDB_ROOT_PASSWORD: pms
+      MONGO_INITDB_DATABASE: pms
+    volumes:
+      - pms-db:/data/db
+    networks:
+      - app-network
+
+  pms-backend:
+    container_name: pms-backend
+    restart: always
+    build: ./backend
+    networks:
+      - app-network
+    depends_on:
+      - mongo-db
+
+  pms-frontend:
+    container_name: pms-frontend
+    restart: always
+    build: ./frontend
+    networks:
+      - app-network
+
+  web-server:
+    container_name: web-server
+    restart: always
+    build: ./server/nginx
+    networks:
+      - app-network
+
+volumes:
+  pms-db:
+
+networks:
+  app-network:

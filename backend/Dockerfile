@@ -35,6 +35,7 @@ RUN adduser -S nestjs -u 1001
 
 COPY --from=builder --chown=nestjs:nodejs /app/dist ./dist
 COPY --from=builder --chown=nestjs:nodejs /app/node_modules ./node_modules
+COPY .env .
 
 USER nestjs
 
