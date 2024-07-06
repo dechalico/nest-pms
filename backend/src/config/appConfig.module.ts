@@ -4,7 +4,7 @@ import Configuration from './configuration';
 import { AppConfigService } from './appConfig.service';
 
 @Module({
-  imports: [ConfigModule.forRoot({ load: [Configuration] })],
+  imports: [ConfigModule.forRoot({ load: [Configuration], envFilePath: ['.env', '.env.local'] })],
   providers: [AppConfigService],
   exports: [AppConfigService],
 })
