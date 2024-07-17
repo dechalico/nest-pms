@@ -3,7 +3,7 @@
     <v-col cols="12" md="12">
       <UiParentCard title="PMS">
         <template #action>
-          <v-dialog v-model="dialogModel" max-width="400">
+          <v-dialog v-model="dialogModel" max-width="700">
             <template v-slot:activator="{ props }">
               <v-btn
                 v-bind="props"
@@ -16,7 +16,7 @@
               </v-btn>
             </template>
             <template v-slot:default="{ isActive }">
-              <UiParentCard title="New Client">
+              <UiParentCard title="Create Monitoring">
                 <template #action>
                   <v-btn
                     :icon="XIcon"
@@ -25,28 +25,126 @@
                     variant="text"
                   />
                 </template>
-                <v-form
-                  v-model="vFormModel"
-                  @submit.prevent="createClientHandler"
-                  validate-on="blur"
-                  class="pb-3"
-                >
-                  <div>
-                    <v-text-field
-                      label="Name"
-                      v-model.trim="clientName.model"
-                      :rules="clientName.rules"
-                      variant="outlined"
-                      class="mb-5"
-                    ></v-text-field>
-                    <v-text-field
-                      v-model.trim="clientLocation.model"
-                      :rules="clientLocation.rules"
-                      label="Location"
-                      variant="outlined"
-                      class="mb-5"
-                    ></v-text-field>
-                  </div>
+                <v-form v-model="vFormModel" @submit.prevent="" validate-on="blur" class="pb-3">
+                  <v-row class="mb-2" dense>
+                    <v-col cols="12" md="6" class="mb-2 mb-md-0 pr-0 pr-md-2">
+                      <v-label for="field-hospital" class="font-weight-medium mb-0 text-subtitle-1"
+                        >Hospital</v-label
+                      >
+                      <v-autocomplete
+                        id="field-hospital"
+                        variant="outlined"
+                        class="mb-0"
+                        hide-details="auto"
+                        density="compact"
+                      ></v-autocomplete>
+                    </v-col>
+                    <v-col cols="12" md="6" class="pl-0 pl-md-2">
+                      <v-label for="field-principal" class="font-weight-medium mb-0 text-subtitle-1"
+                        >Principal</v-label
+                      >
+                      <v-autocomplete
+                        id="field-principal"
+                        variant="outlined"
+                        class="mb-0"
+                        hide-details="auto"
+                        density="compact"
+                      ></v-autocomplete>
+                    </v-col>
+                  </v-row>
+                  <v-row class="mb-2 mt-0" dense>
+                    <v-col cols="12" md="6" class="mb-2 mb-md-0 pr-0 pr-md-2">
+                      <v-label for="field-model" class="font-weight-medium mb-0 text-subtitle-1"
+                        >Model</v-label
+                      >
+                      <v-text-field
+                        id="field-model"
+                        variant="outlined"
+                        class="mb-0"
+                        hide-details="auto"
+                        density="compact"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="6" class="pl-0 pl-md-2">
+                      <v-label
+                        for="field-fsr-number"
+                        class="font-weight-medium mb-0 text-subtitle-1"
+                        >FSR #</v-label
+                      >
+                      <v-text-field
+                        id="field-fsr-number"
+                        variant="outlined"
+                        class="mb-0"
+                        hide-details="auto"
+                        density="compact"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row class="mb-2 mt-0" dense>
+                    <v-col cols="12" md="6" class="mb-2 mb-md-0 pr-0 pr-md-2">
+                      <v-label
+                        for="field-warranty-type"
+                        class="font-weight-medium mb-0 text-subtitle-1"
+                        >Warranty Type</v-label
+                      >
+                      <v-select
+                        id="field-warranty-type"
+                        variant="outlined"
+                        class="mb-0"
+                        hide-details="auto"
+                        density="compact"
+                      ></v-select>
+                    </v-col>
+                    <v-col cols="12" md="6" class="pl-0 pl-md-2">
+                      <v-label
+                        for="field-date-installed"
+                        class="font-weight-medium mb-0 text-subtitle-1"
+                        >Date Installed</v-label
+                      >
+                      <v-text-field
+                        id="field-date-installed"
+                        variant="outlined"
+                        class="mb-0"
+                        hide-details="auto"
+                        density="compact"
+                        type="date"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row class="mb-2 mt-0" dense>
+                    <v-col>
+                      <v-label
+                        for="field-serial-numbers"
+                        class="font-weight-medium mb-0 text-subtitle-1"
+                        >Serial Numbers</v-label
+                      >
+                      <v-combobox
+                        id="field-serial-numbers"
+                        variant="outlined"
+                        class="mb-0"
+                        chips
+                        multiple
+                        hide-details="auto"
+                        density="compact"
+                      ></v-combobox>
+                    </v-col>
+                  </v-row>
+                  <v-row class="mb-2 mt-0" dense>
+                    <v-col>
+                      <v-label for="field-engineers" class="font-weight-medium mb-0 text-subtitle-1"
+                        >Engineers</v-label
+                      >
+                      <v-select
+                        id="field-engineers"
+                        variant="outlined"
+                        class="mb-0"
+                        chips
+                        multiple
+                        hide-details="auto"
+                        density="compact"
+                      ></v-select>
+                    </v-col>
+                  </v-row>
                   <div class="d-flex justify-end">
                     <v-btn color="primary" rounded text="Submit" class="mr-2" type="submit"></v-btn>
                     <v-btn
@@ -76,7 +174,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(item, count) in clientResult?.pms" :key="item.id">
+              <tr v-for="(item, count) in pmsResult?.pms" :key="item.id">
                 <td>
                   <p class="text-15 font-weight-medium">{{ count + 1 }}</p>
                 </td>
@@ -132,36 +230,7 @@ type PmsResult = {
 const dialogModel = ref<boolean>(false);
 const vFormModel = ref<boolean>(false);
 
-const clientName = reactive<FormInput<string>>({
-  model: '',
-  disabled: false,
-  rules: [(v: string) => !!v || 'Provide valid client name.'],
-});
-const clientLocation = reactive<FormInput<string>>({
-  model: '',
-  disabled: false,
-  rules: [(v: string) => !!v || 'Provide valid location name.'],
-});
-
-const { data: clientResult, refresh: loadClients } = await useApiFetch<PmsResult>('/admin/pms', {
+const { data: pmsResult, refresh: loadPms } = await useApiFetch<PmsResult>('/admin/pms', {
   showError: true,
 });
-
-const createClientHandler = async () => {
-  if (!vFormModel.value) return;
-
-  const payload = {
-    name: clientName.model,
-    city: clientLocation.model,
-  };
-  const { status } = await useApiFetch('/admin/pms', {
-    method: 'post',
-    body: payload,
-    showError: true,
-  });
-  if (status.value === 'success') {
-    dialogModel.value = false;
-    loadClients();
-  }
-};
 </script>
