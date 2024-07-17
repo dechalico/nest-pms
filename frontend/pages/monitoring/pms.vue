@@ -32,9 +32,12 @@
                         >Hospital</v-label
                       >
                       <v-autocomplete
+                        :items="client.data.value?.clients"
+                        item-title="name"
+                        item-value="id"
                         id="field-hospital"
                         variant="outlined"
-                        class="mb-0"
+                        class="mb-0 text-capitalize"
                         hide-details="auto"
                         density="compact"
                       ></v-autocomplete>
@@ -44,9 +47,12 @@
                         >Principal</v-label
                       >
                       <v-autocomplete
+                        :items="equipmentBrand.data.value?.equipmentBrands"
+                        item-title="name"
+                        item-value="id"
                         id="field-principal"
                         variant="outlined"
-                        class="mb-0"
+                        class="mb-0 text-capitalize"
                         hide-details="auto"
                         density="compact"
                       ></v-autocomplete>
@@ -60,7 +66,7 @@
                       <v-text-field
                         id="field-model"
                         variant="outlined"
-                        class="mb-0"
+                        class="mb-0 text-capitalize"
                         hide-details="auto"
                         density="compact"
                       ></v-text-field>
@@ -74,7 +80,7 @@
                       <v-text-field
                         id="field-fsr-number"
                         variant="outlined"
-                        class="mb-0"
+                        class="mb-0 text-capitalize"
                         hide-details="auto"
                         density="compact"
                       ></v-text-field>
@@ -88,9 +94,12 @@
                         >Warranty Type</v-label
                       >
                       <v-select
+                        :items="warranty.data.value?.warrantyTypes"
+                        item-title="name"
+                        item-value="id"
                         id="field-warranty-type"
                         variant="outlined"
-                        class="mb-0"
+                        class="mb-0 text-capitalize"
                         hide-details="auto"
                         density="compact"
                       ></v-select>
@@ -121,7 +130,7 @@
                       <v-combobox
                         id="field-serial-numbers"
                         variant="outlined"
-                        class="mb-0"
+                        class="mb-0 text-capitalize"
                         chips
                         multiple
                         hide-details="auto"
@@ -135,9 +144,12 @@
                         >Engineers</v-label
                       >
                       <v-select
+                        :items="engineer.data.value?.engineers"
+                        item-title="fullName"
+                        item-value="id"
                         id="field-engineers"
                         variant="outlined"
-                        class="mb-0"
+                        class="mb-0 text-capitalize"
                         chips
                         multiple
                         hide-details="auto"
@@ -145,7 +157,7 @@
                       ></v-select>
                     </v-col>
                   </v-row>
-                  <div class="d-flex justify-end">
+                  <div class="d-flex justify-end mt-3">
                     <v-btn color="primary" rounded text="Submit" class="mr-2" type="submit"></v-btn>
                     <v-btn
                       color="error"
@@ -221,14 +233,56 @@
 import UiParentCard from '@/components/shared/UiParentCard.vue';
 import { PencilIcon, TrashIcon, XIcon } from 'vue-tabler-icons';
 import type { Pms } from '@/types/monitoring/pms';
+import type { Client } from '@/types/monitoring/client';
+import type { EquipmentBrand } from '@/types/monitoring/equipmentBrand';
+import type { WarrantyType } from '@/types/monitoring/warrantyType';
+import type { Engineer } from '@/types/management/engineer';
 import type { FormInput } from '@/types/pages/form';
 
 type PmsResult = {
   pms: Pms[];
 };
 
+type ClientResult = {
+  clients: Client[];
+};
+
+type EquipmentBrandResult = {
+  equipmentBrands: EquipmentBrand[];
+};
+
+type WarrantyTypeResult = {
+  warrantyTypes: WarrantyType[];
+};
+
+type EngineerResult = {
+  engineers: Engineer[];
+};
+
 const dialogModel = ref<boolean>(false);
 const vFormModel = ref<boolean>(false);
+
+const clientsRes = useApiFetch<ClientResult>('/admin/clients', {
+  showError: true,
+});
+
+const equipmentBrandRes = useApiFetch<EquipmentBrandResult>('/admin/equipment-brands', {
+  showError: true,
+});
+
+const warrantyRes = useApiFetch<WarrantyTypeResult>('/admin/warranty-types', { showError: true });
+
+const engineerRes = useApiFetch<EngineerResult>('admin/engineers/?includeOffice=true', {
+  showError: true,
+});
+
+const [client, equipmentBrand, warranty, engineer] = await Promise.all([
+  clientsRes,
+  equipmentBrandRes,
+  warrantyRes,
+  engineerRes,
+]);
+engineer.data.value?.engineers.forEach((e) => (e.fullName = `${e.firstName} ${e.lastName}`));
 
 const { data: pmsResult, refresh: loadPms } = await useApiFetch<PmsResult>('/admin/pms', {
   showError: true,

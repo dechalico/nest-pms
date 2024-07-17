@@ -10,4 +10,5 @@ export interface Engineer {
   areaOfficeId: string;
   createdBy: string;
   areaOffice?: Office;
+  fullName: string;
 }
