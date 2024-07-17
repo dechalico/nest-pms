@@ -10,6 +10,7 @@ import { EquipmentBrandService } from './services/equipmentBrand.service';
 import { WarrantyTypeService } from './services/warrantyType.service';
 import { PmsService } from './services/pms.service';
 import { WarrantyService } from './services/warranty.service';
+import { WarrantyHistoryService } from './services/warrantyHistory.service';
 
 @Module({
   imports: [RepositoryModule, SecurityModule],
@@ -23,6 +24,7 @@ import { WarrantyService } from './services/warranty.service';
     WarrantyTypeService,
     PmsService,
     WarrantyService,
+    WarrantyHistoryService,
   ],
   exports: [
     UserService,
@@ -34,6 +36,7 @@ import { WarrantyService } from './services/warranty.service';
     WarrantyTypeService,
     PmsService,
     WarrantyService,
+    WarrantyHistoryService,
   ],
 })
 export class BaseServicesModule {}
