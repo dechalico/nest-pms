@@ -140,7 +140,11 @@ export class WarrantyHistory extends BaseEntity {
   isLock: boolean;
 
   @Expose()
-  @Type(() => Warranty)
+  @Type((t) => {
+    if (t.object.warranties.length > 0 && t.object.warranties[0] instanceof ObjectId)
+      return ObjectId;
+    else return Warranty;
+  })
   warranties: Array<Warranty | ObjectId | string>;
 }
 
