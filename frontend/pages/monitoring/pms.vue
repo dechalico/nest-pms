@@ -25,13 +25,20 @@
                     variant="text"
                   />
                 </template>
-                <v-form v-model="vFormModel" @submit.prevent="" validate-on="blur" class="pb-3">
+                <v-form
+                  v-model="vFormModel"
+                  @submit.prevent="createPMS"
+                  validate-on="blur"
+                  class="pb-3"
+                >
                   <v-row class="mb-2" dense>
                     <v-col cols="12" md="6" class="mb-2 mb-md-0 pr-0 pr-md-2">
                       <v-label for="field-hospital" class="font-weight-medium mb-0 text-subtitle-1"
                         >Hospital</v-label
                       >
                       <v-autocomplete
+                        v-model="hospital.model"
+                        :rules="hospital.rules"
                         :items="client.data.value?.clients"
                         item-title="name"
                         item-value="id"
@@ -47,6 +54,8 @@
                         >Principal</v-label
                       >
                       <v-autocomplete
+                        v-model="principal.model"
+                        :rules="principal.rules"
                         :items="equipmentBrand.data.value?.equipmentBrands"
                         item-title="name"
                         item-value="id"
@@ -64,6 +73,8 @@
                         >Model</v-label
                       >
                       <v-text-field
+                        v-model.trim="model.model"
+                        :rules="model.rules"
                         id="field-model"
                         variant="outlined"
                         class="mb-0 text-capitalize"
@@ -78,6 +89,8 @@
                         >FSR #</v-label
                       >
                       <v-text-field
+                        v-model.trim="fsr.model"
+                        :rules="fsr.rules"
                         id="field-fsr-number"
                         variant="outlined"
                         class="mb-0 text-capitalize"
@@ -94,6 +107,8 @@
                         >Warranty Type</v-label
                       >
                       <v-select
+                        v-model="warrantyType.model"
+                        :rules="warrantyType.rules"
                         :items="warranty.data.value?.warrantyTypes"
                         item-title="name"
                         item-value="id"
@@ -111,6 +126,8 @@
                         >Date Installed</v-label
                       >
                       <v-text-field
+                        v-model="dateInstalled.model"
+                        :rules="dateInstalled.rules"
                         id="field-date-installed"
                         variant="outlined"
                         class="mb-0"
@@ -128,6 +145,8 @@
                         >Serial Numbers</v-label
                       >
                       <v-combobox
+                        v-model="serialNumbers.model"
+                        :rules="serialNumbers.rules"
                         id="field-serial-numbers"
                         variant="outlined"
                         class="mb-0 text-capitalize"
@@ -144,6 +163,8 @@
                         >Engineers</v-label
                       >
                       <v-select
+                        v-model="engineers.model"
+                        :rules="engineers.rules"
                         :items="engineer.data.value?.engineers"
                         item-title="fullName"
                         item-value="id"
@@ -155,6 +176,22 @@
                         hide-details="auto"
                         density="compact"
                       ></v-select>
+                    </v-col>
+                  </v-row>
+                  <v-row class="mb-2 mt-0" dense>
+                    <v-col>
+                      <v-label for="field-remarks" class="font-weight-medium mb-0 text-subtitle-1"
+                        >Remarks</v-label
+                      >
+                      <v-textarea
+                        rows="2"
+                        v-model="remarks.model"
+                        id="field-remarks"
+                        variant="outlined"
+                        class="mb-0 text-capitalize"
+                        hide-details="auto"
+                        density="compact"
+                      ></v-textarea>
                     </v-col>
                   </v-row>
                   <div class="d-flex justify-end mt-3">
@@ -262,6 +299,50 @@ type EngineerResult = {
 const dialogModel = ref<boolean>(false);
 const vFormModel = ref<boolean>(false);
 
+const hospital = reactive<FormInput<string>>({
+  model: '',
+  rules: [(v: string) => !!v || 'Required hospital field.'],
+});
+
+const principal = reactive<FormInput<string>>({
+  model: '',
+  rules: [(v: string) => !!v || 'Required principal field.'],
+});
+
+const model = reactive<FormInput<string>>({
+  model: '',
+  rules: [(v: string) => !!v || 'Required model field.'],
+});
+
+const fsr = reactive<FormInput<string>>({
+  model: '',
+  rules: [(v: string) => !!v || 'Required FSR field.'],
+});
+
+const warrantyType = reactive<FormInput<string>>({
+  model: '',
+  rules: [(v: string) => !!v || 'Required warranty type field.'],
+});
+
+const dateInstalled = reactive<FormInput<string | undefined>>({
+  model: undefined,
+  rules: [(v: string) => !!v || 'Required date installed field.'],
+});
+
+const serialNumbers = reactive<FormInput<string[]>>({
+  model: [],
+  rules: [(v: string[]) => v.length !== 0 || 'Required serial numbers field.'],
+});
+
+const engineers = reactive<FormInput<string[]>>({
+  model: [],
+  rules: [(v: string[]) => v.length !== 0 || 'Required engineers field.'],
+});
+
+const remarks = reactive<FormInput<string>>({
+  model: '',
+});
+
 const clientsRes = useApiFetch<ClientResult>('/admin/clients', {
   showError: true,
 });
@@ -287,4 +368,30 @@ engineer.data.value?.engineers.forEach((e) => (e.fullName = `${e.firstName} ${e.
 const { data: pmsResult, refresh: loadPms } = await useApiFetch<PmsResult>('/admin/pms', {
   showError: true,
 });
+
+const createPMS = async () => {
+  if (!vFormModel.value) return;
+
+  const payload = {
+    clientId: hospital.model,
+    equipmentBrandId: principal.model,
+    model: model.model,
+    serialNumbers: serialNumbers.model,
+    fsrNumber: fsr.model,
+    engineersId: engineers.model,
+    remarks: remarks.model,
+    dateInstalled: dateInstalled.model,
+    warrantyTypeId: warrantyType.model,
+  };
+
+  const { status } = await useApiFetch('/admin/pms', {
+    method: 'POST',
+    body: payload,
+    showError: true,
+  });
+  if (status.value === 'success') {
+    dialogModel.value = false;
+    loadPms();
+  }
+};
 </script>
