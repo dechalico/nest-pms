@@ -219,7 +219,7 @@
                 <th class="text-subtitle-1 font-weight-bold">FSR #</th>
                 <th class="text-subtitle-1 font-weight-bold">Serial #</th>
                 <th class="text-subtitle-1 font-weight-bold">Date Installed</th>
-                <th class="text-subtitle-1 font-weight-bold">Actions</th>
+                <th class="text-subtitle-1 font-weight-bold text-center">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -252,9 +252,9 @@
                   </h6>
                 </td>
                 <td>
-                  <div class="d-flex">
-                    <v-btn :icon="PencilIcon" variant="text" color="primary" />
-                    <v-btn :icon="TrashIcon" variant="text" color="error" />
+                  <div class="d-flex justify-center">
+                    <v-btn :icon="EyeIcon" variant="text" color="primary" />
+                    <v-btn :icon="PencilIcon" variant="text" color="warning" />
                   </div>
                 </td>
               </tr>
@@ -268,7 +268,7 @@
 
 <script setup lang="ts">
 import UiParentCard from '@/components/shared/UiParentCard.vue';
-import { PencilIcon, TrashIcon, XIcon } from 'vue-tabler-icons';
+import { PencilIcon, TrashIcon, XIcon, EyeIcon } from 'vue-tabler-icons';
 import type { Pms } from '@/types/monitoring/pms';
 import type { Client } from '@/types/monitoring/client';
 import type { EquipmentBrand } from '@/types/monitoring/equipmentBrand';
