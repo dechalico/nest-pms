@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PmsRepository } from '../../repository/services/pmsRepository.service';
-import { CreatePms, GetPmsArgs, PmsSchema } from '../schemas/pms.schema';
+import { CreatePms, GetPmsArgs, PmsSchema, GetPmsByIdArgs } from '../schemas/pms.schema';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
 import { ClientRepository } from '../../repository/services/clientRepository.service';
 import { EquipmentBrandRepository } from '../../repository/services/equipmentBrandRepository.service';
@@ -113,5 +113,21 @@ export class PmsService {
         AppErrorCodes.InternalError,
       );
     }
+  }
+
+  async getPmsAsync(args: GetPmsByIdArgs): Promise<AppResult<PmsSchema>> {
+    try {
+      const pmsRes = await this.pmsRepository.getByIdAsync(args.id);
+      if (!pmsRes.succeeded || !pmsRes.result) {
+        return AppResult.createFailed(
+          new Error('Invalid selected pms.'),
+          'Invalid selected pms.',
+          AppErrorCodes.InvalidRequest,
+        );
+      }
+
+      const pms: PmsSchema = pmsRes.result;
+      return AppResult.createSucceeded(pms, 'Successfully get pms.');
+    } catch (error) {}
   }
 }

@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { WarrantyHistoryRepository } from '../../repository/services/warrantyHistoryRepository.service';
-import { CreateWarrantyHistory, WarrantyHistorySchema } from '../schemas/warrantyHistory.schema';
+import {
+  CreateWarrantyHistory,
+  WarrantyHistorySchema,
+  GetWarrantyHistories,
+} from '../schemas/warrantyHistory.schema';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
 import { WarrantyTypeRepository } from '../../repository/services/warrantyTypeRepository.service';
 import { PmsRepository } from '../../repository/services/pmsRepository.service';
@@ -48,6 +52,24 @@ export class WarrantyHistoryService {
       return AppResult.createFailed(
         error,
         'An error occured when creating warranty history.',
+        AppErrorCodes.InternalError,
+      );
+    }
+  }
+
+  async getWarrantyHitories(
+    args: GetWarrantyHistories,
+  ): Promise<AppResult<Array<WarrantyHistorySchema>>> {
+    try {
+      const filter = {};
+      if (args.pmsId) {
+        filter['pms_id'] = args.pmsId;
+      }
+      return this.warrantyHistoryRepo.getAllAsync({ filter: filter });
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'An error occured when getting warranty histories.',
         AppErrorCodes.InternalError,
       );
     }
