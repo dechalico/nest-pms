@@ -253,7 +253,9 @@
                 </td>
                 <td>
                   <div class="d-flex justify-center">
-                    <v-btn :icon="EyeIcon" variant="text" color="primary" />
+                    <NuxtLink :href="`/monitoring/pms/${item.id}`">
+                      <v-btn :icon="EyeIcon" variant="text" color="primary" />
+                    </NuxtLink>
                     <v-btn :icon="PencilIcon" variant="text" color="warning" />
                   </div>
                 </td>
