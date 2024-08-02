@@ -16,6 +16,7 @@
                 class="mb-0 text-capitalize"
                 hide-details="auto"
                 density="compact"
+                :model-value="pmsResult?.pms.client.name"
               ></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="4" xl="3" class="py-1">
@@ -29,6 +30,7 @@
                 class="mb-0 text-capitalize"
                 hide-details="auto"
                 density="compact"
+                :model-value="pmsResult?.pms.equipmentBrand.name"
               ></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="4" xl="3" class="py-1">
@@ -42,6 +44,7 @@
                 class="mb-0 text-capitalize"
                 hide-details="auto"
                 density="compact"
+                :model-value="pmsResult?.pms.model"
               ></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="4" xl="3" class="py-1">
@@ -55,6 +58,7 @@
                 class="mb-0 text-capitalize"
                 hide-details="auto"
                 density="compact"
+                :model-value="pmsResult?.pms.fsrNumber"
               ></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="4" xl="3" class="py-1">
@@ -68,6 +72,7 @@
                 class="mb-0 text-capitalize"
                 hide-details="auto"
                 density="compact"
+                :model-value="pmsResult?.pms.warranty"
               ></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="4" xl="3" class="py-1">
@@ -81,6 +86,7 @@
                 class="mb-0 text-capitalize"
                 hide-details="auto"
                 density="compact"
+                :model-value="pmsResult?.pms.dateInstalled"
               ></v-text-field>
             </v-col>
             <v-col class="py-1">
@@ -94,6 +100,7 @@
                 class="mb-0 text-capitalize"
                 hide-details="auto"
                 density="compact"
+                :model-value="pmsResult?.pms.remarks"
               ></v-textarea>
             </v-col>
           </v-row>
@@ -110,13 +117,17 @@ import type { Pms } from '@/types/monitoring/pms';
 import type { FormInput } from '@/types/pages/form';
 
 type PmsResult = {
-  pms: Pms[];
+  pms: Pms;
 };
 
 const dialogModel = ref<boolean>(false);
 const vFormModel = ref<boolean>(false);
+const route = useRoute();
 
-const { data: pmsResult, refresh: loadPms } = await useApiFetch<PmsResult>('/admin/pms', {
-  showError: true,
-});
+const { data: pmsResult, refresh: loadPms } = await useApiFetch<PmsResult>(
+  `/admin/pms/${route.params.id}`,
+  {
+    showError: true,
+  },
+);
 </script>
