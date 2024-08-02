@@ -54,3 +54,7 @@ export class CreateWarrantyHistory extends OmitType(WarrantyHistorySchema, ['id'
   @Expose()
   warranties: Array<string>;
 }
+
+export class GetWarrantyHistories {
+  pmsId?: string;
+}

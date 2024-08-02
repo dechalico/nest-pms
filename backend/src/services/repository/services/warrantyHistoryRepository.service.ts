@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { BaseRepositoryService } from './baseRepository.service';
-import { WarrantyHistory } from '../entities';
+import { GetAllArgs, WarrantyHistory } from '../entities';
 import { Db } from 'mongodb';
 import { AppResult } from 'src/common/app.result';
 import { objectIdCreator } from '../helper';
@@ -21,5 +21,12 @@ export class WarrantyHistoryRepository extends BaseRepositoryService<WarrantyHis
       date_created: entity.date_created,
       date_updated: entity.date_updated,
     });
+  }
+
+  getAllAsync(args?: GetAllArgs): Promise<AppResult<any>> {
+    if (args?.filter?.pms_id) {
+      args.filter.pms_id = objectIdCreator(args.filter.pms_id);
+    }
+    return super.getAllAsync(args);
   }
 }

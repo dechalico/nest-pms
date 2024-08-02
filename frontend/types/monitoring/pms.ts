@@ -14,4 +14,5 @@ export interface Pms {
   dateInstalled: Date;
   dateCreated: Date;
   dateUpdated: Date;
+  warranty: string;
 }
