@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col cols="12" md="12">
-      <UiParentCard title="Pms Details">
+      <UiParentCard title="Pms Detail">
         <template #action> </template>
         <div>
           <v-row>
