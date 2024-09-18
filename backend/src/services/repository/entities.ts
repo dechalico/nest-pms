@@ -119,7 +119,7 @@ export class Warranty extends BaseEntity {
   @Expose({ name: 'warrantyDate' })
   warranty_date: Date;
 
-  @Expose({ name: 'engineersId' })
+  @Expose({ name: 'engineers' })
   @Transform(({ value }: { value: Array<ObjectId | Engineer> }) =>
     value.map((v) => (v instanceof Engineer ? v : v?.toString())),
   )
@@ -146,7 +146,10 @@ export class WarrantyHistory extends BaseEntity {
   @Expose()
   isLock: boolean;
 
-  @Expose()
+  @Expose({ name: 'warranties' })
+  @Transform(({ value }: { value: Array<ObjectId | Warranty> }) =>
+    value.map((v) => (v instanceof ObjectId ? v?.toString() : v)),
+  )
   @Type((t) => {
     if (t.object.warranties.length > 0 && t.object.warranties[0] instanceof ObjectId)
       return ObjectId;

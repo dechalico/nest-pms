@@ -4,6 +4,7 @@ import { GetAllArgs, WarrantyHistory } from '../entities';
 import { Db } from 'mongodb';
 import { AppResult, AppErrorCodes } from 'src/common/app.result';
 import { objectIdCreator } from '../helper';
+import { instanceToPlain } from 'class-transformer';
 
 @Injectable()
 export class WarrantyHistoryRepository extends BaseRepositoryService<WarrantyHistory> {
@@ -36,13 +37,13 @@ export class WarrantyHistoryRepository extends BaseRepositoryService<WarrantyHis
 
       stages.push({
         $match: {
-          _id: objectIdCreator(pms_id),
+          pms_id: objectIdCreator(pms_id),
         },
       });
 
       stages.push({
         $lookup: {
-          from: 'warranty_histories',
+          from: 'warranties',
           localField: 'warranties',
           foreignField: '_id',
           as: 'warranties',
@@ -83,7 +84,10 @@ export class WarrantyHistoryRepository extends BaseRepositoryService<WarrantyHis
         result.push(obj);
       }
 
-      return AppResult.createSucceeded(result, 'Successfully get all warranty histories for pms.');
+      return AppResult.createSucceeded(
+        instanceToPlain(result, { excludeExtraneousValues: true }),
+        'Successfully get all warranty histories for pms.',
+      );
     } catch (error) {
       return AppResult.createFailed(
         error,

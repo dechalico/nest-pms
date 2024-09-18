@@ -44,7 +44,7 @@ export class WarrantyHistoryService {
         pms_id: args.pmsId,
         warranty_type_id: args.warrantyTypeId,
         warranties: args.warranties,
-        isLock: args.isLocked,
+        isLock: args.isLock,
         date_created: new Date(),
         date_updated: undefined,
       });
@@ -70,6 +70,39 @@ export class WarrantyHistoryService {
       return AppResult.createFailed(
         error,
         'An error occured when getting warranty histories.',
+        AppErrorCodes.InternalError,
+      );
+    }
+  }
+
+  async pmsWarrantyHistories(pms_id: string): Promise<AppResult<WarrantyHistorySchema[]>> {
+    try {
+      const pmsRes = await this.pmsRepo.getByIdAsync(pms_id);
+      if (!pmsRes.succeeded || !pmsRes.result) {
+        return AppResult.createFailed(
+          new Error('Invalid pms id.'),
+          'Invalid pms id.',
+          AppErrorCodes.InvalidRequest,
+        );
+      }
+
+      const result = await this.warrantyHistoryRepo.pmsWarrantyHistories(pms_id);
+      if (!result.succeeded || !result.result) {
+        return AppResult.createFailed(
+          new Error(result.message),
+          result.message,
+          AppErrorCodes.InvalidRequest,
+        );
+      }
+
+      return AppResult.createSucceeded(
+        result.result,
+        'Successfully get all warranty histories for pms.',
+      );
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'An error occured when getting all warranty histories for pms.',
         AppErrorCodes.InternalError,
       );
     }

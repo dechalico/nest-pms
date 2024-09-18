@@ -6,6 +6,8 @@ import { plainToInstance } from 'class-transformer';
 import { IGetAllPmsHandler } from '../../services/adminServices/pmsServices/handlers/iGetAllPmsHandler';
 import { GetAllPmsResult } from './pms.dtos/getAllPms.dto';
 import { IGetPmsHandler } from '../../services/adminServices/pmsServices/handlers/iGetPmsHandler';
+import { PmsWarrantiesResult } from './pms.dtos/pmsWarranties.dto';
+import { IPmsWarrantiesHandler } from '../../services/adminServices/pmsServices/handlers/iPmsWarrantiesHandler';
 
 @Controller('/admin/pms')
 export class PmsController {
@@ -13,6 +15,7 @@ export class PmsController {
     private readonly createPmsHandler: ICreatePmsHandler,
     private readonly getallPmsHandler: IGetAllPmsHandler,
     private readonly getPmsHandler: IGetPmsHandler,
+    private readonly pmsWarrantiesHandler: IPmsWarrantiesHandler,
   ) {}
 
   @Post()
@@ -48,6 +51,19 @@ export class PmsController {
     }
 
     const result = plainToInstance(GetPmsResult, pmsRes.result, {
+      excludeExtraneousValues: true,
+    });
+    return result;
+  }
+
+  @Get(':id/warranties')
+  async getPmsWarranties(@Param('id') id: string): Promise<PmsWarrantiesResult> {
+    const pmsRes = await this.pmsWarrantiesHandler.executeAsync({ pmsId: id });
+    if (!pmsRes.succeeded || !pmsRes.result) {
+      throw new BadRequestException(pmsRes.message);
+    }
+
+    const result = plainToInstance(PmsWarrantiesResult, pmsRes.result, {
       excludeExtraneousValues: true,
     });
     return result;
