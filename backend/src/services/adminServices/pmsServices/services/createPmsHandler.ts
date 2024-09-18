@@ -86,10 +86,11 @@ export class CreatePmsHandler implements ICreatePmsHandler {
       }
 
       const createWarrantyHistory = await this.warrantyHistoryService.createWarrantyHistory({
-        isLocked: false,
+        isLock: false,
         pmsId: createdPms.result.id,
         warranties: createdWarranties.map((w) => w.result.id),
         warrantyTypeId: args.warrantyTypeId,
+        dateCreated: new Date(),
       });
       if (!createWarrantyHistory.succeeded || !createWarrantyHistory.result) {
         return AppResult.createFailed(

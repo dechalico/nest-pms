@@ -1,4 +1,3 @@
-import { OmitType } from '@nestjs/mapped-types';
 import { Expose, Type } from 'class-transformer';
 
 class Engineer {
@@ -26,7 +25,8 @@ class Warranty {
   warrantyDate: Date;
 
   @Expose()
-  engineers: Array<Engineer | string>;
+  @Type(() => Engineer)
+  engineers: Array<Engineer>;
 
   @Expose()
   isDone: boolean;
@@ -38,7 +38,7 @@ class Warranty {
   dateUpdated: Date;
 }
 
-export class WarrantyHistorySchema {
+class WarrantyHistory {
   @Expose()
   id: string;
 
@@ -50,7 +50,7 @@ export class WarrantyHistorySchema {
 
   @Expose()
   @Type(() => Warranty)
-  warranties: Array<Warranty | string>;
+  warranties: Array<Warranty>;
 
   @Expose()
   isLock: boolean;
@@ -59,14 +59,11 @@ export class WarrantyHistorySchema {
   dateCreated: Date;
 
   @Expose()
-  dateUpdated?: Date;
+  dateUpdated: Date;
 }
 
-export class CreateWarrantyHistory extends OmitType(WarrantyHistorySchema, ['id', 'warranties']) {
+export class PmsWarrantiesResult {
   @Expose()
-  warranties: Array<string>;
-}
-
-export class GetWarrantyHistories {
-  pmsId?: string;
+  @Type(() => WarrantyHistory)
+  warranties: Array<WarrantyHistory>;
 }
