@@ -6,6 +6,7 @@ export default defineNuxtConfig({
   typescript: {
     typeCheck: true,
   },
+
   app: {
     head: {
       charset: 'utf-8',
@@ -14,10 +15,13 @@ export default defineNuxtConfig({
     },
     buildAssetsDir: '_pms',
   },
+
   devtools: { enabled: true },
+
   build: {
     transpile: ['vuetify'],
   },
+
   modules: [
     (_options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', (config) => {
@@ -26,6 +30,7 @@ export default defineNuxtConfig({
     },
     '@pinia/nuxt',
   ],
+
   vite: {
     vue: {
       template: {
@@ -41,13 +46,17 @@ export default defineNuxtConfig({
       },
     },
   },
+
   devServer: {
     port: 3001,
   },
+
   runtimeConfig: {
     public: {
       apiBase: process.env.API_BASE,
     },
   },
+
   sourcemap: true,
+  compatibilityDate: '2024-08-23',
 });
