@@ -121,7 +121,7 @@ export class Warranty extends BaseEntity {
 
   @Expose({ name: 'engineers' })
   @Transform(({ value }: { value: Array<ObjectId | Engineer> }) =>
-    value.map((v) => (v instanceof Engineer ? v : v?.toString())),
+    value.map((v) => (v instanceof ObjectId ? v?.toString() : v)),
   )
   @Type((t) => {
     if (t.object.engineers_id.length > 0 && t.object.engineers_id[0] instanceof ObjectId)
