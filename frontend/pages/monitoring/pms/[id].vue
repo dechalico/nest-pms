@@ -3,7 +3,7 @@
     <v-col cols="12" md="12">
       <UiParentCard title="Pms Detail">
         <template #action> </template>
-        <div>
+        <div class="mb-5">
           <v-row>
             <v-col cols="12" sm="6" md="4" class="py-1">
               <v-label for="field-hospital" class="font-weight-medium mb-0 text-subtitle-1"
@@ -141,6 +141,58 @@
         </div>
       </UiParentCard>
     </v-col>
+
+    <v-col cols="12" md="12">
+      <UiParentCard title="Pms Warranties">
+        <div class="border-table">
+          <v-table>
+            <thead>
+              <tr>
+                <th class="text-subtitle-1 font-weight-bold">#</th>
+                <th class="text-subtitle-1 font-weight-bold">Warranty Date</th>
+                <th class="text-subtitle-1 font-weight-bold">Engineers</th>
+                <th class="text-subtitle-1 font-weight-bold">Status</th>
+                <th class="text-subtitle-1 font-weight-bold text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in warranties" :key="index">
+                <td>
+                  <p class="text-15 font-weight-medium">{{ index + 1 }}</p>
+                </td>
+                <td>
+                  <h6 class="text-subtitle-1 font-weight-bold text-capitalize">
+                    {{ item.warrantyDate.toString() }}
+                  </h6>
+                </td>
+                <td>
+                  <h6 class="text-body-1 text-muted text-capitalize">
+                    <label v-if="item.engineers.length === 0">No engineer assign</label>
+                    <template v-else>
+                      {{ formattedEngineers(item.engineers) }}
+                    </template>
+                  </h6>
+                </td>
+                <td>
+                  <h6 class="text-body-1 text-muted text-capitalize">
+                    <v-chip density="compact" v-if="item.isDone" color="primary">Done</v-chip>
+                    <v-chip density="compact" v-else color="warning">Pending</v-chip>
+                  </h6>
+                </td>
+                <td>
+                  <div class="d-flex justify-center">
+                    <NuxtLink href="#">
+                      <v-btn :icon="EyeIcon" variant="text" color="primary" />
+                    </NuxtLink>
+                    <v-btn :icon="PencilIcon" variant="text" color="warning" />
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </v-table>
+        </div>
+      </UiParentCard>
+    </v-col>
   </v-row>
 </template>
 
@@ -148,15 +200,23 @@
 import UiParentCard from '@/components/shared/UiParentCard.vue';
 import { PencilIcon, XIcon, EyeIcon } from 'vue-tabler-icons';
 import type { Pms } from '@/types/monitoring/pms';
+import type { WarrantyHistory, Warranty } from '@/types/monitoring/warrantyHistory';
+import type { Engineer } from '@/types/management/engineer';
 import type { FormInput } from '@/types/pages/form';
 
 type PmsResult = {
   pms: Pms;
 };
 
+type WarrantyHistoryResult = {
+  warranties: WarrantyHistory[];
+};
+
 const dialogModel = ref<boolean>(false);
 const vFormModel = ref<boolean>(false);
 const route = useRoute();
+
+const warranties = reactive<Warranty[]>([]);
 
 const serialNumbers = reactive<FormInput<string[]>>({
   model: [],
@@ -174,8 +234,30 @@ const {
   showError: true,
 });
 
+const {
+  data: warrantyHistoryResult,
+  refresh: reloadWarrantyHistory,
+  status: warrantyStatus,
+} = await useApiFetch<WarrantyHistoryResult>(`/admin/pms/${route.params.id}/warranties`, {
+  showError: true,
+});
+
 if (status.value === 'success') {
   serialNumbers.model = pmsResult.value?.pms.serialNumbers || [];
   engineers.model = pmsResult.value?.pms.engineers.map((e) => `${e.firstName} ${e.lastName}`) || [];
 }
+
+if (warrantyStatus.value === 'success') {
+  const mappedWarranties =
+    warrantyHistoryResult.value?.warranties.reduce<Warranty[]>((acc, warrantyHist) => {
+      acc.push(...warrantyHist.warranties);
+      return acc;
+    }, []) || [];
+  warranties.push(...mappedWarranties);
+  console.log(warranties);
+}
+
+const formattedEngineers = (engineers: Engineer[]) => {
+  return engineers.map((e) => `${e.lastName} ${e.firstName ? e.firstName[0] : ''}`).join(', ');
+};
 </script>
