@@ -45,6 +45,13 @@ export default defineNuxtConfig({
         },
       },
     },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          silenceDeprecations: ['legacy-js-api'],
+        },
+      },
+    },
   },
 
   devServer: {
