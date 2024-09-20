@@ -248,7 +248,7 @@
                 </td>
                 <td>
                   <h6 class="text-body-1 text-muted text-capitalize">
-                    {{ item.dateInstalled.toString() }}
+                    {{ dayjs(item.dateInstalled).format('MMMM DD, YYYY') }}
                   </h6>
                 </td>
                 <td>
@@ -269,6 +269,7 @@
 </template>
 
 <script setup lang="ts">
+import dayjs from 'dayjs';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
 import { PencilIcon, TrashIcon, XIcon, EyeIcon } from 'vue-tabler-icons';
 import type { Pms } from '@/types/monitoring/pms';

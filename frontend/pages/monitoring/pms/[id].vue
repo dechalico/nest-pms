@@ -86,7 +86,7 @@
                 class="mb-0 text-capitalize"
                 hide-details="auto"
                 density="compact"
-                :model-value="pmsResult?.pms.dateInstalled"
+                :model-value="dayjs(pmsResult?.pms.dateInstalled).format('MMMM DD, YYYY')"
               ></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="4" class="py-1">
@@ -162,7 +162,7 @@
                 </td>
                 <td>
                   <h6 class="text-subtitle-1 font-weight-bold text-capitalize">
-                    {{ item.warrantyDate.toString() }}
+                    {{ dayjs(item.warrantyDate).format('MMMM DD, YYYY') }}
                   </h6>
                 </td>
                 <td>
@@ -197,6 +197,7 @@
 </template>
 
 <script setup lang="ts">
+import dayjs from 'dayjs';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
 import { PencilIcon, XIcon, EyeIcon } from 'vue-tabler-icons';
 import type { Pms } from '@/types/monitoring/pms';
@@ -254,7 +255,6 @@ if (warrantyStatus.value === 'success') {
       return acc;
     }, []) || [];
   warranties.push(...mappedWarranties);
-  console.log(warranties);
 }
 
 const formattedEngineers = (engineers: Engineer[]) => {

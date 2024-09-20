@@ -27,6 +27,7 @@
     "@mdi/font": "^7.3.67",
     "@pinia/nuxt": "^0.5.1",
     "apexcharts": "^3.44.0",
+    "dayjs": "^1.11.13",
     "pinia": "^2.1.7",
     "vue-tabler-icons": "^2.21.0",
     "vue3-apexcharts": "^1.4.4",
