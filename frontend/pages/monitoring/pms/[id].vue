@@ -86,7 +86,7 @@
                 class="mb-0 text-capitalize"
                 hide-details="auto"
                 density="compact"
-                :model-value="pmsResult?.pms.dateInstalled"
+                :model-value="dayjs(pmsResult?.pms.dateInstalled).format('MMMM DD, YYYY')"
               ></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="4" class="py-1">
@@ -156,38 +156,52 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(item, index) in warranties" :key="index">
-                <td>
-                  <p class="text-15 font-weight-medium">{{ index + 1 }}</p>
-                </td>
-                <td>
-                  <h6 class="text-subtitle-1 font-weight-bold text-capitalize">
-                    {{ item.warrantyDate.toString() }}
-                  </h6>
-                </td>
-                <td>
-                  <h6 class="text-body-1 text-muted text-capitalize">
-                    <label v-if="item.engineers.length === 0">No engineer assign</label>
-                    <template v-else>
-                      {{ formattedEngineers(item.engineers) }}
-                    </template>
-                  </h6>
-                </td>
-                <td>
-                  <h6 class="text-body-1 text-muted text-capitalize">
-                    <v-chip density="compact" v-if="item.isDone" color="primary">Done</v-chip>
-                    <v-chip density="compact" v-else color="warning">Pending</v-chip>
-                  </h6>
-                </td>
-                <td>
-                  <div class="d-flex justify-center">
-                    <NuxtLink href="#">
-                      <v-btn :icon="EyeIcon" variant="text" color="primary" />
-                    </NuxtLink>
-                    <v-btn :icon="PencilIcon" variant="text" color="warning" />
-                  </div>
-                </td>
-              </tr>
+              <template
+                v-for="(warranty, wIndex) in warrantyHistoryResult?.warranties"
+                :key="wIndex"
+              >
+                <tr>
+                  <td colspan="5" class="group-header py-1" style="height: 30px">
+                    <v-chip size="small" density="compact" color="error"
+                      >{{ toOrdinal(wIndex + 1) }} Warranty</v-chip
+                    >
+                  </td>
+                </tr>
+                <tr v-for="(item, index) in warranty.warranties" :key="index">
+                  <td>
+                    <p class="text-15 font-weight-medium">{{ index + 1 }}</p>
+                  </td>
+                  <td>
+                    <h6 class="text-subtitle-1 font-weight-bold text-capitalize">
+                      {{ dayjs(item.warrantyDate).format('MMMM DD, YYYY') }}
+                    </h6>
+                  </td>
+                  <td>
+                    <h6 class="text-body-1 text-muted text-capitalize">
+                      <label v-if="item.engineers.length === 0">No engineer assigned</label>
+                      <template v-for="(engineer, eIndex) in item.engineers" :key="eIndex">
+                        <v-chip variant="tonal" size="small" color="info" class="me-1">{{
+                          formattedEngineer(engineer)
+                        }}</v-chip>
+                      </template>
+                    </h6>
+                  </td>
+                  <td>
+                    <h6 class="text-body-1 text-muted text-capitalize">
+                      <v-chip density="compact" v-if="item.isDone" color="primary">Done</v-chip>
+                      <v-chip density="compact" v-else color="warning">Pending</v-chip>
+                    </h6>
+                  </td>
+                  <td>
+                    <div class="d-flex justify-center">
+                      <NuxtLink href="#">
+                        <v-btn :icon="EyeIcon" variant="text" color="primary" />
+                      </NuxtLink>
+                      <v-btn :icon="PencilIcon" variant="text" color="warning" />
+                    </div>
+                  </td>
+                </tr>
+              </template>
             </tbody>
           </v-table>
         </div>
@@ -197,6 +211,8 @@
 </template>
 
 <script setup lang="ts">
+import dayjs from 'dayjs';
+import { toOrdinal } from 'number-to-words';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
 import { PencilIcon, XIcon, EyeIcon } from 'vue-tabler-icons';
 import type { Pms } from '@/types/monitoring/pms';
@@ -215,8 +231,6 @@ type WarrantyHistoryResult = {
 const dialogModel = ref<boolean>(false);
 const vFormModel = ref<boolean>(false);
 const route = useRoute();
-
-const warranties = reactive<Warranty[]>([]);
 
 const serialNumbers = reactive<FormInput<string[]>>({
   model: [],
@@ -247,17 +261,7 @@ if (status.value === 'success') {
   engineers.model = pmsResult.value?.pms.engineers.map((e) => `${e.firstName} ${e.lastName}`) || [];
 }
 
-if (warrantyStatus.value === 'success') {
-  const mappedWarranties =
-    warrantyHistoryResult.value?.warranties.reduce<Warranty[]>((acc, warrantyHist) => {
-      acc.push(...warrantyHist.warranties);
-      return acc;
-    }, []) || [];
-  warranties.push(...mappedWarranties);
-  console.log(warranties);
-}
-
-const formattedEngineers = (engineers: Engineer[]) => {
-  return engineers.map((e) => `${e.lastName} ${e.firstName ? e.firstName[0] : ''}`).join(', ');
+const formattedEngineer = (engineer: Engineer) => {
+  return `${engineer.firstName.split(' ')[0]} ${engineer.lastName[0]}.`;
 };
 </script>
