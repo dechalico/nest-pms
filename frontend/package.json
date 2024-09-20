@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
+    "@types/number-to-words": "^1.2.3",
     "nuxt": "^3.13.2",
     "prettier": "^3.1.0",
     "sass": "^1.69.5",
@@ -28,6 +29,7 @@
     "@pinia/nuxt": "^0.5.1",
     "apexcharts": "^3.44.0",
     "dayjs": "^1.11.13",
+    "number-to-words": "^1.2.4",
     "pinia": "^2.1.7",
     "vue-tabler-icons": "^2.21.0",
     "vue3-apexcharts": "^1.4.4",
