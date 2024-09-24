@@ -356,7 +356,7 @@ const equipmentBrandRes = useApiFetch<EquipmentBrandResult>('/admin/equipment-br
 
 const warrantyRes = useApiFetch<WarrantyTypeResult>('/admin/warranty-types', { showError: true });
 
-const engineerRes = useApiFetch<EngineerResult>('admin/engineers/?includeOffice=true', {
+const engineerRes = useApiFetch<EngineerResult>('admin/engineers', {
   showError: true,
 });
 
