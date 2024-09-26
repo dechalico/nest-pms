@@ -1,4 +1,4 @@
-import { OmitType } from '@nestjs/mapped-types';
+import { OmitType, PartialType } from '@nestjs/mapped-types';
 import { Expose } from 'class-transformer';
 
 export class Warranty {
@@ -19,3 +19,8 @@ export class Warranty {
 }
 
 export class CreateWarranty extends OmitType(Warranty, ['id']) {}
+
+export class UpdateWarranty extends PartialType(Warranty) {
+  @Expose()
+  id: string;
+}

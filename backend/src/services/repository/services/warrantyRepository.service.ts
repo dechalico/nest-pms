@@ -17,4 +17,11 @@ export class WarrantyRepository extends BaseRepositoryService<Warranty> {
     }
     return super.createAsync(entity);
   }
+
+  updateAsync(entity: Partial<Warranty>): Promise<AppResult<any>> {
+    if (entity.engineers_id) {
+      entity.engineers_id = entity.engineers_id.map((i) => objectIdCreator(i));
+    }
+    return super.updateAsync(entity);
+  }
 }
