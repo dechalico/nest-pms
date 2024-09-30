@@ -159,7 +159,12 @@
                     variant="text"
                   />
                 </template>
-                <v-form @submit.prevent="" validate-on="blur" class="pb-3">
+                <v-form
+                  v-model="extendWarrantyForm"
+                  @submit.prevent=""
+                  validate-on="blur"
+                  class="pb-3"
+                >
                   <v-row class="mb-2 mt-0" dense>
                     <v-col cols="12" class="mb-2">
                       <v-label
@@ -199,7 +204,14 @@
                     </v-col>
                   </v-row>
                   <div class="d-flex justify-end mt-3">
-                    <v-btn color="primary" rounded text="Submit" class="mr-2" type="submit"></v-btn>
+                    <v-btn
+                      @click="confirmExtendWarranty"
+                      color="primary"
+                      rounded
+                      text="Submit"
+                      class="mr-2"
+                      type="submit"
+                    ></v-btn>
                     <v-btn
                       color="error"
                       rounded
@@ -377,6 +389,28 @@
       </UiParentCard>
     </template>
   </v-dialog>
+
+  <v-dialog v-model="confirmExtendWarrantyDialog" max-width="400" persistent>
+    <template v-slot:default="{ isActive }">
+      <v-card elevation="0">
+        <template v-slot:title>
+          <p>Extend Warranty?</p>
+        </template>
+        <template v-slot:text>
+          <p>
+            This action will extend the warranty of this equipment. Doing so will lock the previous
+            warranties, which cannot be edited. Are you sure you want to proceed?
+          </p>
+        </template>
+
+        <template v-slot:actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" @click="confirmExtendWarrantyDialog = false"> Disagree </v-btn>
+          <v-btn color="error" @click="submitExtendWarranty"> Agree </v-btn>
+        </template>
+      </v-card>
+    </template>
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
@@ -426,6 +460,7 @@ const route = useRoute();
 const messageStore = useGlobalMessageStore();
 
 const extendWarrantyDialog = ref<boolean>(false);
+const confirmExtendWarrantyDialog = ref<boolean>(false);
 
 const serialNumbers = reactive<FormInput<string[]>>({
   model: [],
@@ -455,6 +490,8 @@ const selectedWarranty = reactive<SelectedWarranty>({
     model: [],
   },
 });
+
+const extendWarrantyForm = ref<boolean>(false);
 
 const {
   data: pmsResult,
@@ -548,6 +585,34 @@ const updateWarrantyMaintenance = async () => {
     dialogModel.value = false;
     reloadWarrantyHistory();
     messageStore.showMessage('Maintenance updated successfully.', 'success');
+  }
+};
+
+const confirmExtendWarranty = () => {
+  if (!extendWarrantyForm) return;
+  confirmExtendWarrantyDialog.value = true;
+};
+
+const submitExtendWarranty = async () => {
+  if (!extendWarrantyForm) return;
+
+  const payload = {
+    warrantyTypeId: extendedWarrantyType.warrantyType.model,
+    dateExtendedStart: dayjs(extendedWarrantyType.dateExtendedStart.model).format(
+      'YYYY-MM-DDTHH:mm:ss.SSS[Z]',
+    ),
+  };
+
+  const { status } = await useApiFetch(`/admin/pms/${route.params.id}/extend-warranty`, {
+    method: 'POST',
+    body: payload,
+    showError: true,
+  });
+  if (status.value === 'success') {
+    confirmExtendWarrantyDialog.value = false;
+    extendWarrantyDialog.value = false;
+    reloadWarrantyHistory();
+    messageStore.showMessage('Warranty extended successfully.', 'success');
   }
 };
 </script>
