@@ -163,7 +163,7 @@
                 <tr>
                   <td colspan="5" class="group-header py-1" style="height: 30px">
                     <v-chip size="small" density="compact" color="error"
-                      >{{ toOrdinal(wIndex + 1) }} Warranty</v-chip
+                      >{{ toOrdinal((warrantyHistoryResult?.warranties.length ?? 0) - wIndex ) }} Warranty</v-chip
                     >
                   </td>
                 </tr>

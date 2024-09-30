@@ -75,6 +75,12 @@ export class WarrantyHistoryRepository extends BaseRepositoryService<WarrantyHis
         },
       });
 
+      stages.push({
+        $sort: {
+          _id: -1,
+        },
+      });
+
       const cursor = this.table.aggregate(stages);
       const result: WarrantyHistory[] = [];
 
