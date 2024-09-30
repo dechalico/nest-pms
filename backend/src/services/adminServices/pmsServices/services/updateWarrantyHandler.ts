@@ -8,7 +8,7 @@ import { WarrantyHistoryService } from '../../../baseServices/services/warrantyH
 import { PmsService } from '../../../baseServices/services/pms.service';
 import { WarrantyTypeService } from '../../../baseServices/services/warrantyType.service';
 import { Warranty } from '../../../baseServices/schemas/warranty.schema';
-import * as dayjs from 'dayjs';
+import { warrantyDatesGenerator } from '../../../../utils/warrantyHelper';
 
 @Injectable()
 export class UpdateWarrantyHandler implements IUpdateWarrantyHandler {
@@ -70,7 +70,7 @@ export class UpdateWarrantyHandler implements IUpdateWarrantyHandler {
       }
       const warrantyType = warrantyTypeRes.result;
 
-      const newWarrantyDates = this.createWarrantyDates(warrantyType.algorithm, args.warrantyDate);
+      const newWarrantyDates = warrantyDatesGenerator(warrantyType.algorithm, args.warrantyDate);
 
       const warrantiesRes = await this.warrantyService.getAllWarrantiesAsync({
         id: warrantyHistory.warranties.map((w) => (typeof w === 'string' ? w : w.id)),
@@ -147,29 +147,5 @@ export class UpdateWarrantyHandler implements IUpdateWarrantyHandler {
         AppErrorCodes.InternalError,
       );
     }
-  }
-
-  private createWarrantyDates(algorithm: string, dateStart: Date): Array<Date> {
-    const dates: Array<Date> = [];
-    const [interval, intervalCount, duration, durationCount] = algorithm.split('|');
-    const intervalInt = parseInt(intervalCount);
-    const durationInt = parseInt(durationCount);
-
-    const shorthand = {
-      D: 'd',
-      W: 'w',
-      M: 'M',
-      Y: 'y',
-    };
-
-    const endDate = dayjs(dateStart).add(durationInt, shorthand[duration]);
-    let recurringDate = dayjs(dateStart).add(intervalInt, shorthand[interval]);
-
-    while (endDate.toDate() >= recurringDate.toDate()) {
-      dates.push(recurringDate.toDate());
-      recurringDate = recurringDate.add(intervalInt, shorthand[interval]);
-    }
-
-    return dates;
   }
 }

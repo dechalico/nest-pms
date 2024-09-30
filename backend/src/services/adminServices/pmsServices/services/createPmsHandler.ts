@@ -7,8 +7,8 @@ import { ICurrentUserHandler } from '../../../authServices/handlers/ICurrentUser
 import { WarrantyTypeService } from '../../../baseServices/services/warrantyType.service';
 import { WarrantyService } from '../../../baseServices/services/warranty.service';
 import { WarrantyHistoryService } from '../../../baseServices/services/warrantyHistory.service';
-import * as dayjs from 'dayjs';
 import { toOrdinal } from 'number-to-words';
+import { warrantyDatesGenerator } from '../../../../utils/warrantyHelper';
 
 type Warranty = {
   name: string;
@@ -49,7 +49,7 @@ export class CreatePmsHandler implements ICreatePmsHandler {
       }
       const warrantyType = warrantyTypeRes.result;
 
-      const warrantyDates = this.createWarrantyDates(warrantyType.algorithm, args.dateInstalled);
+      const warrantyDates = warrantyDatesGenerator(warrantyType.algorithm, args.dateInstalled);
       const warranties: Warranty[] = warrantyDates.map((w, index) => ({
         name: toOrdinal(index + 1),
         engineers: [],
@@ -108,29 +108,5 @@ export class CreatePmsHandler implements ICreatePmsHandler {
         AppErrorCodes.InternalError,
       );
     }
-  }
-
-  private createWarrantyDates(algorithm: string, dateStart: Date): Array<Date> {
-    const dates: Array<Date> = [];
-    const [interval, intervalCount, duration, durationCount] = algorithm.split('|');
-    const intervalInt = parseInt(intervalCount);
-    const durationInt = parseInt(durationCount);
-
-    const shorthand = {
-      D: 'd',
-      W: 'w',
-      M: 'M',
-      Y: 'y',
-    };
-
-    const endDate = dayjs(dateStart).add(durationInt, shorthand[duration]);
-    let recurringDate = dayjs(dateStart).add(intervalInt, shorthand[interval]);
-
-    while (endDate.toDate() >= recurringDate.toDate()) {
-      dates.push(recurringDate.toDate());
-      recurringDate = recurringDate.add(intervalInt, shorthand[interval]);
-    }
-
-    return dates;
   }
 }
