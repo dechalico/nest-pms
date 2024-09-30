@@ -163,7 +163,10 @@
                 <tr>
                   <td colspan="5" class="group-header py-1" style="height: 30px">
                     <v-chip size="small" density="compact" color="error"
-                      >{{ toOrdinal((warrantyHistoryResult?.warranties.length ?? 0) - wIndex ) }} Warranty</v-chip
+                      >{{
+                        toOrdinal((warrantyHistoryResult?.warranties.length ?? 0) - wIndex)
+                      }}
+                      Warranty</v-chip
                     >
                   </td>
                 </tr>
@@ -412,6 +415,16 @@ const formattedEngineer = (engineer: Engineer) => {
 };
 
 const selectWarrantyToUpdate = (warrantyHistoryId: string, warranty: Warranty) => {
+  const warrantyHistory = warrantyHistoryResult.value?.warranties.find(
+    (w) => w.id === warrantyHistoryId,
+  );
+  if (!warrantyHistory) return;
+
+  if (warrantyHistory.isLock) {
+    messageStore.showMessage('Locked!', 'This warranty is locked. Action not allowed.', 'error');
+    return;
+  }
+
   selectedWarranty.id.model = warranty.id;
   selectedWarranty.warrantyHistoryId.model = warrantyHistoryId;
   selectedWarranty.status.model = warranty.isDone ? 'Done' : 'Pending';
