@@ -220,7 +220,12 @@
         <template #action>
           <v-btn :icon="XIcon" @click="isActive.value = false" density="compact" variant="text" />
         </template>
-        <v-form v-model="vFormModel" @submit.prevent="" validate-on="blur" class="pb-3">
+        <v-form
+          v-model="vFormMaintenanceModel"
+          @submit.prevent="updateWarrantyMaintenance"
+          validate-on="blur"
+          class="pb-3"
+        >
           <v-row class="mb-2" dense>
             <v-col cols="12">
               <v-label for="field-warranty-date" class="font-weight-medium mb-0 text-subtitle-1"
@@ -312,6 +317,7 @@ import type { Pms } from '@/types/monitoring/pms';
 import type { WarrantyHistory, Warranty } from '@/types/monitoring/warrantyHistory';
 import type { Engineer } from '@/types/management/engineer';
 import type { FormInput } from '@/types/pages/form';
+import { useGlobalMessageStore } from '@/stores/globalMessage';
 
 type PmsResult = {
   pms: Pms;
@@ -334,8 +340,9 @@ interface SelectedWarranty {
 }
 
 const dialogModel = ref<boolean>(false);
-const vFormModel = ref<boolean>(false);
+const vFormMaintenanceModel = ref<boolean>(false);
 const route = useRoute();
+const messageStore = useGlobalMessageStore();
 
 const serialNumbers = reactive<FormInput<string[]>>({
   model: [],
@@ -411,5 +418,28 @@ const selectWarrantyToUpdate = (warrantyHistoryId: string, warranty: Warranty) =
   selectedWarranty.engineers.model = warranty.engineers.map((e) => e.id);
   selectedWarranty.warrantyDate.model = dayjs(warranty.warrantyDate).format('YYYY-MM-DD');
   dialogModel.value = true;
+};
+
+const updateWarrantyMaintenance = async () => {
+  if (!vFormMaintenanceModel.value) return;
+
+  const payload = {
+    id: selectedWarranty.id.model,
+    warrantyHistoryId: selectedWarranty.warrantyHistoryId.model,
+    engineers: selectedWarranty.engineers.model,
+    warrantyDate: dayjs(selectedWarranty.warrantyDate.model).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'),
+    isDone: selectedWarranty.status.model === 'Done',
+  };
+
+  const { status } = await useApiFetch(`/admin/pms/warranties/${payload.id}`, {
+    method: 'PUT',
+    body: payload,
+    showError: true,
+  });
+  if (status.value === 'success') {
+    dialogModel.value = false;
+    reloadWarrantyHistory();
+    messageStore.showMessage('Maintenance updated successfully.', 'success');
+  }
 };
 </script>
