@@ -12,6 +12,7 @@ import { warrantyDatesGenerator } from '../../../../utils/warrantyHelper';
 import { WarrantyService } from '../../../baseServices/services/warranty.service';
 import { WarrantyHistoryService } from '../../../baseServices/services/warrantyHistory.service';
 import { toOrdinal } from 'number-to-words';
+import { ILockPmsHistoryHandler } from '../handlers/iLockPmsHistoryHandler';
 
 type Warranty = {
   name: string;
@@ -28,6 +29,7 @@ export class ExtendPmsWarrantyHandler implements IExtendPmsWarrantyHandler {
     private readonly warrantyTypeService: WarrantyTypeService,
     private readonly warrantyService: WarrantyService,
     private readonly warrantyHistoryService: WarrantyHistoryService,
+    private readonly lockPmsHistoryHandler: ILockPmsHistoryHandler,
   ) {}
 
   async executeAsync(args: ExtendPmsWarrantyArgs): Promise<AppResult<ExtendPmsWarrantyResult>> {
@@ -74,6 +76,18 @@ export class ExtendPmsWarrantyHandler implements IExtendPmsWarrantyHandler {
         warrantyDate: w,
       }));
 
+      const previousWarrantyHistoriesRes = await this.warrantyHistoryService.getWarrantyHitories({
+        pmsId: pms.id,
+      });
+      if (!previousWarrantyHistoriesRes.succeeded || !previousWarrantyHistoriesRes.result) {
+        return AppResult.createFailed(
+          new Error(previousWarrantyHistoriesRes.message),
+          previousWarrantyHistoriesRes.message,
+          previousWarrantyHistoriesRes.error.code,
+        );
+      }
+      const pmsHistoriesNeedToLock = previousWarrantyHistoriesRes.result.filter((ph) => !ph.isLock);
+
       const createWarranties = warranties.map((w) => this.warrantyService.createWarrantyAsync(w));
       const createdWarranties = await Promise.all(createWarranties);
       const haveErrors = createdWarranties.some((value) => !value.succeeded || !value.result);
@@ -94,6 +108,20 @@ export class ExtendPmsWarrantyHandler implements IExtendPmsWarrantyHandler {
           createWarrantyHistory.message,
           createWarrantyHistory.error.code,
         );
+      }
+
+      const lockPmsHistories = pmsHistoriesNeedToLock.map((ph) =>
+        this.lockPmsHistoryHandler.executeAsync({
+          pmsId: pms.id,
+          isLock: true,
+          warrantyHistoryId: ph.id,
+        }),
+      );
+
+      const lockedPmsHistoriesRes = await Promise.all(lockPmsHistories);
+      const hasErrors = lockedPmsHistoriesRes.some((value) => !value.succeeded || !value.result);
+      if (hasErrors) {
+        throw new Error('An error occured when locking warranty history');
       }
 
       return AppResult.createSucceeded(
