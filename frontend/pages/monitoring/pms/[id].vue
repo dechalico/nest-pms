@@ -76,12 +76,12 @@
               ></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="4" class="py-1">
-              <v-label for="field-date-installed" class="font-weight-medium mb-0 text-subtitle-1"
+              <v-label for="field" class="font-weight-medium mb-0 text-subtitle-1"
                 >Date Installed</v-label
               >
               <v-text-field
                 readonly
-                id="field-date-installed"
+                id="field"
                 variant="outlined"
                 class="mb-0 text-capitalize"
                 hide-details="auto"
@@ -144,7 +144,75 @@
 
     <v-col cols="12" md="12">
       <UiParentCard title="Pms Warranties">
-        <div class="border-table">
+        <template #action>
+          <v-dialog v-model="extendWarrantyDialog" max-width="400">
+            <template v-slot:activator="{ props }">
+              <v-btn elevation="0" color="success" v-bind="props" rounded>Extend Warranty</v-btn>
+            </template>
+            <template v-slot:default="{ isActive }">
+              <UiParentCard title="Extend Warranty">
+                <template #action>
+                  <v-btn
+                    :icon="XIcon"
+                    @click="isActive.value = false"
+                    density="compact"
+                    variant="text"
+                  />
+                </template>
+                <v-form @submit.prevent="" validate-on="blur" class="pb-3">
+                  <v-row class="mb-2 mt-0" dense>
+                    <v-col cols="12" class="mb-2">
+                      <v-label
+                        for="field-warranty-type"
+                        class="font-weight-medium mb-0 text-subtitle-1"
+                        >Warranty Type</v-label
+                      >
+                      <v-select
+                        v-model="extendedWarrantyType.warrantyType.model"
+                        :rules="extendedWarrantyType.warrantyType.rules"
+                        item-title="name"
+                        item-value="id"
+                        :items="warrantyTypes?.warrantyTypes"
+                        id="field-warranty-type"
+                        variant="outlined"
+                        class="mb-0 text-capitalize"
+                        hide-details="auto"
+                        density="compact"
+                      ></v-select>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-label
+                        for="field-date-extended"
+                        class="font-weight-medium mb-0 text-subtitle-1"
+                        >Date Extended Start</v-label
+                      >
+                      <v-text-field
+                        v-model="extendedWarrantyType.dateExtendedStart.model"
+                        id="field-date-extended"
+                        name="field-date-extended"
+                        variant="outlined"
+                        class="mb-0"
+                        hide-details="auto"
+                        density="compact"
+                        type="date"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <div class="d-flex justify-end mt-3">
+                    <v-btn color="primary" rounded text="Submit" class="mr-2" type="submit"></v-btn>
+                    <v-btn
+                      color="error"
+                      rounded
+                      text="Cancel"
+                      @click="isActive.value = false"
+                    ></v-btn>
+                  </div>
+                </v-form>
+              </UiParentCard>
+            </template>
+          </v-dialog>
+        </template>
+        <div class="border-table mt-3">
           <v-table>
             <thead>
               <tr>
@@ -318,6 +386,7 @@ import UiParentCard from '@/components/shared/UiParentCard.vue';
 import { PencilIcon, XIcon, EyeIcon } from 'vue-tabler-icons';
 import type { Pms } from '@/types/monitoring/pms';
 import type { WarrantyHistory, Warranty } from '@/types/monitoring/warrantyHistory';
+import type { WarrantyType } from '@/types/monitoring/warrantyType';
 import type { Engineer } from '@/types/management/engineer';
 import type { FormInput } from '@/types/pages/form';
 import { useGlobalMessageStore } from '@/stores/globalMessage';
@@ -334,6 +403,10 @@ type EngineersResult = {
   engineers: Engineer[];
 };
 
+type WarrantyTypeResult = {
+  warrantyTypes: WarrantyType[];
+};
+
 interface SelectedWarranty {
   id: FormInput<string>;
   warrantyHistoryId: FormInput<string>;
@@ -342,10 +415,17 @@ interface SelectedWarranty {
   warrantyDate: FormInput<string | undefined>;
 }
 
+interface ExtendedWarrantyType {
+  warrantyType: FormInput<string>;
+  dateExtendedStart: FormInput<string>;
+}
+
 const dialogModel = ref<boolean>(false);
 const vFormMaintenanceModel = ref<boolean>(false);
 const route = useRoute();
 const messageStore = useGlobalMessageStore();
+
+const extendWarrantyDialog = ref<boolean>(false);
 
 const serialNumbers = reactive<FormInput<string[]>>({
   model: [],
@@ -409,6 +489,21 @@ if (engineersStatus.value === 'success') {
     engineer.fullName = `${engineer.firstName} ${engineer.lastName}`;
   });
 }
+
+const { data: warrantyTypes } = await useApiFetch<WarrantyTypeResult>('/admin/warranty-types', {
+  showError: true,
+});
+
+const extendedWarrantyType = reactive<ExtendedWarrantyType>({
+  warrantyType: {
+    model: warrantyTypes.value?.warrantyTypes[0].id ?? '',
+    rules: [(v: string) => !!v || 'Warranty type is required'],
+  },
+  dateExtendedStart: {
+    model: dayjs().format('YYYY-MM-DD'),
+    rules: [(v: string) => !!v || 'Date extended start is required'],
+  },
+});
 
 const formattedEngineer = (engineer: Engineer) => {
   return `${engineer.firstName.split(' ')[0]} ${engineer.lastName[0]}.`;
