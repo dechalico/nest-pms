@@ -1,4 +1,4 @@
-import { OmitType } from '@nestjs/mapped-types';
+import { OmitType, PartialType } from '@nestjs/mapped-types';
 import { Expose, Type } from 'class-transformer';
 
 class Engineer {
@@ -69,4 +69,11 @@ export class CreateWarrantyHistory extends OmitType(WarrantyHistorySchema, ['id'
 
 export class GetWarrantyHistories {
   pmsId?: string;
+}
+
+export class UpdateWarrantyHistory extends PartialType(
+  OmitType(WarrantyHistorySchema, ['dateUpdated', 'dateCreated']),
+) {
+  @Expose()
+  id: string;
 }

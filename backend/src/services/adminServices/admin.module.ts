@@ -44,6 +44,8 @@ import { IUpdateWarrantyHandler } from './pmsServices/handlers/iUpdateWarrantyHa
 import { UpdateWarrantyHandler } from './pmsServices/services/updateWarrantyHandler';
 import { IExtendPmsWarrantyHandler } from './pmsServices/handlers/iExtendPmsWarrantyHandler';
 import { ExtendPmsWarrantyHandler } from './pmsServices/services/extendPmsWarrantyHandler';
+import { ILockPmsHistoryHandler } from './pmsServices/handlers/iLockPmsHistoryHandler';
+import { LockPmsHistoryHandler } from './pmsServices/services/lockPmsHistoryHandler';
 
 @Module({
   imports: [BaseServicesModule, SecurityModule, AuthModule],
@@ -132,6 +134,10 @@ import { ExtendPmsWarrantyHandler } from './pmsServices/services/extendPmsWarran
       provide: IExtendPmsWarrantyHandler,
       useClass: ExtendPmsWarrantyHandler,
     },
+    {
+      provide: ILockPmsHistoryHandler,
+      useClass: LockPmsHistoryHandler,
+    },
   ],
   exports: [
     ICreateOfficeHandler,
@@ -155,6 +161,7 @@ import { ExtendPmsWarrantyHandler } from './pmsServices/services/extendPmsWarran
     IPmsWarrantiesHandler,
     IUpdateWarrantyHandler,
     IExtendPmsWarrantyHandler,
+    ILockPmsHistoryHandler,
   ],
 })
 export class AdminModule {}

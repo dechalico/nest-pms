@@ -4,6 +4,7 @@ import {
   CreateWarrantyHistory,
   WarrantyHistorySchema,
   GetWarrantyHistories,
+  UpdateWarrantyHistory,
 } from '../schemas/warrantyHistory.schema';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
 import { WarrantyTypeRepository } from '../../repository/services/warrantyTypeRepository.service';
@@ -124,6 +125,32 @@ export class WarrantyHistoryService {
       return AppResult.createFailed(
         error,
         'An error occurred when getting warranty history by id.',
+        AppErrorCodes.InternalError,
+      );
+    }
+  }
+
+  // prettier-ignore
+  async updateWarrantyHistory(args: UpdateWarrantyHistory): Promise<AppResult<WarrantyHistorySchema>> {
+    try {
+      const result = await this.warrantyHistoryRepo.updateAsync({
+        _id: args.id,
+        isLock: args.isLock,
+        date_updated: new Date(),
+      });
+      if (!result.succeeded || !result.result) {
+        return AppResult.createFailed(
+          new Error(result.message),
+          result.message,
+          AppErrorCodes.InvalidRequest,
+        );
+      }
+
+      return AppResult.createSucceeded(result.result, 'Successfully updated warranty history.');
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'An error occurred when updating warranty history.',
         AppErrorCodes.InternalError,
       );
     }
