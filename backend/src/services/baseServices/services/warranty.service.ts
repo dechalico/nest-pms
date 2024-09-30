@@ -18,16 +18,16 @@ export class WarrantyService {
 
   async createWarrantyAsync(args: CreateWarranty): Promise<AppResult<Warranty>> {
     try {
-      if (args.engineers_id.length > 0) {
+      if (args.engineers.length > 0) {
         const engineerRes = await this.engineerRepo.getAllAsync({
           filter: {
-            _id: args.engineers_id,
+            _id: args.engineers,
           },
         });
         if (
           !engineerRes.succeeded ||
           !engineerRes.result ||
-          engineerRes.result.length != args.engineers_id.length
+          engineerRes.result.length != args.engineers.length
         ) {
           return AppResult.createFailed(
             new Error('Invalid engineer ids'),
@@ -40,8 +40,8 @@ export class WarrantyService {
       return this.warrantyRepo.createAsync({
         _id: undefined,
         name: args.name,
-        warranty_date: args.warranty_date,
-        engineers_id: args.engineers_id,
+        warranty_date: args.warrantyDate,
+        engineers_id: args.engineers,
         isDone: args.isDone,
         date_created: new Date(),
         date_updated: null,
@@ -53,16 +53,16 @@ export class WarrantyService {
 
   async updateWarrantyAsync(args: UpdateWarranty): Promise<AppResult<Warranty>> {
     try {
-      if (args.engineers_id && args.engineers_id.length > 0) {
+      if (args.engineers && args.engineers.length > 0) {
         const engineerRes = await this.engineerRepo.getAllAsync({
           filter: {
-            _id: args.engineers_id,
+            _id: args.engineers,
           },
         });
         if (
           !engineerRes.succeeded ||
           !engineerRes.result ||
-          engineerRes.result.length != args.engineers_id.length
+          engineerRes.result.length != args.engineers.length
         ) {
           return AppResult.createFailed(
             new Error('Invalid engineer ids'),
@@ -75,8 +75,8 @@ export class WarrantyService {
       return this.warrantyRepo.updateAsync({
         _id: args.id,
         name: args.name,
-        warranty_date: args.warranty_date,
-        engineers_id: args.engineers_id,
+        warranty_date: args.warrantyDate,
+        engineers_id: args.engineers,
         isDone: args.isDone,
         date_updated: new Date(),
       });
@@ -88,8 +88,8 @@ export class WarrantyService {
   async getAllWarrantiesAsync(args: GetAllWarrantiesArgs): Promise<AppResult<Warranty[]>> {
     try {
       const filter: any = {};
-      if (args.warrantiesIdIn) {
-        filter.warrantiesIdIn = args.warrantiesIdIn;
+      if (args.id) {
+        filter.id = args.id;
       }
       return this.warrantyRepo.getAllAsync({ filter });
     } catch (error) {

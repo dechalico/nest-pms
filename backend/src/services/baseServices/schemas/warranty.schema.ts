@@ -9,10 +9,10 @@ export class Warranty {
   name: string;
 
   @Expose({ name: 'warrantyDate' })
-  warranty_date: Date;
+  warrantyDate: Date;
 
   @Expose()
-  engineers_id: Array<string>;
+  engineers: Array<string>;
 
   @Expose()
   isDone: boolean;
@@ -26,5 +26,5 @@ export class UpdateWarranty extends PartialType(Warranty) {
 }
 
 export class GetAllWarrantiesArgs {
-  warrantiesIdIn?: string[];
+  id?: string[] | string;
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IUpdateWarrantyTypeHandler } from '../handlers/iUpdateWarrantyHandler';
+import { IUpdateWarrantyHandler } from '../handlers/iUpdateWarrantyHandler';
 import { AppResult, AppErrorCodes } from '../../../../common/app.result';
 import { UpdateWarrantyArgs, UpdateWarrantyResult } from '../interactors/updateWarrantyInteractor';
 import { WarrantyService } from '../../../baseServices/services/warranty.service';
@@ -11,7 +11,7 @@ import { Warranty } from '../../../baseServices/schemas/warranty.schema';
 import * as dayjs from 'dayjs';
 
 @Injectable()
-export class UpdateWarrantyHandler implements IUpdateWarrantyTypeHandler {
+export class UpdateWarrantyHandler implements IUpdateWarrantyHandler {
   constructor(
     private readonly warrantyService: WarrantyService,
     private readonly currentUser: ICurrentUserHandler,
@@ -73,7 +73,7 @@ export class UpdateWarrantyHandler implements IUpdateWarrantyTypeHandler {
       const newWarrantyDates = this.createWarrantyDates(warrantyType.algorithm, args.warrantyDate);
 
       const warrantiesRes = await this.warrantyService.getAllWarrantiesAsync({
-        warrantiesIdIn: warrantyHistory.warranties.map((w) => (typeof w === 'string' ? w : w.id)),
+        id: warrantyHistory.warranties.map((w) => (typeof w === 'string' ? w : w.id)),
       });
       if (!warrantiesRes.succeeded || !warrantiesRes.result) {
         return AppResult.createFailed(
@@ -82,9 +82,7 @@ export class UpdateWarrantyHandler implements IUpdateWarrantyTypeHandler {
           warrantiesRes.error.code,
         );
       }
-      const warranties = warrantiesRes.result.sort(
-        (a, b) => a.warranty_date.getTime() - b.warranty_date.getTime(),
-      );
+      const warranties = warrantiesRes.result.sort((a, b) => a.id.localeCompare(b.id));
 
       const warrantiesToUpdate: Warranty[] = [];
       let foundBeginToUpdate = false;
@@ -101,13 +99,13 @@ export class UpdateWarrantyHandler implements IUpdateWarrantyTypeHandler {
       const [firstWarranty, ...rest] = warrantiesToUpdate;
 
       firstWarranty.isDone = args.isDone;
-      firstWarranty.engineers_id = args.engineersId;
-      firstWarranty.warranty_date = args.warrantyDate;
+      firstWarranty.engineers = args.engineers;
+      firstWarranty.warrantyDate = args.warrantyDate;
 
       for (let i = 0; i < rest.length; i++) {
         const warranty = rest[i];
 
-        warranty.warranty_date = newWarrantyDates[i];
+        warranty.warrantyDate = newWarrantyDates[i];
       }
 
       // add back first warranty to update
@@ -117,8 +115,8 @@ export class UpdateWarrantyHandler implements IUpdateWarrantyTypeHandler {
         this.warrantyService.updateWarrantyAsync({
           id: w.id,
           isDone: w.isDone,
-          engineers_id: w.engineers_id,
-          warranty_date: w.warranty_date,
+          engineers: w.engineers,
+          warrantyDate: w.warrantyDate,
         }),
       );
 
@@ -135,7 +133,7 @@ export class UpdateWarrantyHandler implements IUpdateWarrantyTypeHandler {
 
       return AppResult.createSucceeded(
         {
-          engineersId: args.engineersId,
+          engineers: args.engineers,
           isDone: args.isDone,
           warrantyDate: args.warrantyDate,
           id: args.id,

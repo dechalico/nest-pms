@@ -28,23 +28,28 @@ export class WarrantyRepository extends BaseRepositoryService<Warranty> {
   }
 
   getAllAsync(args: WarrantyOptions = { filter: {} }): Promise<AppResult<any>> {
-    const { warrantiesIdIn, ...filtered } = args.filter;
+    const { id, ...filtered } = args.filter;
     const options: any = {
       filter: {
         ...filtered,
       },
       include: args.include,
     };
-    if (args.filter?.warrantiesIdIn) {
-      options.filter['$in'] = args.filter.warrantiesIdIn.map((i) => objectIdCreator(i));
+    if (args.filter?.id) {
+      options.filter._id = {
+        $in:
+          args.filter.id instanceof Array
+            ? args.filter.id.map((i) => objectIdCreator(i))
+            : objectIdCreator(args.filter.id),
+      };
     }
 
-    return super.getAllAsync(args);
+    return super.getAllAsync(options);
   }
 }
 
 class WarrantyOptions extends GetAllArgs {
   filter: {
-    warrantiesIdIn?: string[];
+    id?: string[] | string;
   };
 }

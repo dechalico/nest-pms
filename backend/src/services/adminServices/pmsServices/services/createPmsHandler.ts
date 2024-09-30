@@ -12,8 +12,8 @@ import { toOrdinal } from 'number-to-words';
 
 type Warranty = {
   name: string;
-  warranty_date: Date;
-  engineers_id: string[];
+  warrantyDate: Date;
+  engineers: string[];
   isDone: boolean;
 };
 
@@ -52,9 +52,9 @@ export class CreatePmsHandler implements ICreatePmsHandler {
       const warrantyDates = this.createWarrantyDates(warrantyType.algorithm, args.dateInstalled);
       const warranties: Warranty[] = warrantyDates.map((w, index) => ({
         name: toOrdinal(index + 1),
-        engineers_id: [],
+        engineers: [],
         isDone: false,
-        warranty_date: w,
+        warrantyDate: w,
       }));
 
       const createWarranties = warranties.map((w) => this.warrantyService.createWarrantyAsync(w));
