@@ -10,6 +10,8 @@ import { PmsWarrantiesResult } from './pms.dtos/pmsWarranties.dto';
 import { IPmsWarrantiesHandler } from '../../services/adminServices/pmsServices/handlers/iPmsWarrantiesHandler';
 import { UpdateWarrantyArgs, UpdateWarrantyResult } from './pms.dtos/updatePMSWarranty.dto';
 import { IUpdateWarrantyHandler } from '../../services/adminServices/pmsServices/handlers/iUpdateWarrantyHandler';
+import { IExtendPmsWarrantyHandler } from '../../services/adminServices/pmsServices/handlers/iExtendPmsWarrantyHandler';
+import { ExtendWarrantyArgs, ExtendWarrantyResult } from './pms.dtos/extendWarranty.dto';
 
 @Controller('/admin/pms')
 export class PmsController {
@@ -19,6 +21,7 @@ export class PmsController {
     private readonly getPmsHandler: IGetPmsHandler,
     private readonly pmsWarrantiesHandler: IPmsWarrantiesHandler,
     private readonly updateWarrantyHandler: IUpdateWarrantyHandler,
+    private readonly extendPmsWarrantyHandler: IExtendPmsWarrantyHandler,
   ) {}
 
   @Post()
@@ -54,6 +57,23 @@ export class PmsController {
     }
 
     const result = plainToInstance(GetPmsResult, pmsRes.result, {
+      excludeExtraneousValues: true,
+    });
+    return result;
+  }
+
+  // prettier-ignore
+  @Post(':id/extend-warranty')
+  async extendPmsWarranty(@Param('id') id: string, @Body() args: ExtendWarrantyArgs): Promise<ExtendWarrantyResult> {
+    const extendRes = await this.extendPmsWarrantyHandler.executeAsync({
+      id,
+      ...args,
+    });
+    if (!extendRes.succeeded || !extendRes.result) {
+      throw new BadRequestException(extendRes.message);
+    }
+
+    const result = plainToInstance(ExtendWarrantyResult, extendRes.result, {
       excludeExtraneousValues: true,
     });
     return result;
