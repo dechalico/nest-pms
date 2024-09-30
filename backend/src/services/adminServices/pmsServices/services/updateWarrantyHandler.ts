@@ -44,6 +44,14 @@ export class UpdateWarrantyHandler implements IUpdateWarrantyHandler {
       }
       const warrantyHistory = warrantyHistoryRes.result;
 
+      if (warrantyHistory.isLock) {
+        return AppResult.createFailed(
+          new Error('Warranty history is locked. Action not allowed.'),
+          'Warranty history is locked. Action not allowed.',
+          AppErrorCodes.InvalidRequest,
+        );
+      }
+
       const pmsRes = await this.pmsService.getPmsAsync({ id: warrantyHistory.pmsId });
       if (!pmsRes.succeeded || !pmsRes.result) {
         return AppResult.createFailed(new Error(pmsRes.message), pmsRes.message, pmsRes.error.code);
