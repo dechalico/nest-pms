@@ -4,14 +4,20 @@ import { AppResult, AppErrorCodes } from '../../../../common/app.result';
 import { UpdateWarrantyArgs, UpdateWarrantyResult } from '../interactors/updateWarrantyInteractor';
 import { WarrantyService } from '../../../baseServices/services/warranty.service';
 import { ICurrentUserHandler } from '../../../authServices/handlers/ICurrentUserHandler';
-import { EngineerService } from '../../../baseServices/services/engineer.service';
+import { WarrantyHistoryService } from '../../../baseServices/services/warrantyHistory.service';
+import { PmsService } from '../../../baseServices/services/pms.service';
+import { WarrantyTypeService } from '../../../baseServices/services/warrantyType.service';
+import { Warranty } from '../../../baseServices/schemas/warranty.schema';
+import * as dayjs from 'dayjs';
 
 @Injectable()
 export class UpdateWarrantyHandler implements IUpdateWarrantyTypeHandler {
   constructor(
     private readonly warrantyService: WarrantyService,
     private readonly currentUser: ICurrentUserHandler,
-    private readonly engineerService: EngineerService,
+    private readonly warrantyHistoryService: WarrantyHistoryService,
+    private readonly pmsService: PmsService,
+    private readonly warrantyTypeService: WarrantyTypeService,
   ) {}
 
   async executeAsync(args: UpdateWarrantyArgs): Promise<AppResult<UpdateWarrantyResult>> {
@@ -24,6 +30,118 @@ export class UpdateWarrantyHandler implements IUpdateWarrantyTypeHandler {
           currentUser.error.code,
         );
       }
+      const user = currentUser.result;
+
+      const warrantyHistoryRes = await this.warrantyHistoryService.getWarrantyHistoryById(
+        args.warrantyHistoryId,
+      );
+      if (!warrantyHistoryRes.succeeded || !warrantyHistoryRes.result) {
+        return AppResult.createFailed(
+          new Error(warrantyHistoryRes.message),
+          warrantyHistoryRes.message,
+          warrantyHistoryRes.error.code,
+        );
+      }
+      const warrantyHistory = warrantyHistoryRes.result;
+
+      const pmsRes = await this.pmsService.getPmsAsync({ id: warrantyHistory.pmsId });
+      if (!pmsRes.succeeded || !pmsRes.result) {
+        return AppResult.createFailed(new Error(pmsRes.message), pmsRes.message, pmsRes.error.code);
+      }
+      const pms = pmsRes.result;
+
+      if (pms.areaOfficeId !== user.areaOfficeId) {
+        return AppResult.createFailed(
+          new Error('User is not authorized to update warranty.'),
+          'User is not authorized to update warranty.',
+          AppErrorCodes.InvalidRequest,
+        );
+      }
+
+      const warrantyTypeRes = await this.warrantyTypeService.getWarrantyType(
+        warrantyHistory.warrantyTypeId,
+      );
+      if (!warrantyTypeRes.succeeded || !warrantyTypeRes.result) {
+        return AppResult.createFailed(
+          new Error(warrantyTypeRes.message),
+          warrantyTypeRes.message,
+          warrantyTypeRes.error.code,
+        );
+      }
+      const warrantyType = warrantyTypeRes.result;
+
+      const newWarrantyDates = this.createWarrantyDates(warrantyType.algorithm, args.warrantyDate);
+
+      const warrantiesRes = await this.warrantyService.getAllWarrantiesAsync({
+        warrantiesIdIn: warrantyHistory.warranties.map((w) => (typeof w === 'string' ? w : w.id)),
+      });
+      if (!warrantiesRes.succeeded || !warrantiesRes.result) {
+        return AppResult.createFailed(
+          new Error(warrantiesRes.message),
+          warrantiesRes.message,
+          warrantiesRes.error.code,
+        );
+      }
+      const warranties = warrantiesRes.result.sort(
+        (a, b) => a.warranty_date.getTime() - b.warranty_date.getTime(),
+      );
+
+      const warrantiesToUpdate: Warranty[] = [];
+      let foundBeginToUpdate = false;
+
+      for (const warranty of warranties) {
+        if (warranty.id === args.id) {
+          foundBeginToUpdate = true;
+        }
+        if (foundBeginToUpdate) {
+          warrantiesToUpdate.push(warranty);
+        }
+      }
+
+      const [firstWarranty, ...rest] = warrantiesToUpdate;
+
+      firstWarranty.isDone = args.isDone;
+      firstWarranty.engineers_id = args.engineersId;
+      firstWarranty.warranty_date = args.warrantyDate;
+
+      for (let i = 0; i < rest.length; i++) {
+        const warranty = rest[i];
+
+        warranty.warranty_date = newWarrantyDates[i];
+      }
+
+      // add back first warranty to update
+      rest.push(firstWarranty);
+
+      const updateWarranties = rest.map((w) =>
+        this.warrantyService.updateWarrantyAsync({
+          id: w.id,
+          isDone: w.isDone,
+          engineers_id: w.engineers_id,
+          warranty_date: w.warranty_date,
+        }),
+      );
+
+      const updatedWarranties = await Promise.all(updateWarranties);
+
+      const haveErrors = updatedWarranties.some((value) => !value.succeeded || !value.result);
+      if (haveErrors) {
+        return AppResult.createFailed(
+          new Error('Some warranties failed to update.'),
+          'Some warranties failed to update.',
+          AppErrorCodes.InternalError,
+        );
+      }
+
+      return AppResult.createSucceeded(
+        {
+          engineersId: args.engineersId,
+          isDone: args.isDone,
+          warrantyDate: args.warrantyDate,
+          id: args.id,
+        },
+        'Successfully updated warranty.',
+      );
     } catch (error) {
       return AppResult.createFailed(
         error,
@@ -31,5 +149,29 @@ export class UpdateWarrantyHandler implements IUpdateWarrantyTypeHandler {
         AppErrorCodes.InternalError,
       );
     }
+  }
+
+  private createWarrantyDates(algorithm: string, dateStart: Date): Array<Date> {
+    const dates: Array<Date> = [];
+    const [interval, intervalCount, duration, durationCount] = algorithm.split('|');
+    const intervalInt = parseInt(intervalCount);
+    const durationInt = parseInt(durationCount);
+
+    const shorthand = {
+      D: 'd',
+      W: 'w',
+      M: 'M',
+      Y: 'y',
+    };
+
+    const endDate = dayjs(dateStart).add(durationInt, shorthand[duration]);
+    let recurringDate = dayjs(dateStart).add(intervalInt, shorthand[interval]);
+
+    while (endDate.toDate() >= recurringDate.toDate()) {
+      dates.push(recurringDate.toDate());
+      recurringDate = recurringDate.add(intervalInt, shorthand[interval]);
+    }
+
+    return dates;
   }
 }

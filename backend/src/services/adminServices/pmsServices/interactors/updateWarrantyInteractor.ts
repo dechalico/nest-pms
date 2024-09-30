@@ -9,8 +9,7 @@ class Warranty {
 
 export class UpdateWarrantyArgs extends PartialType(Warranty) {
   id: string;
+  warrantyHistoryId: string;
 }
 
-export class UpdateWarrantyResult extends Warranty {
-  updatedDate: Date;
-}
+export class UpdateWarrantyResult extends Warranty {}
