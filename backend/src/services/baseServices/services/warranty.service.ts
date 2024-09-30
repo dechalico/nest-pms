@@ -1,7 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { WarrantyRepository } from '../../repository/services/warrantyRepository.service';
 import { EngineerRepository } from '../../repository/services/engineerRepository.service';
-import { CreateWarranty, Warranty, UpdateWarranty } from '../schemas/warranty.schema';
+import {
+  CreateWarranty,
+  Warranty,
+  UpdateWarranty,
+  GetAllWarrantiesArgs,
+} from '../schemas/warranty.schema';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
 
 @Injectable()
@@ -77,6 +82,18 @@ export class WarrantyService {
       });
     } catch (error) {
       return AppResult.createFailed(error, 'An error occured when updating warranty.');
+    }
+  }
+
+  async getAllWarrantiesAsync(args: GetAllWarrantiesArgs): Promise<AppResult<Warranty[]>> {
+    try {
+      const filter: any = {};
+      if (args.warrantiesIdIn) {
+        filter.warrantiesIdIn = args.warrantiesIdIn;
+      }
+      return this.warrantyRepo.getAllAsync({ filter });
+    } catch (error) {
+      return AppResult.createFailed(error, 'An error occured when getting all warranties.');
     }
   }
 }

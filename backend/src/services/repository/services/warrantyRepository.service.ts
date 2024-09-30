@@ -1,9 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Warranty } from '../entities';
 import { BaseRepositoryService } from './baseRepository.service';
-import { Db } from 'mongodb';
+import { Db, ObjectId } from 'mongodb';
 import { AppResult } from 'src/common/app.result';
 import { objectIdCreator } from '../helper';
+import { GetAllArgs } from '../entities';
+import { filter } from 'rxjs';
 
 @Injectable()
 export class WarrantyRepository extends BaseRepositoryService<Warranty> {
@@ -24,4 +26,25 @@ export class WarrantyRepository extends BaseRepositoryService<Warranty> {
     }
     return super.updateAsync(entity);
   }
+
+  getAllAsync(args: WarrantyOptions = { filter: {} }): Promise<AppResult<any>> {
+    const { warrantiesIdIn, ...filtered } = args.filter;
+    const options: any = {
+      filter: {
+        ...filtered,
+      },
+      include: args.include,
+    };
+    if (args.filter?.warrantiesIdIn) {
+      options.filter['$in'] = args.filter.warrantiesIdIn.map((i) => objectIdCreator(i));
+    }
+
+    return super.getAllAsync(args);
+  }
+}
+
+class WarrantyOptions extends GetAllArgs {
+  filter: {
+    warrantiesIdIn?: string[];
+  };
 }

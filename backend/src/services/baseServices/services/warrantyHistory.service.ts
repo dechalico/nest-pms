@@ -107,4 +107,25 @@ export class WarrantyHistoryService {
       );
     }
   }
+
+  async getWarrantyHistoryById(id: string): Promise<AppResult<WarrantyHistorySchema>> {
+    try {
+      const result = await this.warrantyHistoryRepo.getByIdAsync(id);
+      if (!result.succeeded || !result.result) {
+        return AppResult.createFailed(
+          new Error('Invalid warranty history id.'),
+          'Invalid warranty history id.',
+          AppErrorCodes.InvalidRequest,
+        );
+      }
+
+      return AppResult.createSucceeded(result.result, 'Successfully retrieved warranty history.');
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'An error occurred when getting warranty history by id.',
+        AppErrorCodes.InternalError,
+      );
+    }
+  }
 }

@@ -24,3 +24,7 @@ export class UpdateWarranty extends PartialType(Warranty) {
   @Expose()
   id: string;
 }
+
+export class GetAllWarrantiesArgs {
+  warrantiesIdIn?: string[];
+}

@@ -24,10 +24,6 @@ export class UpdateWarrantyHandler implements IUpdateWarrantyTypeHandler {
           currentUser.error.code,
         );
       }
-
-      const engineersRes = await this.engineerService.getAllEngineersAsync({
-        includes: { areaOffice: true },
-      });
     } catch (error) {
       return AppResult.createFailed(
         error,
