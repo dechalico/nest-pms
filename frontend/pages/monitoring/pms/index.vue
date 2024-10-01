@@ -195,13 +195,14 @@
                     </v-col>
                   </v-row>
                   <div class="d-flex justify-end mt-3">
-                    <v-btn color="primary" rounded text="Submit" class="mr-2" type="submit"></v-btn>
                     <v-btn
+                      class="mr-2"
                       color="error"
                       rounded
                       text="Cancel"
                       @click="isActive.value = false"
                     ></v-btn>
+                    <v-btn color="primary" rounded text="Submit" type="submit"></v-btn>
                   </div>
                 </v-form>
               </UiParentCard>
@@ -356,7 +357,7 @@ const equipmentBrandRes = useApiFetch<EquipmentBrandResult>('/admin/equipment-br
 
 const warrantyRes = useApiFetch<WarrantyTypeResult>('/admin/warranty-types', { showError: true });
 
-const engineerRes = useApiFetch<EngineerResult>('admin/engineers/?includeOffice=true', {
+const engineerRes = useApiFetch<EngineerResult>('admin/engineers', {
   showError: true,
 });
 

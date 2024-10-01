@@ -51,19 +51,19 @@
                   </div>
                   <div class="d-flex justify-end">
                     <v-btn
-                      color="primary"
-                      rounded
-                      :text="generateBtnState.text"
                       class="mr-2"
-                      type="submit"
-                      :loading="generateBtnState.loading"
-                      :disabled="generateBtnState.diabled"
-                    ></v-btn>
-                    <v-btn
                       color="error"
                       rounded
                       text="Cancel"
                       @click="isActive.value = false"
+                    ></v-btn>
+                    <v-btn
+                      color="primary"
+                      rounded
+                      :text="generateBtnState.text"
+                      type="submit"
+                      :loading="generateBtnState.loading"
+                      :disabled="generateBtnState.diabled"
                     ></v-btn>
                   </div>
                 </v-form>

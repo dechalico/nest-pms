@@ -40,6 +40,12 @@ import { IGetPmsHandler } from './pmsServices/handlers/iGetPmsHandler';
 import { GetPmsHandler } from './pmsServices/services/getPmsHandler';
 import { IPmsWarrantiesHandler } from './pmsServices/handlers/iPmsWarrantiesHandler';
 import { PmsWarrantiesHandler } from './pmsServices/services/pmsWarrantiesHandler';
+import { IUpdateWarrantyHandler } from './pmsServices/handlers/iUpdateWarrantyHandler';
+import { UpdateWarrantyHandler } from './pmsServices/services/updateWarrantyHandler';
+import { IExtendPmsWarrantyHandler } from './pmsServices/handlers/iExtendPmsWarrantyHandler';
+import { ExtendPmsWarrantyHandler } from './pmsServices/services/extendPmsWarrantyHandler';
+import { ILockPmsHistoryHandler } from './pmsServices/handlers/iLockPmsHistoryHandler';
+import { LockPmsHistoryHandler } from './pmsServices/services/lockPmsHistoryHandler';
 
 @Module({
   imports: [BaseServicesModule, SecurityModule, AuthModule],
@@ -120,6 +126,18 @@ import { PmsWarrantiesHandler } from './pmsServices/services/pmsWarrantiesHandle
       provide: IPmsWarrantiesHandler,
       useClass: PmsWarrantiesHandler,
     },
+    {
+      provide: IUpdateWarrantyHandler,
+      useClass: UpdateWarrantyHandler,
+    },
+    {
+      provide: IExtendPmsWarrantyHandler,
+      useClass: ExtendPmsWarrantyHandler,
+    },
+    {
+      provide: ILockPmsHistoryHandler,
+      useClass: LockPmsHistoryHandler,
+    },
   ],
   exports: [
     ICreateOfficeHandler,
@@ -141,6 +159,9 @@ import { PmsWarrantiesHandler } from './pmsServices/services/pmsWarrantiesHandle
     IGetAllPmsHandler,
     IGetPmsHandler,
     IPmsWarrantiesHandler,
+    IUpdateWarrantyHandler,
+    IExtendPmsWarrantyHandler,
+    ILockPmsHistoryHandler,
   ],
 })
 export class AdminModule {}
