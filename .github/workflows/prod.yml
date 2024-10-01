@@ -68,4 +68,4 @@ jobs:
         run: echo ${{ secrets.SERVER_USER_PASSWORD }} | ssh -tt ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} 'sudo lxc exec smi -- sh -c "cd /root/pms && tar zxfv project.tar.gz"'
 
       - name: Running docker compose inside lxd stop, build and start services
-        run: echo ${{ secrets.SERVER_USER_PASSWORD }} | ssh -tt ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} 'sudo lxc exec smi -- sh -c "cd /root/pms && docker compose down && docker compose up -d --build"'
+        run: echo ${{ secrets.SERVER_USER_PASSWORD }} | ssh -tt ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} 'sudo lxc exec smi -- sh -c "cd /root/pms && docker compose down && docker compose up -d --build --force-recreate"'
