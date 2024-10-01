@@ -4,16 +4,17 @@ RUN apk add --no-cache libc6-compat
 
 WORKDIR /app
 
-# Install dependencies based on the preferred package manager
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-RUN npm ci && npm cache clean --force
+# Copy the package.json file into the working directory before copying the rest of the files to cache the dependencies
+COPY package.json /app
 
-COPY . .
+# Install the dependencies, you might want to use yarn or pnpm instead
+RUN npm install
+
+# Copy the rest of the files into the working directory
+COPY . /app
 
 RUN npm run build
 
-ENV NODE_ENV=production
-
 EXPOSE 3000
 
-CMD ["npm", "run", "prod"]
+CMD ["node", ".output/server/index.mjs"] 
