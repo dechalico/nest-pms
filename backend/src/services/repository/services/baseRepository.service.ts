@@ -1,9 +1,12 @@
-import { BaseEntity, GetAllArgs } from '../entities';
+import { BaseEntity, CountAllArgs, GetAllArgs } from '../entities';
 import { Db, Collection, ObjectId } from 'mongodb';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
 import { objectIdCreator } from '../helper';
 import { instanceToPlain } from 'class-transformer';
 import { removeUndefinedValues } from '../../../common/helpers/objectHelper';
+
+const DEFAULT_LIMIT = 50;
+const DEFAULT_SKIP = 0;
 
 export abstract class BaseRepositoryService<Entity extends BaseEntity> {
   protected readonly table: Collection;
@@ -94,7 +97,11 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
 
   async getAllAsync(args: GetAllArgs = { filter: {} }): Promise<AppResult<any>> {
     try {
-      const cursor = this.table.find<Entity>(args.filter).sort({ _id: 1 });
+      const cursor = this.table
+        .find<Entity>(args.filter)
+        .sort({ _id: 1 })
+        .skip(args.skip || DEFAULT_SKIP)
+        .limit(args.limit || DEFAULT_LIMIT);
       const result: Array<Entity> = [];
       for await (const doc of cursor) {
         const obj = new this.Wrapper();
@@ -124,6 +131,19 @@ export abstract class BaseRepositoryService<Entity extends BaseEntity> {
       return AppResult.createFailed(
         error,
         'An error occured when trying to delete entity.',
+        AppErrorCodes.InternalError,
+      );
+    }
+  }
+
+  async countAsync(args: CountAllArgs = { filter: {} }): Promise<AppResult<number>> {
+    try {
+      const count = await this.table.countDocuments(args.filter);
+      return AppResult.createSucceeded(count, 'Successfully count entities.');
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'An error occured when trying to count entities.',
         AppErrorCodes.InternalError,
       );
     }

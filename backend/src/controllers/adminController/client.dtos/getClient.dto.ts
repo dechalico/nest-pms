@@ -1,5 +1,6 @@
-import { Expose } from 'class-transformer';
-import { IsNotEmpty } from 'class-validator';
+import { Expose, Type } from 'class-transformer';
+import { IsNotEmpty, IsNumber, IsOptional, Max, Min } from 'class-validator';
+import { Pagination } from '../common.dtos/pagination.dto';
 
 class Client {
   @Expose()
@@ -26,4 +27,22 @@ class Client {
 export class GetClientsResult {
   @Expose()
   clients: Array<Client>;
+
+  @Expose()
+  pagination: Pagination;
+}
+
+export class GetClientsArgs {
+  @Type(() => Number)
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Max(20)
+  pageSize?: number;
+
+  @Type(() => Number)
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  currentPage?: number;
 }

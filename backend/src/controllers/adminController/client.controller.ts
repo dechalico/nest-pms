@@ -1,6 +1,6 @@
-import { Controller, Post, Get, Body, BadRequestException } from '@nestjs/common';
+import { Controller, Post, Get, Body, BadRequestException, Query } from '@nestjs/common';
 import { CreateClientArgs, CreateClientResult } from './client.dtos/createClient.dto';
-import { GetClientsResult } from './client.dtos/getClient.dto';
+import { GetClientsResult, GetClientsArgs } from './client.dtos/getClient.dto';
 import { ICreateClientHandler } from '../../services/adminServices/pmsServices/handlers/iCreateClientHandler';
 import { IGetClientsHandler } from '../../services/adminServices/pmsServices/handlers/iGetClientsHandler';
 import { plainToInstance } from 'class-transformer';
@@ -23,8 +23,15 @@ export class ClientController {
   }
 
   @Get()
-  async getClients(): Promise<GetClientsResult> {
-    const getClientsRes = await this.getClientsHandler.executeAsync({});
+  async getClients(@Query() args: GetClientsArgs): Promise<GetClientsResult> {
+    args.currentPage = args.currentPage || 1;
+    args.pageSize = args.pageSize || 10;
+
+    const getClientsRes = await this.getClientsHandler.executeAsync({
+      includePagination: true,
+      currentPage: args.currentPage,
+      pageSize: args.pageSize,
+    });
     if (!getClientsRes.succeeded || !getClientsRes.result) {
       throw new BadRequestException(getClientsRes.message);
     }

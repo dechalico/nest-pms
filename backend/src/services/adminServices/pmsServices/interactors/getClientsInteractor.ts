@@ -7,8 +7,20 @@ export class Client {
   dateUpdated: Date;
 }
 
-export class GetClientArgs {}
+export class Pagination {
+  totalCount: number;
+  totalPages: number;
+  pageSize: number;
+  currentPage: number;
+}
+
+export class GetClientArgs {
+  includePagination: boolean;
+  pageSize: number;
+  currentPage: number;
+}
 
 export class GetClientResult {
   clients: Array<Client>;
+  pagination?: Pagination;
 }

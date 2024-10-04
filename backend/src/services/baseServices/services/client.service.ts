@@ -5,6 +5,7 @@ import {
   UpdateClientSchema,
   ClientSchema,
   GetAllArgs,
+  CountAllArgs,
 } from '../schemas/client.schema';
 import { AppResult, AppErrorCodes } from '../../../common/app.result';
 import { AreaOfficeRepository } from '../../repository/services/areaOfficeRepository.service';
@@ -101,7 +102,12 @@ export class ClientService {
       if (args.areaOfficeId) {
         filter.area_office_id = args.areaOfficeId;
       }
-      const getClientsRes = await this.clientRepository.getAllAsync({ filter });
+
+      const getClientsRes = await this.clientRepository.getAllAsync({
+        filter,
+        skip: args.skip,
+        limit: args.limit,
+      });
       if (!getClientsRes.succeeded || !getClientsRes.result) {
         return AppResult.createFailed(
           new Error(getClientsRes.message),
@@ -116,6 +122,32 @@ export class ClientService {
       return AppResult.createFailed(
         error,
         'An error occured when getting clients record.',
+        AppErrorCodes.InternalError,
+      );
+    }
+  }
+
+  async countClients(args: CountAllArgs): Promise<AppResult<number>> {
+    try {
+      const filter: any = {};
+      if (args.areaOfficeId) {
+        filter.area_office_id = args.areaOfficeId;
+      }
+      const countRes = await this.clientRepository.countAsync({ filter });
+      if (!countRes.succeeded) {
+        return AppResult.createFailed(
+          new Error(countRes.message),
+          countRes.message,
+          countRes.error.code,
+        );
+      }
+
+      const result: number = countRes.result;
+      return AppResult.createSucceeded(result, 'Successfully counted clients.');
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'An error occurred when counting clients.',
         AppErrorCodes.InternalError,
       );
     }
