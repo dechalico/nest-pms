@@ -7,7 +7,7 @@ export class Client {
   dateUpdated: Date;
 }
 
-export class Pagination {
+export interface Pagination {
   totalCount: number;
   totalPages: number;
   pageSize: number;

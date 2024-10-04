@@ -1,9 +1,12 @@
-import { BadRequestException, Body, Controller, Get, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Post, Query } from '@nestjs/common';
 import {
   CreateEquipmentBrandArgs,
   CreateEquipmentBrandResult,
 } from './equipmentBrand.dtos/createEquipmentBrand.dto';
-import { GetEquipmentBrandsResult } from './equipmentBrand.dtos/getEquipmentBrands.dto';
+import {
+  GetEquipmentBrandsResult,
+  GetEquipmentBrandsArgs,
+} from './equipmentBrand.dtos/getEquipmentBrands.dto';
 import { ICreateEquipmentBrandHandler } from '../../services/adminServices/pmsServices/handlers/iCreateEquipmentBrandHandler';
 import { plainToInstance } from 'class-transformer';
 import { IGetEquipmentBrandHandler } from '../../services/adminServices/pmsServices/handlers/iGetEquipmentBrandsHandler';
@@ -31,8 +34,17 @@ export class EquipmentBrandController {
   }
 
   @Get()
-  async getEquipmentBrands(): Promise<GetEquipmentBrandsResult> {
-    const result = await this.getEquipmentBrandsHandler.executeAsync({});
+  async getEquipmentBrands(
+    @Query() args: GetEquipmentBrandsArgs,
+  ): Promise<GetEquipmentBrandsResult> {
+    args.currentPage = args.currentPage || 1;
+    args.pageSize = args.pageSize || 10;
+
+    const result = await this.getEquipmentBrandsHandler.executeAsync({
+      currentPage: args.currentPage,
+      pageSize: args.pageSize,
+      includePagination: true,
+    });
     if (!result.succeeded || !result.result) {
       throw new BadRequestException(result.message);
     }

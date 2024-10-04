@@ -5,8 +5,20 @@ export class EquipmentBrand {
   dateUpdated: Date;
 }
 
-export class GetEquipmentBrandArgs {}
+export interface Pagination {
+  totalCount: number;
+  totalPages: number;
+  pageSize: number;
+  currentPage: number;
+}
+
+export class GetEquipmentBrandArgs {
+  includePagination: boolean;
+  pageSize: number;
+  currentPage: number;
+}
 
 export class GetEquipmentBrandResult {
   equipmentBrands: Array<EquipmentBrand>;
+  pagination?: Pagination;
 }
