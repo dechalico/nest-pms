@@ -7,8 +7,20 @@ export class WarrantyType {
   dateUpdated: Date;
 }
 
-export class GetWarrantyTypeArgs {}
+export class GetWarrantyTypeArgs {
+  includePagination: boolean;
+  pageSize: number;
+  currentPage: number;
+}
+
+export interface Pagination {
+  totalCount: number;
+  totalPages: number;
+  pageSize: number;
+  currentPage: number;
+}
 
 export class GetWarrantyTypeResult {
   warrantyTypes: WarrantyType[];
+  pagination?: Pagination;
 }
