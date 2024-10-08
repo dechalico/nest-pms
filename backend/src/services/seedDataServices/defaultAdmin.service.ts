@@ -25,7 +25,7 @@ export class DefaultAdminService implements IDefaultAdminHandler, OnModuleInit {
 
   async executeAsync(args: DefaultAdminArgs): Promise<AppResult<DefaultAdminResult>> {
     try {
-      const checkUsers = await this.userService.getAllUsers();
+      const checkUsers = await this.userService.getAllUsers({ limit: 10, skip: 0 });
       if (!checkUsers.succeeded || !checkUsers.result) {
         return AppResult.createFailed(
           new Error(checkUsers.message),

@@ -20,10 +20,16 @@ export class UserController {
 
   @Get()
   async getUsers(@Query() args: GetUsersArgs): Promise<GetUsersResult> {
+    args.currentPage = args.currentPage || 1;
+    args.pageSize = args.pageSize || 10;
+
     const getUsersResult = await this.getUsersHandler.executeAsync({
       includes: {
         areaOffice: args.includeOffice,
       },
+      currentPage: args.currentPage,
+      pageSize: args.pageSize,
+      includePagination: true,
     });
     if (!getUsersResult.succeeded || !getUsersResult.result) {
       throw new BadRequestException(getUsersResult.message);

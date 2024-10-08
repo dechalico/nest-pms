@@ -1,11 +1,25 @@
 import { Expose, Transform, Type } from 'class-transformer';
-import { IsBoolean, IsOptional } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, Max, Min } from 'class-validator';
+import { Pagination } from '../common.dtos/pagination.dto';
 
 export class GetUsersArgs {
   @IsBoolean()
   @IsOptional()
   @Transform(({ value }: { value: string }) => value.toLowerCase() === 'true')
   includeOffice: boolean;
+
+  @Type(() => Number)
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Max(20)
+  pageSize?: number;
+
+  @Type(() => Number)
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  currentPage?: number;
 }
 
 class AreaOffice {
@@ -50,4 +64,7 @@ export class GetUsersResult {
   @Expose()
   @Type(() => User)
   users: User[];
+
+  @Expose()
+  pagination?: Pagination;
 }

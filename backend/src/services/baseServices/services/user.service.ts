@@ -182,7 +182,7 @@ export class UserService {
     }
   }
 
-  async getAllUsers(args: GetUsersArgs = {}): Promise<AppResult<Array<UserSchema>>> {
+  async getAllUsers(args: GetUsersArgs): Promise<AppResult<Array<UserSchema>>> {
     try {
       const options: Record<string, any> = {};
       if (args.includes?.areaOffice) {
@@ -190,6 +190,9 @@ export class UserService {
           area_office: args.includes.areaOffice,
         };
       }
+      options.limit = args.limit;
+      options.skip = args.skip;
+
       const usersRes = await this.userRepository.getAllAsync(options);
       if (!usersRes.succeeded || !usersRes.result) {
         return AppResult.createFailed(
@@ -205,6 +208,27 @@ export class UserService {
       return AppResult.createFailed(
         error,
         'An error occured when getting all users',
+        AppErrorCodes.InternalError,
+      );
+    }
+  }
+
+  async countUsers(): Promise<AppResult<number>> {
+    try {
+      const countRes = await this.userRepository.countAsync();
+      if (!countRes.succeeded) {
+        return AppResult.createFailed(
+          new Error(countRes.message),
+          countRes.message,
+          countRes.error.code,
+        );
+      }
+
+      return AppResult.createSucceeded(countRes.result, 'Successfully count users');
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'An error occured when counting users',
         AppErrorCodes.InternalError,
       );
     }
