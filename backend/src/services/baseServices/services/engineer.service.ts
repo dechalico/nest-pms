@@ -109,14 +109,14 @@ export class EngineerService {
     }
   }
 
-  async getAllEngineersAsync(
-    args: GetEngineersArgs = {},
-  ): Promise<AppResult<Array<EngineerSchema>>> {
+  async getAllEngineersAsync(args: GetEngineersArgs): Promise<AppResult<Array<EngineerSchema>>> {
     try {
       const getRes = await this.engineerRepo.getAllAsync({
         include: {
           area_office: args.includes?.areaOffice,
         },
+        limit: args.limit,
+        skip: args.skip,
       });
       if (!getRes.succeeded || !getRes.result) {
         return AppResult.createFailed(new Error(getRes.message), getRes.message, getRes.error.code);
@@ -149,6 +149,27 @@ export class EngineerService {
       return AppResult.createFailed(
         error,
         'An error occured when getting engineer by id.',
+        AppErrorCodes.InternalError,
+      );
+    }
+  }
+
+  async countEngineers(): Promise<AppResult<number>> {
+    try {
+      const countRes = await this.engineerRepo.countAsync();
+      if (!countRes.succeeded) {
+        return AppResult.createFailed(
+          new Error(countRes.message),
+          countRes.message,
+          countRes.error.code,
+        );
+      }
+      const result: number = countRes.result;
+      return AppResult.createSucceeded(result, 'Engineers count successfully get');
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'An error occured when getting engineers count.',
         AppErrorCodes.InternalError,
       );
     }
