@@ -44,7 +44,10 @@ export class DefaultAdminService implements IDefaultAdminHandler, OnModuleInit {
 
       // create default area office
       let areaOfficeId: string = undefined;
-      const getAllAreaRes = await this.areaOfficeService.getAllAreaOffices();
+      const getAllAreaRes = await this.areaOfficeService.getAllAreaOffices({
+        limit: 50,
+        skip: 0,
+      });
       if (!getAllAreaRes.succeeded || !getAllAreaRes.result) {
         return AppResult.createFailed(
           new Error(getAllAreaRes.message),

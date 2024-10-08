@@ -23,3 +23,8 @@ export class UpdateAreaOffice extends PartialType(
   @Expose()
   id: string;
 }
+
+export interface GetAllArgs {
+  skip?: number;
+  limit?: number;
+}
