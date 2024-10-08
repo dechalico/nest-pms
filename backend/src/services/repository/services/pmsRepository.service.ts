@@ -1,5 +1,5 @@
 import { BaseRepositoryService } from './baseRepository.service';
-import { GetAllArgs, Pms } from '../entities';
+import { CountAllArgs, GetAllArgs, Pms } from '../entities';
 import { Injectable, Inject } from '@nestjs/common';
 import { Db } from 'mongodb';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
@@ -33,11 +33,22 @@ export class PmsRepository extends BaseRepositoryService<Pms> {
   }
 
   getAllAsync(args?: GetAllArgs): Promise<AppResult<any>> {
-    const filter: Record<string, any> = {};
+    const options: Record<string, any> = {};
     if (args?.filter?.areaOfficeId) {
-      filter.area_office_id = objectIdCreator(args?.filter?.areaOfficeId);
+      options.area_office_id = objectIdCreator(args?.filter?.areaOfficeId);
+    }
+    options.skip = args?.skip;
+    options.limit = args?.limit;
+
+    return super.getAllAsync(options);
+  }
+
+  countAsync(args?: CountAllArgs): Promise<AppResult<number>> {
+    const options: Record<string, any> = {};
+    if (args?.filter?.areaOfficeId) {
+      options.area_office_id = objectIdCreator(args?.filter?.areaOfficeId);
     }
 
-    return super.getAllAsync(filter);
+    return super.countAsync(options);
   }
 }

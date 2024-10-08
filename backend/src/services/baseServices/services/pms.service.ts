@@ -1,6 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PmsRepository } from '../../repository/services/pmsRepository.service';
-import { CreatePms, GetPmsArgs, PmsSchema, GetPmsByIdArgs } from '../schemas/pms.schema';
+import {
+  CreatePms,
+  GetPmsArgs,
+  PmsSchema,
+  GetPmsByIdArgs,
+  CountPmsArgs,
+} from '../schemas/pms.schema';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
 import { ClientRepository } from '../../repository/services/clientRepository.service';
 import { EquipmentBrandRepository } from '../../repository/services/equipmentBrandRepository.service';
@@ -93,13 +99,17 @@ export class PmsService {
     }
   }
 
-  async getAllPmsAsync(args: GetPmsArgs = {}): Promise<AppResult<PmsSchema[]>> {
+  async getAllPmsAsync(args: GetPmsArgs): Promise<AppResult<PmsSchema[]>> {
     try {
       const filter: Record<string, string> = {};
       if (args.areaOfficeId) {
         filter.areaOfficeId = args.areaOfficeId;
       }
-      const allPmsRes = await this.pmsRepository.getAllAsync({ filter: filter });
+      const allPmsRes = await this.pmsRepository.getAllAsync({
+        filter: filter,
+        limit: args.limit,
+        skip: args.skip,
+      });
       if (!allPmsRes.succeeded || !allPmsRes.result) {
         return AppResult.createFailed(allPmsRes.error.error, allPmsRes.message);
       }
@@ -129,5 +139,29 @@ export class PmsService {
       const pms: PmsSchema = pmsRes.result;
       return AppResult.createSucceeded(pms, 'Successfully get pms.');
     } catch (error) {}
+  }
+
+  async countPmsAsync(args: CountPmsArgs): Promise<AppResult<number>> {
+    try {
+      const filter: Record<string, string> = {};
+      if (args.areaOfficeId) {
+        filter.areaOfficeId = args.areaOfficeId;
+      }
+      const countRes = await this.pmsRepository.countAsync({
+        filter: filter,
+      });
+      if (!countRes.succeeded || !countRes.result) {
+        return AppResult.createFailed(countRes.error.error, countRes.message);
+      }
+
+      const count: number = countRes.result;
+      return AppResult.createSucceeded(count, 'Successfully count pms.');
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'An error occured when counting pms.',
+        AppErrorCodes.InternalError,
+      );
+    }
   }
 }

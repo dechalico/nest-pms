@@ -71,8 +71,20 @@ class Pms {
   status: string;
 }
 
-export class GetAllPmsArgs {}
+export class GetAllPmsArgs {
+  includePagination: boolean;
+  pageSize: number;
+  currentPage: number;
+}
+
+export interface Pagination {
+  totalCount: number;
+  totalPages: number;
+  pageSize: number;
+  currentPage: number;
+}
 
 export class GetAllPmsResult {
   pms: Pms[];
+  pagination?: Pagination;
 }

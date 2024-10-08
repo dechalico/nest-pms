@@ -1,10 +1,19 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { CreatePmsArgs, CreatePmsResult } from './pms.dtos/createPMS.dto';
 import { GetPmsResult } from './pms.dtos/getPms.dto';
 import { ICreatePmsHandler } from '../../services/adminServices/pmsServices/handlers/iCreatePmsHandler';
 import { plainToInstance } from 'class-transformer';
 import { IGetAllPmsHandler } from '../../services/adminServices/pmsServices/handlers/iGetAllPmsHandler';
-import { GetAllPmsResult } from './pms.dtos/getAllPms.dto';
+import { GetAllPmsResult, GetPmsArgs } from './pms.dtos/getAllPms.dto';
 import { IGetPmsHandler } from '../../services/adminServices/pmsServices/handlers/iGetPmsHandler';
 import { PmsWarrantiesResult } from './pms.dtos/pmsWarranties.dto';
 import { IPmsWarrantiesHandler } from '../../services/adminServices/pmsServices/handlers/iPmsWarrantiesHandler';
@@ -37,8 +46,15 @@ export class PmsController {
   }
 
   @Get()
-  async getAllPms(): Promise<GetAllPmsResult> {
-    const allPmsRes = await this.getallPmsHandler.executeAsync({});
+  async getAllPms(@Query() args: GetPmsArgs): Promise<GetAllPmsResult> {
+    args.currentPage = args.currentPage || 1;
+    args.pageSize = args.pageSize || 10;
+
+    const allPmsRes = await this.getallPmsHandler.executeAsync({
+      currentPage: args.currentPage,
+      pageSize: args.pageSize,
+      includePagination: true,
+    });
     if (!allPmsRes.succeeded || !allPmsRes.result) {
       throw new BadRequestException(allPmsRes.message);
     }
