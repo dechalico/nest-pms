@@ -1,7 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { AreaOfficeRepository } from '../../repository/services/areaOfficeRepository.service';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
-import { CreateAreaOffice, AreaOfficeSchema, UpdateAreaOffice } from '../schemas/areaOffice.schema';
+import {
+  CreateAreaOffice,
+  AreaOfficeSchema,
+  UpdateAreaOffice,
+  GetAllArgs,
+} from '../schemas/areaOffice.schema';
 
 @Injectable()
 export class AreaOfficeService {
@@ -54,9 +59,12 @@ export class AreaOfficeService {
     }
   }
 
-  async getAllAreaOffices(): Promise<AppResult<Array<AreaOfficeSchema>>> {
+  async getAllAreaOffices(args: GetAllArgs): Promise<AppResult<Array<AreaOfficeSchema>>> {
     try {
-      const getAllRes = await this.areaOfficeRepo.getAllAsync();
+      const getAllRes = await this.areaOfficeRepo.getAllAsync({
+        limit: args.limit,
+        skip: args.skip,
+      });
       if (!getAllRes.succeeded || !getAllRes.result) {
         return AppResult.createFailed(
           new Error(getAllRes.message),
@@ -70,6 +78,22 @@ export class AreaOfficeService {
       return AppResult.createFailed(
         error,
         'An error occured when getting all area offices.',
+        AppErrorCodes.InternalError,
+      );
+    }
+  }
+
+  async countAreaOffices(): Promise<AppResult<number>> {
+    try {
+      const countRes = await this.areaOfficeRepo.countAsync();
+      if (!countRes.succeeded || !countRes.result) {
+        return AppResult.createFailed(new Error(countRes.message), countRes.message);
+      }
+      return AppResult.createSucceeded(countRes.result, 'Successfully count area offices');
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'An error occured when counting area offices.',
         AppErrorCodes.InternalError,
       );
     }

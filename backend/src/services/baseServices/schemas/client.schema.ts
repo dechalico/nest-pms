@@ -33,4 +33,10 @@ export class UpdateClientSchema extends PartialType(CreateClientSchema) {
 
 export interface GetAllArgs {
   areaOfficeId?: string;
+  skip?: number;
+  limit?: number;
+}
+
+export interface CountAllArgs {
+  areaOfficeId?: string;
 }

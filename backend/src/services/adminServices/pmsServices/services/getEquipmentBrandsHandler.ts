@@ -4,6 +4,7 @@ import { IGetEquipmentBrandHandler } from '../handlers/iGetEquipmentBrandsHandle
 import {
   GetEquipmentBrandArgs,
   GetEquipmentBrandResult,
+  Pagination,
 } from '../interactors/getEquipmentBrandsInteractor';
 import { EquipmentBrandService } from '../../../baseServices/services/equipmentBrand.service';
 
@@ -13,7 +14,13 @@ export class GetEquipmentBrandsHandler implements IGetEquipmentBrandHandler {
 
   async executeAsync(args: GetEquipmentBrandArgs): Promise<AppResult<GetEquipmentBrandResult>> {
     try {
-      const brandsRes = await this.equipmentBrandService.getAllEquipmentBrandAsync();
+      const skip = args.pageSize * (args.currentPage - 1);
+      const limit = args.pageSize;
+
+      const brandsRes = await this.equipmentBrandService.getAllEquipmentBrandAsync({
+        limit,
+        skip,
+      });
       if (!brandsRes.succeeded || !brandsRes.result) {
         return AppResult.createFailed(
           new Error(brandsRes.message),
@@ -22,9 +29,31 @@ export class GetEquipmentBrandsHandler implements IGetEquipmentBrandHandler {
         );
       }
 
+      let pagination: Pagination | undefined = undefined;
+      if (args.includePagination) {
+        const brandsCountRes = await this.equipmentBrandService.countEquipmentBrandAsync();
+        if (!brandsCountRes.succeeded) {
+          return AppResult.createFailed(
+            new Error(brandsCountRes.message),
+            brandsCountRes.message,
+            brandsCountRes.error.code,
+          );
+        }
+
+        const totalCount = brandsCountRes.result;
+        const totalPages = Math.ceil(totalCount / args.pageSize);
+
+        pagination = {
+          currentPage: args.currentPage,
+          pageSize: args.pageSize,
+          totalCount,
+          totalPages,
+        };
+      }
+
       const result = brandsRes.result;
       return AppResult.createSucceeded(
-        { equipmentBrands: result },
+        { equipmentBrands: result, pagination },
         'Successfully get all equipment brands.',
       );
     } catch (error) {

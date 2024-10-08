@@ -1,6 +1,7 @@
-import { Expose, Transform } from 'class-transformer';
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { Expose, Transform, Type } from 'class-transformer';
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 import { OmitType } from '@nestjs/mapped-types';
+import { Pagination } from '../common.dtos/pagination.dto';
 
 class Engineer {
   @Expose()
@@ -29,6 +30,9 @@ export class CreateEngineerResult extends Engineer {}
 export class GetAllEngineersResult {
   @Expose()
   engineers: Array<Engineer>;
+
+  @Expose()
+  pagination: Pagination;
 }
 
 export class GetAllEngineersArgs {
@@ -36,4 +40,17 @@ export class GetAllEngineersArgs {
   @IsOptional()
   @Transform(({ value }: { value: string }) => value.toLowerCase() === 'true')
   includeOffice: boolean;
+
+  @Type(() => Number)
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Max(20)
+  pageSize?: number;
+
+  @Type(() => Number)
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  currentPage?: number;
 }

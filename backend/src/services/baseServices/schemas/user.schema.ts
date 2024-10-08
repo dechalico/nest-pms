@@ -49,4 +49,6 @@ export class GetUsersArgs {
   includes?: {
     areaOffice?: boolean;
   };
+  skip: number;
+  limit: number;
 }

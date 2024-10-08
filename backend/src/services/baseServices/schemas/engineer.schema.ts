@@ -42,4 +42,6 @@ export class GetEngineersArgs {
   includes?: {
     areaOffice?: boolean;
   };
+  limit: number;
+  skip: number;
 }

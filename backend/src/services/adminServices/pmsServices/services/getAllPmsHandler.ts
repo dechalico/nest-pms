@@ -1,6 +1,6 @@
 import { AppErrorCodes, AppResult } from 'src/common/app.result';
 import { IGetAllPmsHandler } from '../handlers/iGetAllPmsHandler';
-import { GetAllPmsArgs, GetAllPmsResult } from '../interactors/getAllPmsInteractor';
+import { GetAllPmsArgs, GetAllPmsResult, Pagination } from '../interactors/getAllPmsInteractor';
 import { Injectable } from '@nestjs/common';
 import { PmsService } from '../../../baseServices/services/pms.service';
 import { ICurrentUserHandler } from '../../../authServices/handlers/ICurrentUserHandler';
@@ -24,12 +24,46 @@ export class GetAllPmsHandler implements IGetAllPmsHandler {
       }
       const user = currentUserRes.result;
 
-      const pmsRes = await this.pmsService.getAllPmsAsync({ areaOfficeId: user.areaOfficeId });
+      const skip = args.pageSize * (args.currentPage - 1);
+      const limit = args.pageSize;
+
+      const pmsRes = await this.pmsService.getAllPmsAsync({
+        areaOfficeId: user.areaOfficeId,
+        skip,
+        limit,
+      });
       if (!pmsRes.succeeded || !pmsRes.result) {
         return AppResult.createFailed(new Error(pmsRes.message), pmsRes.message, pmsRes.error.code);
       }
 
-      return AppResult.createSucceeded({ pms: pmsRes.result }, 'Successfully get all pms.');
+      let pagination: Pagination | undefined = undefined;
+      if (args.includePagination) {
+        const pmsCountRes = await this.pmsService.countPmsAsync({
+          areaOfficeId: user.areaOfficeId,
+        });
+        if (!pmsCountRes.succeeded) {
+          return AppResult.createFailed(
+            new Error(pmsCountRes.message),
+            pmsCountRes.message,
+            pmsCountRes.error.code,
+          );
+        }
+
+        const totalCount = pmsCountRes.result;
+        const totalPages = Math.ceil(totalCount / args.pageSize);
+
+        pagination = {
+          currentPage: args.currentPage,
+          pageSize: args.pageSize,
+          totalCount,
+          totalPages,
+        };
+      }
+
+      return AppResult.createSucceeded(
+        { pms: pmsRes.result, pagination },
+        'Successfully get all pms.',
+      );
     } catch (error) {
       return AppResult.createFailed(
         error,

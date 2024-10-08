@@ -1,8 +1,8 @@
-import { Controller, Body, Post, Get, BadRequestException } from '@nestjs/common';
+import { Controller, Body, Post, Get, BadRequestException, Query } from '@nestjs/common';
 import { CreateOffice, CreateOfficeResult } from './office.dtos/create.office.dto';
 import { ICreateOfficeHandler } from '../../services/adminServices/officeServices/handlers/iCreateOfficeHandler';
 import { plainToInstance } from 'class-transformer';
-import { GetOfficeResult } from './office.dtos/get.office.dto';
+import { GetOfficeResult, GetOfficesArgs } from './office.dtos/get.office.dto';
 import { IGetOfficesHandler } from '../../services/adminServices/officeServices/handlers/IGetOfficesHandler';
 
 @Controller('/admin/offices')
@@ -25,8 +25,15 @@ export class OfficeController {
   }
 
   @Get()
-  async getOffices(): Promise<GetOfficeResult> {
-    const result = await this.getOfficesHandler.executeAsync({});
+  async getOffices(@Query() args: GetOfficesArgs): Promise<GetOfficeResult> {
+    args.currentPage = args.currentPage || 1;
+    args.pageSize = args.pageSize || 10;
+
+    const result = await this.getOfficesHandler.executeAsync({
+      currentPage: args.currentPage,
+      pageSize: args.pageSize,
+      includePagination: true,
+    });
     if (!result.succeeded || !result.result) {
       throw new BadRequestException(result.message);
     }

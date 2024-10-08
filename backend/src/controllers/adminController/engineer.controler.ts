@@ -42,10 +42,16 @@ export class EngineerController {
 
   @Get()
   async getAllEngineers(@Query() args: GetAllEngineersArgs): Promise<GetAllEngineersResult> {
+    args.currentPage = args.currentPage || 1;
+    args.pageSize = args.pageSize || 10;
+
     const getEngineersRes = await this.getEngineersHandler.executeAsync({
       includes: {
         areaOffice: args.includeOffice,
       },
+      currentPage: args.currentPage,
+      pageSize: args.pageSize,
+      includePagination: true,
     });
     if (!getEngineersRes.succeeded || !getEngineersRes.result) {
       throw new BadRequestException(getEngineersRes.succeeded);

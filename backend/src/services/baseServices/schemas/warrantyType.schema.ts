@@ -26,3 +26,8 @@ export class CreateWarrantyType extends PickType(WarrantyTypeSchema, ['name', 'a
 export class UpdateWarrantyType extends PartialType(CreateWarrantyType) {
   id: string;
 }
+
+export interface GetAllArgs {
+  skip?: number;
+  limit?: number;
+}

@@ -85,8 +85,14 @@ export class CreatePms extends OmitType(PmsSchema, [
 
 export class GetPmsArgs {
   areaOfficeId?: string;
+  skip: number;
+  limit: number;
 }
 
 export class GetPmsByIdArgs {
   id: string;
+}
+
+export interface CountPmsArgs {
+  areaOfficeId?: string;
 }

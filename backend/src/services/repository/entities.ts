@@ -223,4 +223,10 @@ export class InvitedToken extends BaseEntity {
 export class GetAllArgs {
   filter?: any;
   include?: any;
+  skip?: number;
+  limit?: number;
+}
+
+export class CountAllArgs {
+  filter?: any;
 }

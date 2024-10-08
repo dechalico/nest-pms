@@ -1,4 +1,6 @@
 import { Expose, Type } from 'class-transformer';
+import { IsNumber, IsOptional, Max, Min } from 'class-validator';
+import { Pagination } from '../common.dtos/pagination.dto';
 
 class Client {
   @Expose()
@@ -75,4 +77,22 @@ export class GetAllPmsResult {
   @Expose()
   @Type(() => Pms)
   pms: Pms[];
+
+  @Expose()
+  pagination?: Pagination;
+}
+
+export class GetPmsArgs {
+  @Type(() => Number)
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Max(20)
+  pageSize?: number;
+
+  @Type(() => Number)
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  currentPage?: number;
 }

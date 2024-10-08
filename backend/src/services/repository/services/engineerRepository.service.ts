@@ -89,6 +89,23 @@ export class EngineerRepository extends BaseRepositoryService<Engineer> {
         });
       }
 
+      stages.push({
+        $sort: {
+          _id: 1,
+        },
+      });
+
+      const limit = args?.limit || 50;
+      const skip = args?.skip || 0;
+
+      stages.push({
+        $skip: skip,
+      });
+
+      stages.push({
+        $limit: limit,
+      });
+
       const cursor = this.table.aggregate<Engineer>(stages);
       const result: Engineer[] = [];
       for await (const doc of cursor) {

@@ -1,5 +1,5 @@
 import { BaseRepositoryService } from './baseRepository.service';
-import { Client, GetAllArgs } from '../entities';
+import { Client, CountAllArgs, GetAllArgs } from '../entities';
 import { Injectable, Inject } from '@nestjs/common';
 import { Db } from 'mongodb';
 import { AppResult, AppErrorCodes } from '../../../common/app.result';
@@ -50,6 +50,21 @@ export class ClientRepository extends BaseRepositoryService<Client> {
         args.filter.area_office_id = objectIdCreator(args.filter.area_office_id);
       }
       return super.getAllAsync(args);
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'An error occured when getting clients record.',
+        AppErrorCodes.InternalError,
+      );
+    }
+  }
+
+  async countAsync(args?: CountAllArgs): Promise<AppResult<number>> {
+    try {
+      if (args?.filter?.area_office_id) {
+        args.filter.area_office_id = objectIdCreator(args.filter.area_office_id);
+      }
+      return super.countAsync(args);
     } catch (error) {
       return AppResult.createFailed(
         error,

@@ -3,6 +3,7 @@ import {
   CreateWarrantyType,
   UpdateWarrantyType,
   WarrantyTypeSchema,
+  GetAllArgs,
 } from '../schemas/warrantyType.schema';
 import { AppResult, AppErrorCodes } from '../../../common/app.result';
 import { WarrantyTypeRepository } from '../../repository/services/warrantyTypeRepository.service';
@@ -108,9 +109,12 @@ export class WarrantyTypeService {
     }
   }
 
-  async getAllWarrantyTypes(): Promise<AppResult<WarrantyTypeSchema[]>> {
+  async getAllWarrantyTypes(args: GetAllArgs): Promise<AppResult<WarrantyTypeSchema[]>> {
     try {
-      const getAllRes = await this.warrantyRepo.getAllAsync();
+      const getAllRes = await this.warrantyRepo.getAllAsync({
+        limit: args.limit,
+        skip: args.skip,
+      });
       if (!getAllRes.succeeded || !getAllRes.result) {
         return AppResult.createFailed(
           new Error(getAllRes.message),
@@ -151,6 +155,28 @@ export class WarrantyTypeService {
       return AppResult.createFailed(
         error,
         'An error occured when getting warranty type',
+        AppErrorCodes.InternalError,
+      );
+    }
+  }
+
+  async countWarrantyTypes(): Promise<AppResult<number>> {
+    try {
+      const countRes = await this.warrantyRepo.countAsync();
+      if (!countRes.succeeded) {
+        return AppResult.createFailed(
+          new Error(countRes.message),
+          countRes.message,
+          countRes.error.code,
+        );
+      }
+
+      const result: number = countRes.result;
+      return AppResult.createSucceeded(result, 'Warranty types count successfully get');
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'An error occured when getting warranty types count',
         AppErrorCodes.InternalError,
       );
     }

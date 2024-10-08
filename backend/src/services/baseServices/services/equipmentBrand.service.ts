@@ -3,6 +3,7 @@ import {
   CreateEquipmentBrand,
   EquipmentBrandSchema,
   UpdateEquipmentBrand,
+  GetAllArgs,
 } from '../schemas/equipmentBrand.schema';
 import { AppResult, AppErrorCodes } from '../../../common/app.result';
 import { EquipmentBrandRepository } from '../../repository/services/equipmentBrandRepository.service';
@@ -34,7 +35,7 @@ export class EquipmentBrandService {
     } catch (error) {
       return AppResult.createFailed(
         error,
-        'An error occured when creating engineer.',
+        'An error occured when creating equipment brand.',
         AppErrorCodes.InternalError,
       );
     }
@@ -62,15 +63,20 @@ export class EquipmentBrandService {
     } catch (error) {
       return AppResult.createFailed(
         error,
-        'An error occured when creating engineer.',
+        'An error occured when updating equipment brand.',
         AppErrorCodes.InternalError,
       );
     }
   }
 
-  async getAllEquipmentBrandAsync(): Promise<AppResult<Array<EquipmentBrandSchema>>> {
+  async getAllEquipmentBrandAsync(
+    args: GetAllArgs,
+  ): Promise<AppResult<Array<EquipmentBrandSchema>>> {
     try {
-      const getRes = await this.equipmentBrandRepository.getAllAsync();
+      const getRes = await this.equipmentBrandRepository.getAllAsync({
+        limit: args.limit,
+        skip: args.skip,
+      });
       if (!getRes.succeeded || !getRes.result) {
         return AppResult.createFailed(new Error(getRes.message), getRes.message, getRes.error.code);
       }
@@ -80,7 +86,29 @@ export class EquipmentBrandService {
     } catch (error) {
       return AppResult.createFailed(
         error,
-        'An error occured when creating engineer.',
+        'An error occured when getting equipment brands.',
+        AppErrorCodes.InternalError,
+      );
+    }
+  }
+
+  async countEquipmentBrandAsync(): Promise<AppResult<number>> {
+    try {
+      const countRes = await this.equipmentBrandRepository.countAsync();
+      if (!countRes.succeeded) {
+        return AppResult.createFailed(
+          new Error(countRes.message),
+          countRes.message,
+          countRes.error.code,
+        );
+      }
+
+      const result: number = countRes.result;
+      return AppResult.createSucceeded(result, 'Equipment Brands count successfully get');
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'An error occured when getting equipment brands count.',
         AppErrorCodes.InternalError,
       );
     }

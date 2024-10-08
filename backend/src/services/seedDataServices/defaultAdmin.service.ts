@@ -25,7 +25,7 @@ export class DefaultAdminService implements IDefaultAdminHandler, OnModuleInit {
 
   async executeAsync(args: DefaultAdminArgs): Promise<AppResult<DefaultAdminResult>> {
     try {
-      const checkUsers = await this.userService.getAllUsers();
+      const checkUsers = await this.userService.getAllUsers({ limit: 10, skip: 0 });
       if (!checkUsers.succeeded || !checkUsers.result) {
         return AppResult.createFailed(
           new Error(checkUsers.message),
@@ -44,7 +44,10 @@ export class DefaultAdminService implements IDefaultAdminHandler, OnModuleInit {
 
       // create default area office
       let areaOfficeId: string = undefined;
-      const getAllAreaRes = await this.areaOfficeService.getAllAreaOffices();
+      const getAllAreaRes = await this.areaOfficeService.getAllAreaOffices({
+        limit: 50,
+        skip: 0,
+      });
       if (!getAllAreaRes.succeeded || !getAllAreaRes.result) {
         return AppResult.createFailed(
           new Error(getAllAreaRes.message),

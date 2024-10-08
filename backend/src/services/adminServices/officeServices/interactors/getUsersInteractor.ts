@@ -16,10 +16,21 @@ export class User {
 
 export class GetUsersResult {
   users: User[];
+  pagination?: Pagination;
 }
 
 export class GetUsersArgs {
   includes?: {
     areaOffice?: boolean;
   };
+  includePagination: boolean;
+  pageSize: number;
+  currentPage: number;
+}
+
+export interface Pagination {
+  totalCount: number;
+  totalPages: number;
+  pageSize: number;
+  currentPage: number;
 }

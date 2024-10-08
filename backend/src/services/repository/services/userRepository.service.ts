@@ -74,6 +74,7 @@ export class UserRepository extends BaseRepositoryService<User> {
 
         stages.push({
           $project: {
+            _id: 1,
             email: 1,
             username: 1,
             firstName: 1,
@@ -96,6 +97,23 @@ export class UserRepository extends BaseRepositoryService<User> {
           },
         });
       }
+
+      stages.push({
+        $sort: {
+          _id: 1,
+        },
+      });
+
+      const limit = args?.limit || 50;
+      const skip = args?.skip || 0;
+
+      stages.push({
+        $skip: skip,
+      });
+
+      stages.push({
+        $limit: limit,
+      });
 
       const cursor = this.table.aggregate<User>(stages);
       const result: User[] = [];

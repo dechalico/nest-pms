@@ -21,3 +21,8 @@ export class UpdateEquipmentBrand extends PartialType(CreateEquipmentBrand) {
   @Expose()
   id: string;
 }
+
+export interface GetAllArgs {
+  skip?: number;
+  limit?: number;
+}
