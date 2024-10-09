@@ -99,10 +99,11 @@
         </div>
         <div class="text-center mt-4" v-if="(clientResult?.pagination.totalPages || 0) > 1">
           <v-pagination
-            density="comfortable"
+            density="compact"
             v-model="currentPage"
             :total-visible="5"
             :length="clientResult?.pagination.totalPages"
+            color="primary"
           ></v-pagination>
         </div>
       </UiParentCard>
