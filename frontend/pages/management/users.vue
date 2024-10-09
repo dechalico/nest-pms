@@ -111,6 +111,15 @@
             </tbody>
           </v-table>
         </div>
+        <div class="text-center mt-4" v-if="(usersResult?.pagination.totalPages || 0) > 1">
+          <v-pagination
+            density="compact"
+            v-model="currentPage"
+            :total-visible="5"
+            :length="usersResult?.pagination.totalPages"
+            color="primary"
+          ></v-pagination>
+        </div>
       </UiParentCard>
     </v-col>
   </v-row>
@@ -123,9 +132,11 @@ import type { User } from '@/types/management/user';
 import type { FormInput } from '@/types/pages/form';
 import type { Office } from '@/types/management/office';
 import { useGlobalMessageStore } from '@/stores/globalMessage';
+import type { Pagination } from '@/types/pages/navigation';
 
 type UsersResult = {
   users: User[];
+  pagination: Pagination;
 };
 
 type OfficeResult = {
@@ -140,6 +151,10 @@ type InviteResult = {
 
 const dialogModel = ref<boolean>(false);
 const vFormModel = ref<boolean>(false);
+
+const route = useRoute();
+const router = useRouter();
+
 const selectedBranch = reactive<FormInput<string>>({
   model: '',
   rules: [(v: string) => !!v || 'Select area office to assign'],
@@ -155,9 +170,16 @@ const generateBtnState = reactive({
 
 const { showMessage } = useGlobalMessageStore();
 
+const initialPage =
+  route.query.page && !isNaN(Number(route.query.page)) ? Number(route.query.page) : 1;
+
+const currentPage = ref<number>(initialPage);
+
 const userFetch = useApiFetch<UsersResult>('admin/users/?includeOffice=true', {
   showError: true,
+  query: { currentPage: currentPage, pageSize: 10 },
 });
+
 const officeFetch = useApiFetch<OfficeResult>('admin/offices', {
   showError: true,
 });
@@ -210,4 +232,8 @@ const handleCopyLink = async () => {
   await useCopyToClipboard(generatedLink.value);
   showMessage('Copied!', 'Generated link copied to clipboard');
 };
+
+watch(currentPage, (newPage, _) => {
+  router.push({ path: route.path, query: { ...route.query, page: newPage } });
+});
 </script>
