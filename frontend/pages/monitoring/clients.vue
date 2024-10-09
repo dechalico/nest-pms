@@ -97,6 +97,14 @@
             </tbody>
           </v-table>
         </div>
+        <div class="text-center mt-4" v-if="(clientResult?.pagination.totalPages || 0) > 1">
+          <v-pagination
+            density="comfortable"
+            v-model="currentPage"
+            :total-visible="5"
+            :length="clientResult?.pagination.totalPages"
+          ></v-pagination>
+        </div>
       </UiParentCard>
     </v-col>
   </v-row>
@@ -107,13 +115,18 @@ import UiParentCard from '@/components/shared/UiParentCard.vue';
 import { PencilIcon, TrashIcon, XIcon } from 'vue-tabler-icons';
 import type { Client } from '@/types/monitoring/client';
 import type { FormInput } from '@/types/pages/form';
+import type { Pagination } from '@/types/pages/navigation';
 
 type ClientResult = {
   clients: Client[];
+  pagination: Pagination;
 };
 
 const dialogModel = ref<boolean>(false);
 const vFormModel = ref<boolean>(false);
+
+const route = useRoute();
+const router = useRouter();
 
 const clientName = reactive<FormInput<string>>({
   model: '',
@@ -126,10 +139,16 @@ const clientLocation = reactive<FormInput<string>>({
   rules: [(v: string) => !!v || 'Provide valid location name.'],
 });
 
+const initialPage =
+  route.query.page && !isNaN(Number(route.query.page)) ? Number(route.query.page) : 1;
+
+const currentPage = ref<number>(initialPage);
+
 const { data: clientResult, refresh: loadClients } = await useApiFetch<ClientResult>(
-  '/admin/clients',
+  '/admin/clients/',
   {
     showError: true,
+    query: { currentPage: currentPage, pageSize: 10 },
   },
 );
 
@@ -150,4 +169,8 @@ const createClientHandler = async () => {
     loadClients();
   }
 };
+
+watch(currentPage, (newPage, _) => {
+  router.push({ path: route.path, query: { ...route.query, page: newPage } });
+});
 </script>
