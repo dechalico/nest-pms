@@ -95,6 +95,15 @@
             </tbody>
           </v-table>
         </div>
+        <div class="text-center mt-4" v-if="(officeResult?.pagination.totalPages || 0) > 1">
+          <v-pagination
+            density="compact"
+            v-model="currentPage"
+            :total-visible="5"
+            :length="officeResult?.pagination.totalPages"
+            color="primary"
+          ></v-pagination>
+        </div>
       </UiParentCard>
     </v-col>
   </v-row>
@@ -105,14 +114,19 @@ import UiParentCard from '@/components/shared/UiParentCard.vue';
 import { PencilIcon, TrashIcon, XIcon } from 'vue-tabler-icons';
 import type { Office } from '@/types/management/office';
 import type { FormInput } from '@/types/pages/form';
+import type { Pagination } from '@/types/pages/navigation';
 
 type OfficeResult = {
   offices: Office[];
+  pagination: Pagination;
 };
 
 const dialogModel = ref<boolean>(false);
 const vFormModel = ref<boolean>(false);
 const userAction = ref<'edit' | 'create'>('create');
+
+const route = useRoute();
+const router = useRouter();
 
 const branchName = reactive<FormInput<string>>({
   model: '',
@@ -126,8 +140,14 @@ const branchLocation = reactive<FormInput<string>>({
   rules: [(v: string) => !!v || 'Provide valid branch location.'],
 });
 
+const initialPage =
+  route.query.page && !isNaN(Number(route.query.page)) ? Number(route.query.page) : 1;
+
+const currentPage = ref<number>(initialPage);
+
 const { data: officeResult, refresh } = await useApiFetch<OfficeResult>('admin/offices', {
   showError: true,
+  query: { currentPage: currentPage, pageSize: 10 },
 });
 
 const createNewOfficeBranch = async () => {
@@ -153,4 +173,8 @@ const resetFields = () => {
   branchLocation.model = '';
   branchName.model = '';
 };
+
+watch(currentPage, (newPage, _) => {
+  router.push({ path: route.path, query: { ...route.query, page: newPage } });
+});
 </script>
