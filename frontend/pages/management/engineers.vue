@@ -105,6 +105,15 @@
             </tbody>
           </v-table>
         </div>
+        <div class="text-center mt-4" v-if="(engineerResult?.pagination.totalPages || 0) > 1">
+          <v-pagination
+            density="compact"
+            v-model="currentPage"
+            :total-visible="5"
+            :length="engineerResult?.pagination.totalPages"
+            color="primary"
+          ></v-pagination>
+        </div>
       </UiParentCard>
     </v-col>
   </v-row>
@@ -115,13 +124,18 @@ import UiParentCard from '@/components/shared/UiParentCard.vue';
 import { PencilIcon, TrashIcon, XIcon } from 'vue-tabler-icons';
 import type { Engineer } from '@/types/management/engineer';
 import type { FormInput } from '@/types/pages/form';
+import type { Pagination } from '@/types/pages/navigation';
 
 type EngineerResult = {
   engineers: Engineer[];
+  pagination: Pagination;
 };
 
 const dialogModel = ref<boolean>(false);
 const vFormModel = ref<boolean>(false);
+
+const route = useRoute();
+const router = useRouter();
 
 const firstName = reactive<FormInput<string>>({
   model: '',
@@ -138,10 +152,16 @@ const middleName = reactive<FormInput<string>>({
   disabled: false,
 });
 
+const initialPage =
+  route.query.page && !isNaN(Number(route.query.page)) ? Number(route.query.page) : 1;
+
+const currentPage = ref<number>(initialPage);
+
 const { data: engineerResult, refresh: loadEngineers } = await useApiFetch<EngineerResult>(
   'admin/engineers/?includeOffice=true',
   {
     showError: true,
+    query: { currentPage: currentPage, pageSize: 10 },
   },
 );
 
@@ -163,4 +183,8 @@ const createEngineerHandler = async () => {
     await loadEngineers();
   }
 };
+
+watch(currentPage, (newPage, _) => {
+  router.push({ path: route.path, query: { ...route.query, page: newPage } });
+});
 </script>
