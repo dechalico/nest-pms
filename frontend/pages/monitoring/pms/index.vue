@@ -264,6 +264,15 @@
             </tbody>
           </v-table>
         </div>
+        <div class="text-center mt-4" v-if="(pmsResult?.pagination.totalPages || 0) > 1">
+          <v-pagination
+            density="compact"
+            v-model="currentPage"
+            :total-visible="5"
+            :length="pmsResult?.pagination.totalPages"
+            color="primary"
+          ></v-pagination>
+        </div>
       </UiParentCard>
     </v-col>
   </v-row>
@@ -279,9 +288,11 @@ import type { EquipmentBrand } from '@/types/monitoring/equipmentBrand';
 import type { WarrantyType } from '@/types/monitoring/warrantyType';
 import type { Engineer } from '@/types/management/engineer';
 import type { FormInput } from '@/types/pages/form';
+import type { Pagination } from '@/types/pages/navigation';
 
 type PmsResult = {
   pms: Pms[];
+  pagination: Pagination;
 };
 
 type ClientResult = {
@@ -302,6 +313,9 @@ type EngineerResult = {
 
 const dialogModel = ref<boolean>(false);
 const vFormModel = ref<boolean>(false);
+
+const route = useRoute();
+const router = useRouter();
 
 const hospital = reactive<FormInput<string>>({
   model: '',
@@ -369,8 +383,14 @@ const [client, equipmentBrand, warranty, engineer] = await Promise.all([
 ]);
 engineer.data.value?.engineers.forEach((e) => (e.fullName = `${e.firstName} ${e.lastName}`));
 
+const initialPage =
+  route.query.page && !isNaN(Number(route.query.page)) ? Number(route.query.page) : 1;
+
+const currentPage = ref<number>(initialPage);
+
 const { data: pmsResult, refresh: loadPms } = await useApiFetch<PmsResult>('/admin/pms', {
   showError: true,
+  query: { currentPage: currentPage, pageSize: 10 },
 });
 
 const createPMS = async () => {
@@ -398,4 +418,8 @@ const createPMS = async () => {
     loadPms();
   }
 };
+
+watch(currentPage, (newPage, _) => {
+  router.push({ path: route.path, query: { ...route.query, page: newPage } });
+});
 </script>
