@@ -62,6 +62,16 @@ export class UserRepository extends BaseRepositoryService<User> {
         $match: {},
       });
 
+      const limit = args?.limit || 50;
+      const skip = args?.skip || 0;
+
+      // prettier-ignore
+      stages.push(
+        { $sort: { _id: 1 } },
+        { $skip: limit },
+        { $limit: skip }
+      );
+
       if (args.include?.area_office) {
         stages.push({
           $lookup: {
@@ -97,23 +107,6 @@ export class UserRepository extends BaseRepositoryService<User> {
           },
         });
       }
-
-      stages.push({
-        $sort: {
-          _id: 1,
-        },
-      });
-
-      const limit = args?.limit || 50;
-      const skip = args?.skip || 0;
-
-      stages.push({
-        $skip: skip,
-      });
-
-      stages.push({
-        $limit: limit,
-      });
 
       const cursor = this.table.aggregate<User>(stages);
       const result: User[] = [];
