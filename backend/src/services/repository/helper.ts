@@ -44,3 +44,7 @@ export async function createIndexes(db: Db): Promise<void> {
   // for warranty histories collection indexes
   await db.collection('warranty_histories').createIndex({ pms_id: 1 });
 }
+
+export const DEFAULT_LIMIT = 50;
+
+export const DEFAULT_SKIP = 0;

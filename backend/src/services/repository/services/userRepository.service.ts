@@ -4,7 +4,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { Db } from 'mongodb';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
 import { instanceToPlain } from 'class-transformer';
-import { objectIdCreator } from '../helper';
+import { objectIdCreator, DEFAULT_LIMIT, DEFAULT_SKIP } from '../helper';
 
 @Injectable()
 export class UserRepository extends BaseRepositoryService<User> {
@@ -62,14 +62,11 @@ export class UserRepository extends BaseRepositoryService<User> {
         $match: {},
       });
 
-      const limit = args?.limit || 50;
-      const skip = args?.skip || 0;
-
       // prettier-ignore
       stages.push(
         { $sort: { _id: 1 } },
-        { $skip: limit },
-        { $limit: skip }
+        { $skip: args?.skip || DEFAULT_SKIP },
+        { $limit: args?.limit || DEFAULT_LIMIT },
       );
 
       if (args.include?.area_office) {
