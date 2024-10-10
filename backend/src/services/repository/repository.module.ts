@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppConfigService } from '../../config/appConfig.service';
 import { MongoClient, Db } from 'mongodb';
 import repositoryServices from './services/index';
+import { createIndexes } from './helper';
 
 @Module({
   providers: [
@@ -12,7 +13,11 @@ import repositoryServices from './services/index';
           const databaseConfig = config.getDatabaseConfig();
           const mongoUrl = `mongodb://${databaseConfig.username}:${databaseConfig.password}@${databaseConfig.host}:${databaseConfig.port}/?authSource=admin`;
           const client = await MongoClient.connect(mongoUrl);
-          return client.db(databaseConfig.dbName);
+          const database = client.db(databaseConfig.dbName);
+
+          await createIndexes(database);
+
+          return database;
         } catch (error) {
           throw error;
         }
