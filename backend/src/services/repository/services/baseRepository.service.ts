@@ -1,12 +1,9 @@
 import { BaseEntity, CountAllArgs, GetAllArgs } from '../entities';
 import { Db, Collection, ObjectId } from 'mongodb';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
-import { objectIdCreator } from '../helper';
+import { objectIdCreator, DEFAULT_LIMIT, DEFAULT_SKIP } from '../helper';
 import { instanceToPlain } from 'class-transformer';
 import { removeUndefinedValues } from '../../../common/helpers/objectHelper';
-
-const DEFAULT_LIMIT = 50;
-const DEFAULT_SKIP = 0;
 
 export abstract class BaseRepositoryService<Entity extends BaseEntity> {
   protected readonly table: Collection;

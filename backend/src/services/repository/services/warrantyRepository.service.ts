@@ -5,7 +5,6 @@ import { Db, ObjectId } from 'mongodb';
 import { AppResult } from 'src/common/app.result';
 import { objectIdCreator } from '../helper';
 import { GetAllArgs } from '../entities';
-import { filter } from 'rxjs';
 
 @Injectable()
 export class WarrantyRepository extends BaseRepositoryService<Warranty> {

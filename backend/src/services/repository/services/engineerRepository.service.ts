@@ -3,7 +3,7 @@ import { Engineer, GetAllArgs } from '../entities';
 import { Injectable, Inject } from '@nestjs/common';
 import { Db } from 'mongodb';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
-import { objectIdCreator } from '../helper';
+import { objectIdCreator, DEFAULT_LIMIT, DEFAULT_SKIP } from '../helper';
 import { instanceToPlain } from 'class-transformer';
 
 @Injectable()
@@ -60,6 +60,13 @@ export class EngineerRepository extends BaseRepositoryService<Engineer> {
         $match: filter,
       });
 
+      // prettier-ignore
+      stages.push(
+        { $sort: { _id: 1 } },
+        { $skip: args?.skip || DEFAULT_SKIP },
+        { $limit: args?.limit || DEFAULT_LIMIT },
+      );
+
       if (args.include?.area_office) {
         stages.push({
           $lookup: {
@@ -88,23 +95,6 @@ export class EngineerRepository extends BaseRepositoryService<Engineer> {
           },
         });
       }
-
-      stages.push({
-        $sort: {
-          _id: 1,
-        },
-      });
-
-      const limit = args?.limit || 50;
-      const skip = args?.skip || 0;
-
-      stages.push({
-        $skip: skip,
-      });
-
-      stages.push({
-        $limit: limit,
-      });
 
       const cursor = this.table.aggregate<Engineer>(stages);
       const result: Engineer[] = [];
