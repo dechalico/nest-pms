@@ -44,4 +44,13 @@ export class GetEngineersArgs {
   };
   limit: number;
   skip: number;
+  like?: {
+    name?: string;
+  };
+}
+
+export interface CountAllArgs {
+  like?: {
+    name?: string;
+  };
 }

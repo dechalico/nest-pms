@@ -2,6 +2,7 @@ import { Expose, Transform, Type } from 'class-transformer';
 import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 import { OmitType } from '@nestjs/mapped-types';
 import { Pagination } from '../common.dtos/pagination.dto';
+import { ToLowerCase } from '../../../decorators/string.decorator';
 
 class Engineer {
   @Expose()
@@ -53,4 +54,13 @@ export class GetAllEngineersArgs {
   @IsNumber()
   @Min(1)
   currentPage?: number;
+
+  @IsOptional()
+  @IsString()
+  @ToLowerCase()
+  searchBy?: string;
+
+  @IsOptional()
+  @IsString()
+  searchValue?: string;
 }

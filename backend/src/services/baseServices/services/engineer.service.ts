@@ -6,6 +6,7 @@ import {
   CreateEngineerSchema,
   UpdateEngineerSchema,
   GetEngineersArgs,
+  CountAllArgs,
 } from '../schemas/engineer.schema';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
 
@@ -111,12 +112,16 @@ export class EngineerService {
 
   async getAllEngineersAsync(args: GetEngineersArgs): Promise<AppResult<Array<EngineerSchema>>> {
     try {
+      const filter: any = {
+        like: args.like,
+      };
       const getRes = await this.engineerRepo.getAllAsync({
         include: {
           area_office: args.includes?.areaOffice,
         },
         limit: args.limit,
         skip: args.skip,
+        filter,
       });
       if (!getRes.succeeded || !getRes.result) {
         return AppResult.createFailed(new Error(getRes.message), getRes.message, getRes.error.code);
@@ -154,9 +159,14 @@ export class EngineerService {
     }
   }
 
-  async countEngineers(): Promise<AppResult<number>> {
+  async countEngineers(args: CountAllArgs): Promise<AppResult<number>> {
     try {
-      const countRes = await this.engineerRepo.countAsync();
+      const filter: any = {
+        like: args.like,
+      };
+      const countRes = await this.engineerRepo.countAsync({
+        filter,
+      });
       if (!countRes.succeeded) {
         return AppResult.createFailed(
           new Error(countRes.message),

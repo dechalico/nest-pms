@@ -38,8 +38,17 @@ export async function createIndexes(db: Db): Promise<void> {
   await db.collection('users').createIndex({ firstName: 1, lastName: 1 });
 
   // for engineers collection indexes
-  await db.collection('engineers').createIndex({ lastName: 1, firstName: 1, middleName: 1 });
   await db.collection('engineers').createIndex({ area_office_id: 1 });
+  await db.collection('engineers').createIndex({ lastName: 1 });
+  await db.collection('engineers').createIndex({ firstName: 1 });
+  await db.collection('engineers').createIndex({ middleName: 1 });
+  await db.collection('engineers').createIndex({ lastName: 1, area_office_id: 1 });
+  await db.collection('engineers').createIndex({ firstName: 1, area_office_id: 1 });
+  await db.collection('engineers').createIndex({ middleName: 1, area_office_id: 1 });
+  await db.collection('engineers').createIndex({ lastName: 1, firstName: 1, middleName: 1 });
+  await db
+    .collection('engineers')
+    .createIndex({ lastName: 1, firstName: 1, middleName: 1, area_office_id: 1 });
 
   // for invited tokens collection indexes
   await db.collection('invited_tokens').createIndex({ guid: 1, token: 1 });

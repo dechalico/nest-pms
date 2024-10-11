@@ -22,6 +22,7 @@ export class GetEngineersHandler implements IGetEngineersHandler {
         includes: args.includes,
         limit,
         skip,
+        like: args.like,
       });
       if (!engineerRes.succeeded || !engineerRes.result) {
         return AppResult.createFailed(
@@ -34,7 +35,9 @@ export class GetEngineersHandler implements IGetEngineersHandler {
 
       let pagination: Pagination | undefined = undefined;
       if (args.includePagination) {
-        const countRes = await this.engineerService.countEngineers();
+        const countRes = await this.engineerService.countEngineers({
+          like: args.like,
+        });
         if (!countRes.succeeded) {
           return AppResult.createFailed(
             new Error(countRes.message),
