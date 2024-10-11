@@ -1,10 +1,11 @@
 import { BaseRepositoryService } from './baseRepository.service';
-import { GetAllArgs, User } from '../entities';
+import { CountAllArgs, GetAllArgs, User } from '../entities';
 import { Injectable, Inject } from '@nestjs/common';
 import { Db } from 'mongodb';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
 import { instanceToPlain } from 'class-transformer';
 import { objectIdCreator, DEFAULT_LIMIT, DEFAULT_SKIP } from '../helper';
+import { OmitType } from '@nestjs/mapped-types';
 
 @Injectable()
 export class UserRepository extends BaseRepositoryService<User> {
@@ -55,11 +56,19 @@ export class UserRepository extends BaseRepositoryService<User> {
     }
   }
 
-  async getAllAsync(args?: GetAllArgs): Promise<AppResult<any>> {
+  async getAllAsync(args: UserGetOptions): Promise<AppResult<any>> {
     try {
+      const filter: any = {};
+      if (args.filter?.like?.name) {
+        filter.$or = [
+          { firstName: { $regex: args.filter.like.name, $options: 'i' } },
+          { lastName: { $regex: args.filter.like.name, $options: 'i' } },
+        ];
+      }
+
       const stages = [];
       stages.push({
-        $match: {},
+        $match: filter,
       });
 
       // prettier-ignore
@@ -125,4 +134,40 @@ export class UserRepository extends BaseRepositoryService<User> {
       );
     }
   }
+
+  async countAsync(args: UserCountOptions): Promise<AppResult<number>> {
+    try {
+      const filter: any = {};
+      if (args.filter?.like?.name) {
+        filter.$or = [
+          { firstName: { $regex: args.filter.like.name, $options: 'i' } },
+          { lastName: { $regex: args.filter.like.name, $options: 'i' } },
+        ];
+      }
+
+      return super.countAsync({ filter });
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'An error occured when counting users',
+        AppErrorCodes.InternalError,
+      );
+    }
+  }
+}
+
+class UserGetOptions extends OmitType(GetAllArgs, ['filter']) {
+  filter: {
+    like?: {
+      name?: string;
+    };
+  };
+}
+
+class UserCountOptions extends OmitType(CountAllArgs, ['filter']) {
+  filter?: {
+    like?: {
+      name?: string;
+    };
+  };
 }

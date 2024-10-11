@@ -17,6 +17,7 @@ export class GetUsersHandler implements IGetUsersHandler {
         includes: args.includes,
         limit,
         skip,
+        like: args.like,
       });
       if (!getRes.succeeded || !getRes.result) {
         return AppResult.createFailed(new Error(getRes.message), getRes.message, getRes.error.code);
@@ -26,7 +27,9 @@ export class GetUsersHandler implements IGetUsersHandler {
 
       let pagination: Pagination | undefined = undefined;
       if (args.includePagination) {
-        const countRes = await this.userService.countUsers();
+        const countRes = await this.userService.countUsers({
+          like: args.like,
+        });
         if (!countRes.succeeded) {
           return AppResult.createFailed(
             new Error(countRes.message),

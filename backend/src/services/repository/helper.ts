@@ -33,6 +33,8 @@ export async function createIndexes(db: Db): Promise<void> {
   // for users collection indexes
   await db.collection('users').createIndex({ email: 1 });
   await db.collection('users').createIndex({ username: 1 });
+  await db.collection('users').createIndex({ lastName: 1 });
+  await db.collection('users').createIndex({ firstName: 1 });
   await db.collection('users').createIndex({ firstName: 1, lastName: 1 });
 
   // for engineers collection indexes
