@@ -31,6 +31,7 @@ export class GetAllPmsHandler implements IGetAllPmsHandler {
         areaOfficeId: user.areaOfficeId,
         skip,
         limit,
+        like: args.like,
       });
       if (!pmsRes.succeeded || !pmsRes.result) {
         return AppResult.createFailed(new Error(pmsRes.message), pmsRes.message, pmsRes.error.code);
@@ -40,6 +41,7 @@ export class GetAllPmsHandler implements IGetAllPmsHandler {
       if (args.includePagination) {
         const pmsCountRes = await this.pmsService.countPmsAsync({
           areaOfficeId: user.areaOfficeId,
+          like: args.like,
         });
         if (!pmsCountRes.succeeded) {
           return AppResult.createFailed(

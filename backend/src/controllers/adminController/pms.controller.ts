@@ -50,10 +50,24 @@ export class PmsController {
     args.currentPage = args.currentPage || 1;
     args.pageSize = args.pageSize || 10;
 
+    const allowedSearch = {
+      client: 'client',
+      fsr_number: 'fsrNumber',
+      model: 'model',
+      principal: 'principal',
+      serial_number: 'serialNumbers',
+    };
+    const like: any = {};
+
+    if (args.searchBy && allowedSearch[args.searchBy] && args.searchValue) {
+      like[allowedSearch[args.searchBy]] = args.searchValue;
+    }
+
     const allPmsRes = await this.getallPmsHandler.executeAsync({
       currentPage: args.currentPage,
       pageSize: args.pageSize,
       includePagination: true,
+      like,
     });
     if (!allPmsRes.succeeded || !allPmsRes.result) {
       throw new BadRequestException(allPmsRes.message);

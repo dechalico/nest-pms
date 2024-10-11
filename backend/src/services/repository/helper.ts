@@ -26,6 +26,11 @@ export async function createIndexes(db: Db): Promise<void> {
   await db.collection('pms').createIndex({ area_office_id: 1 });
   await db.collection('pms').createIndex({ 'client.name': 1 });
   await db.collection('pms').createIndex({ 'equipmentBrand.name': 1 });
+  await db.collection('pms').createIndex({ serialNumbers: 1, area_office_id: 1 });
+  await db.collection('pms').createIndex({ fsrNumber: 1, area_office_id: 1 });
+  await db.collection('pms').createIndex({ model: 1, area_office_id: 1 });
+  await db.collection('pms').createIndex({ 'client.name': 1, area_office_id: 1 });
+  await db.collection('pms').createIndex({ 'equipmentBrand.name': 1, area_office_id: 1 });
 
   // for offices collection indexes
   await db.collection('area_offices').createIndex({ name: 1 });

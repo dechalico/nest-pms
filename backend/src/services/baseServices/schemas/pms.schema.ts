@@ -87,6 +87,13 @@ export class GetPmsArgs {
   areaOfficeId?: string;
   skip: number;
   limit: number;
+  like?: {
+    fsrNumber?: string;
+    model?: string;
+    serialNumbers?: string;
+    principal?: string;
+    client?: string;
+  };
 }
 
 export class GetPmsByIdArgs {
@@ -95,4 +102,11 @@ export class GetPmsByIdArgs {
 
 export interface CountPmsArgs {
   areaOfficeId?: string;
+  like?: {
+    fsrNumber?: string;
+    model?: string;
+    serialNumbers?: string;
+    principal?: string;
+    client?: string;
+  };
 }
