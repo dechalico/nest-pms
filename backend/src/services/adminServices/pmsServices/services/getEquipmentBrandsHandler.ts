@@ -20,6 +20,7 @@ export class GetEquipmentBrandsHandler implements IGetEquipmentBrandHandler {
       const brandsRes = await this.equipmentBrandService.getAllEquipmentBrandAsync({
         limit,
         skip,
+        like: args.like,
       });
       if (!brandsRes.succeeded || !brandsRes.result) {
         return AppResult.createFailed(
@@ -31,7 +32,9 @@ export class GetEquipmentBrandsHandler implements IGetEquipmentBrandHandler {
 
       let pagination: Pagination | undefined = undefined;
       if (args.includePagination) {
-        const brandsCountRes = await this.equipmentBrandService.countEquipmentBrandAsync();
+        const brandsCountRes = await this.equipmentBrandService.countEquipmentBrandAsync({
+          like: args.like,
+        });
         if (!brandsCountRes.succeeded) {
           return AppResult.createFailed(
             new Error(brandsCountRes.message),

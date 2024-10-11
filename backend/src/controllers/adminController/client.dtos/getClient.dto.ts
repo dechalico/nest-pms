@@ -54,6 +54,5 @@ export class GetClientsArgs {
 
   @IsOptional()
   @IsString()
-  @ToLowerCase()
   searchValue?: string;
 }

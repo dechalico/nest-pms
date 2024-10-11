@@ -25,4 +25,13 @@ export class UpdateEquipmentBrand extends PartialType(CreateEquipmentBrand) {
 export interface GetAllArgs {
   skip?: number;
   limit?: number;
+  like?: {
+    name?: string;
+  };
+}
+
+export interface CountAllArgs {
+  like?: {
+    name?: string;
+  };
 }

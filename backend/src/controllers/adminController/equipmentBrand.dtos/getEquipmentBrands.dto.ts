@@ -1,6 +1,7 @@
 import { Expose, Type } from 'class-transformer';
-import { IsNumber, IsOptional, Max, Min } from 'class-validator';
+import { IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 import { Pagination } from '../common.dtos/pagination.dto';
+import { ToLowerCase } from '../../../decorators/string.decorator';
 
 class EquipmentBrand {
   @Expose()
@@ -37,4 +38,13 @@ export class GetEquipmentBrandsArgs {
   @IsNumber()
   @Min(1)
   currentPage?: number;
+
+  @IsOptional()
+  @IsString()
+  @ToLowerCase()
+  searchBy?: string;
+
+  @IsOptional()
+  @IsString()
+  searchValue?: string;
 }
