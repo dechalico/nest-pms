@@ -98,7 +98,9 @@ export class ClientService {
 
   async getAllClients(args: GetAllArgs): Promise<AppResult<Array<ClientSchema>>> {
     try {
-      const filter: any = {};
+      const filter: any = {
+        like: args.like,
+      };
       if (args.areaOfficeId) {
         filter.area_office_id = args.areaOfficeId;
       }
@@ -129,7 +131,9 @@ export class ClientService {
 
   async countClients(args: CountAllArgs): Promise<AppResult<number>> {
     try {
-      const filter: any = {};
+      const filter: any = {
+        like: args.like,
+      };
       if (args.areaOfficeId) {
         filter.area_office_id = args.areaOfficeId;
       }

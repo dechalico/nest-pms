@@ -11,6 +11,7 @@ export async function createIndexes(db: Db): Promise<void> {
   // for clients collection indexes
   await db.collection('clients').createIndex({ name: 1 });
   await db.collection('clients').createIndex({ area_office_id: 1 });
+  await db.collection('clients').createIndex({ name: 1, area_office_id: 1 });
 
   // for principal collection indexes
   await db.collection('equipment_brands').createIndex({ name: 1 });

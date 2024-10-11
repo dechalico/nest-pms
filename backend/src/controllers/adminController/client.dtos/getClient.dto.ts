@@ -1,6 +1,7 @@
 import { Expose, Type } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsOptional, Max, Min } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 import { Pagination } from '../common.dtos/pagination.dto';
+import { ToLowerCase } from '../../../decorators/string.decorator';
 
 class Client {
   @Expose()
@@ -45,4 +46,14 @@ export class GetClientsArgs {
   @IsNumber()
   @Min(1)
   currentPage?: number;
+
+  @IsOptional()
+  @IsString()
+  @ToLowerCase()
+  searchBy?: string;
+
+  @IsOptional()
+  @IsString()
+  @ToLowerCase()
+  searchValue?: string;
 }
