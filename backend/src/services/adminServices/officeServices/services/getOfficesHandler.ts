@@ -21,6 +21,7 @@ export class GetOfficesHandler implements IGetOfficesHandler {
       const getRes = await this.areaOfficeService.getAllAreaOffices({
         limit,
         skip,
+        like: args.like,
       });
       if (!getRes.succeeded || !getRes.result) {
         return AppResult.createFailed(new Error(getRes.message), getRes.message, getRes.error.code);
@@ -28,7 +29,9 @@ export class GetOfficesHandler implements IGetOfficesHandler {
 
       let pagination: Pagination | undefined = undefined;
       if (args.includePagination) {
-        const countRes = await this.areaOfficeService.countAreaOffices();
+        const countRes = await this.areaOfficeService.countAreaOffices({
+          like: args.like,
+        });
         if (!countRes.succeeded) {
           return AppResult.createFailed(
             new Error(countRes.message),

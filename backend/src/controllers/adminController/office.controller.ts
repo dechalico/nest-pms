@@ -29,10 +29,20 @@ export class OfficeController {
     args.currentPage = args.currentPage || 1;
     args.pageSize = args.pageSize || 10;
 
+    const allowedSearch = {
+      name: 'name',
+    };
+    const like: any = {};
+
+    if (args.searchBy && allowedSearch[args.searchBy] && args.searchValue) {
+      like[allowedSearch[args.searchBy]] = args.searchValue;
+    }
+
     const result = await this.getOfficesHandler.executeAsync({
       currentPage: args.currentPage,
       pageSize: args.pageSize,
       includePagination: true,
+      like,
     });
     if (!result.succeeded || !result.result) {
       throw new BadRequestException(result.message);
