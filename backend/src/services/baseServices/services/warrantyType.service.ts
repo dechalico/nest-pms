@@ -4,6 +4,7 @@ import {
   UpdateWarrantyType,
   WarrantyTypeSchema,
   GetAllArgs,
+  CountAllArgs,
 } from '../schemas/warrantyType.schema';
 import { AppResult, AppErrorCodes } from '../../../common/app.result';
 import { WarrantyTypeRepository } from '../../repository/services/warrantyTypeRepository.service';
@@ -111,9 +112,13 @@ export class WarrantyTypeService {
 
   async getAllWarrantyTypes(args: GetAllArgs): Promise<AppResult<WarrantyTypeSchema[]>> {
     try {
+      const filter: any = {
+        like: args.like,
+      };
       const getAllRes = await this.warrantyRepo.getAllAsync({
         limit: args.limit,
         skip: args.skip,
+        filter,
       });
       if (!getAllRes.succeeded || !getAllRes.result) {
         return AppResult.createFailed(
@@ -160,9 +165,15 @@ export class WarrantyTypeService {
     }
   }
 
-  async countWarrantyTypes(): Promise<AppResult<number>> {
+  async countWarrantyTypes(args: CountAllArgs): Promise<AppResult<number>> {
     try {
-      const countRes = await this.warrantyRepo.countAsync();
+      const filter: any = {
+        like: args.like,
+      };
+
+      const countRes = await this.warrantyRepo.countAsync({
+        filter,
+      });
       if (!countRes.succeeded) {
         return AppResult.createFailed(
           new Error(countRes.message),
