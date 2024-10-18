@@ -6,10 +6,12 @@
           <div class="d-flex align-center">
             <div class="w-100 w-md-25">
               <v-text-field
+                id="search"
+                name="search"
                 density="compact"
                 hide-details
                 placeholder="Search Offices"
-                @update:model-value="onSearchOffices"
+                @update:model-value="onSearchedOffices"
               ></v-text-field>
             </div>
           </div>
@@ -197,7 +199,7 @@ watch(currentPage, (newPage, _) => {
   router.push({ path: route.path, query: { ...route.query, page: newPage } });
 });
 
-const onSearchOffices = debounce((search: string) => {
+const onSearchedOffices = debounce((search: string) => {
   currentPage.value = 1;
   searchedOffice.value = search;
 }, 500);
