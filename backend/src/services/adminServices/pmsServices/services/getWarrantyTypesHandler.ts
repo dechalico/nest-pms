@@ -20,6 +20,7 @@ export class GetWarrantyTypesHandler implements IGetWarrantyTypesHandler {
       const getWarrantyRes = await this.warrantyTypeService.getAllWarrantyTypes({
         limit,
         skip,
+        like: args.like,
       });
       if (!getWarrantyRes.succeeded || !getWarrantyRes.result) {
         return AppResult.createFailed(
@@ -31,7 +32,9 @@ export class GetWarrantyTypesHandler implements IGetWarrantyTypesHandler {
 
       let pagination: Pagination | undefined = undefined;
       if (args.includePagination) {
-        const warrantyCountRes = await this.warrantyTypeService.countWarrantyTypes();
+        const warrantyCountRes = await this.warrantyTypeService.countWarrantyTypes({
+          like: args.like,
+        });
         if (!warrantyCountRes.succeeded) {
           return AppResult.createFailed(
             new Error(warrantyCountRes.message),

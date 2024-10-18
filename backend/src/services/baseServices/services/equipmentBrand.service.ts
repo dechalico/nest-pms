@@ -4,6 +4,7 @@ import {
   EquipmentBrandSchema,
   UpdateEquipmentBrand,
   GetAllArgs,
+  CountAllArgs,
 } from '../schemas/equipmentBrand.schema';
 import { AppResult, AppErrorCodes } from '../../../common/app.result';
 import { EquipmentBrandRepository } from '../../repository/services/equipmentBrandRepository.service';
@@ -73,9 +74,13 @@ export class EquipmentBrandService {
     args: GetAllArgs,
   ): Promise<AppResult<Array<EquipmentBrandSchema>>> {
     try {
+      const filter: any = {
+        like: args.like,
+      };
       const getRes = await this.equipmentBrandRepository.getAllAsync({
-        limit: args.limit,
         skip: args.skip,
+        limit: args.limit,
+        filter,
       });
       if (!getRes.succeeded || !getRes.result) {
         return AppResult.createFailed(new Error(getRes.message), getRes.message, getRes.error.code);
@@ -92,9 +97,15 @@ export class EquipmentBrandService {
     }
   }
 
-  async countEquipmentBrandAsync(): Promise<AppResult<number>> {
+  async countEquipmentBrandAsync(args: CountAllArgs): Promise<AppResult<number>> {
     try {
-      const countRes = await this.equipmentBrandRepository.countAsync();
+      const filter: any = {
+        like: args.like,
+      };
+
+      const countRes = await this.equipmentBrandRepository.countAsync({
+        filter,
+      });
       if (!countRes.succeeded) {
         return AppResult.createFailed(
           new Error(countRes.message),

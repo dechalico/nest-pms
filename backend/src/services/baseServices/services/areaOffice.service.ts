@@ -6,6 +6,7 @@ import {
   AreaOfficeSchema,
   UpdateAreaOffice,
   GetAllArgs,
+  CountAllArgs,
 } from '../schemas/areaOffice.schema';
 
 @Injectable()
@@ -61,9 +62,13 @@ export class AreaOfficeService {
 
   async getAllAreaOffices(args: GetAllArgs): Promise<AppResult<Array<AreaOfficeSchema>>> {
     try {
+      const filter: any = {
+        like: args.like,
+      };
       const getAllRes = await this.areaOfficeRepo.getAllAsync({
         limit: args.limit,
         skip: args.skip,
+        filter,
       });
       if (!getAllRes.succeeded || !getAllRes.result) {
         return AppResult.createFailed(
@@ -83,9 +88,14 @@ export class AreaOfficeService {
     }
   }
 
-  async countAreaOffices(): Promise<AppResult<number>> {
+  async countAreaOffices(args: CountAllArgs): Promise<AppResult<number>> {
     try {
-      const countRes = await this.areaOfficeRepo.countAsync();
+      const filter: any = {
+        like: args.like,
+      };
+      const countRes = await this.areaOfficeRepo.countAsync({
+        filter,
+      });
       if (!countRes.succeeded || !countRes.result) {
         return AppResult.createFailed(new Error(countRes.message), countRes.message);
       }

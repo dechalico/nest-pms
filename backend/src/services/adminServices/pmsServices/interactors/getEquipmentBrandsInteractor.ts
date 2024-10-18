@@ -16,6 +16,9 @@ export class GetEquipmentBrandArgs {
   includePagination: boolean;
   pageSize: number;
   currentPage: number;
+  like?: {
+    name?: string;
+  };
 }
 
 export class GetEquipmentBrandResult {

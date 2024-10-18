@@ -15,6 +15,9 @@ export class GetEngineersArgs {
   includePagination: boolean;
   pageSize: number;
   currentPage: number;
+  like?: {
+    name?: string;
+  };
 }
 
 export class GetEngineersResult {

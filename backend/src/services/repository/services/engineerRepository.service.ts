@@ -1,10 +1,11 @@
 import { BaseRepositoryService } from './baseRepository.service';
-import { Engineer, GetAllArgs } from '../entities';
+import { CountAllArgs, Engineer, GetAllArgs } from '../entities';
 import { Injectable, Inject } from '@nestjs/common';
 import { Db } from 'mongodb';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
 import { objectIdCreator, DEFAULT_LIMIT, DEFAULT_SKIP } from '../helper';
 import { instanceToPlain } from 'class-transformer';
+import { OmitType } from '@nestjs/mapped-types';
 
 @Injectable()
 export class EngineerRepository extends BaseRepositoryService<Engineer> {
@@ -41,7 +42,7 @@ export class EngineerRepository extends BaseRepositoryService<Engineer> {
     }
   }
 
-  async getAllAsync(args?: GetAllArgs): Promise<AppResult<any>> {
+  async getAllAsync(args: EngineerGetOptions): Promise<AppResult<any>> {
     try {
       const stages = [];
 
@@ -54,6 +55,14 @@ export class EngineerRepository extends BaseRepositoryService<Engineer> {
               ? args.filter._id.map((i) => objectIdCreator(i))
               : [objectIdCreator(args.filter._id)],
         };
+      }
+
+      if (args.filter?.like?.name) {
+        filter['$or'] = [
+          { firstName: { $regex: args.filter.like.name, $options: 'i' } },
+          { lastName: { $regex: args.filter.like.name, $options: 'i' } },
+          { middleName: { $regex: args.filter.like.name, $options: 'i' } },
+        ];
       }
 
       stages.push({
@@ -116,4 +125,54 @@ export class EngineerRepository extends BaseRepositoryService<Engineer> {
       );
     }
   }
+
+  async countAsync(args: EngineerCountOptions): Promise<AppResult<any>> {
+    try {
+      const filter = {};
+
+      if (args.filter?._id) {
+        filter['_id'] = {
+          $in:
+            args.filter?._id instanceof Array
+              ? args.filter._id.map((i) => objectIdCreator(i))
+              : [objectIdCreator(args.filter._id)],
+        };
+      }
+
+      if (args.filter?.like?.name) {
+        filter['$or'] = [
+          { firstName: { $regex: args.filter.like.name, $options: 'i' } },
+          { lastName: { $regex: args.filter.like.name, $options: 'i' } },
+          { middleName: { $regex: args.filter.like.name, $options: 'i' } },
+        ];
+      }
+
+      const count = await this.table.countDocuments(filter);
+      return AppResult.createSucceeded(count, 'Successfully get all engineers count');
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'An error occured when getting all engineers count',
+        AppErrorCodes.InternalError,
+      );
+    }
+  }
+}
+
+class EngineerGetOptions extends OmitType(GetAllArgs, ['filter']) {
+  filter?: {
+    like?: {
+      name?: string;
+    };
+    _id?: string | string[];
+  };
+}
+
+class EngineerCountOptions extends OmitType(CountAllArgs, ['filter']) {
+  filter?: {
+    like?: {
+      name?: string;
+    };
+    _id?: string | string[];
+  };
 }

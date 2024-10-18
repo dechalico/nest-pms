@@ -4,6 +4,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { Db } from 'mongodb';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
 import { objectIdCreator } from '../helper';
+import { OmitType } from '@nestjs/mapped-types';
 
 @Injectable()
 export class PmsRepository extends BaseRepositoryService<Pms> {
@@ -32,23 +33,104 @@ export class PmsRepository extends BaseRepositoryService<Pms> {
     });
   }
 
-  getAllAsync(args?: GetAllArgs): Promise<AppResult<any>> {
-    const options: Record<string, any> = {};
-    if (args?.filter?.areaOfficeId) {
-      options.area_office_id = objectIdCreator(args?.filter?.areaOfficeId);
-    }
-    options.skip = args?.skip;
-    options.limit = args?.limit;
+  getAllAsync(args: PmsGetOptions): Promise<AppResult<any>> {
+    const filter: any = {};
+    const andFilters = [];
 
-    return super.getAllAsync(options);
+    if (args.filter.areaOfficeId) {
+      andFilters.push({ area_office_id: objectIdCreator(args.filter.areaOfficeId) });
+    }
+    if (args.filter.like?.fsrNumber) {
+      andFilters.push({ fsrNumber: { $regex: args.filter.like.fsrNumber, $options: 'i' } });
+    }
+    if (args.filter.like?.model) {
+      andFilters.push({ model: { $regex: args.filter.like.model, $options: 'i' } });
+    }
+    if (args.filter.like?.serialNumbers) {
+      andFilters.push({
+        serialNumbers: {
+          $elemMatch: { $regex: args.filter.like.serialNumbers, $options: 'i' },
+        },
+      });
+    }
+    if (args.filter.like?.principal) {
+      andFilters.push({
+        'equipmentBrand.name': { $regex: args.filter.like.principal, $options: 'i' },
+      });
+    }
+    if (args.filter.like?.client) {
+      andFilters.push({ 'client.name': { $regex: args.filter.like.client, $options: 'i' } });
+    }
+
+    if (andFilters.length > 0) {
+      filter.$and = andFilters;
+    }
+
+    return super.getAllAsync({
+      ...args,
+      filter,
+    });
   }
 
-  countAsync(args?: CountAllArgs): Promise<AppResult<number>> {
-    const options: Record<string, any> = {};
-    if (args?.filter?.areaOfficeId) {
-      options.area_office_id = objectIdCreator(args?.filter?.areaOfficeId);
+  countAsync(args: PmsCountOptions): Promise<AppResult<number>> {
+    const filter: any = {};
+    const andFilters = [];
+
+    if (args.filter.areaOfficeId) {
+      andFilters.push({ area_office_id: objectIdCreator(args.filter.areaOfficeId) });
+    }
+    if (args.filter.like?.fsrNumber) {
+      andFilters.push({ fsrNumber: { $regex: args.filter.like.fsrNumber, $options: 'i' } });
+    }
+    if (args.filter.like?.model) {
+      andFilters.push({ model: { $regex: args.filter.like.model, $options: 'i' } });
+    }
+    if (args.filter.like?.serialNumbers) {
+      andFilters.push({
+        serialNumbers: {
+          $elemMatch: { $regex: args.filter.like.serialNumbers, $options: 'i' },
+        },
+      });
+    }
+    if (args.filter.like?.principal) {
+      andFilters.push({
+        'equipmentBrand.name': { $regex: args.filter.like.principal, $options: 'i' },
+      });
+    }
+    if (args.filter.like?.client) {
+      andFilters.push({ 'client.name': { $regex: args.filter.like.client, $options: 'i' } });
     }
 
-    return super.countAsync(options);
+    if (andFilters.length > 0) {
+      filter.$and = andFilters;
+    }
+
+    return super.countAsync({ filter });
   }
+}
+
+class PmsGetOptions extends OmitType(GetAllArgs, ['filter']) {
+  filter: {
+    areaOfficeId?: string;
+    like?: {
+      fsrNumber?: string;
+      model?: string;
+      serialNumbers?: string;
+      principal?: string;
+      client?: string;
+    };
+  };
+}
+
+class PmsCountOptions extends OmitType(CountAllArgs, ['filter']) {
+  filter: {
+    areaOfficeId?: string;
+    like?: {
+      fsrNumber?: string;
+      model?: string;
+      serialNumbers?: string;
+      principal?: string;
+      client?: string;
+    };
+  };
 }

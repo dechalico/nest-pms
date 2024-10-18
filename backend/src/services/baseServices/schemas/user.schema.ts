@@ -51,4 +51,13 @@ export class GetUsersArgs {
   };
   skip: number;
   limit: number;
+  like?: {
+    name?: string;
+  };
+}
+
+export interface CountAllArgs {
+  like?: {
+    name?: string;
+  };
 }

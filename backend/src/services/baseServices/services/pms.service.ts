@@ -101,12 +101,15 @@ export class PmsService {
 
   async getAllPmsAsync(args: GetPmsArgs): Promise<AppResult<PmsSchema[]>> {
     try {
-      const filter: Record<string, string> = {};
+      const filter: any = {
+        like: args.like,
+      };
+
       if (args.areaOfficeId) {
         filter.areaOfficeId = args.areaOfficeId;
       }
       const allPmsRes = await this.pmsRepository.getAllAsync({
-        filter: filter,
+        filter,
         limit: args.limit,
         skip: args.skip,
       });
@@ -138,17 +141,25 @@ export class PmsService {
 
       const pms: PmsSchema = pmsRes.result;
       return AppResult.createSucceeded(pms, 'Successfully get pms.');
-    } catch (error) {}
+    } catch (error) {
+      return AppResult.createFailed(
+        error,
+        'An error occured when getting pms.',
+        AppErrorCodes.InternalError,
+      );
+    }
   }
 
   async countPmsAsync(args: CountPmsArgs): Promise<AppResult<number>> {
     try {
-      const filter: Record<string, string> = {};
+      const filter: any = {
+        like: args.like,
+      };
       if (args.areaOfficeId) {
         filter.areaOfficeId = args.areaOfficeId;
       }
       const countRes = await this.pmsRepository.countAsync({
-        filter: filter,
+        filter,
       });
       if (!countRes.succeeded || !countRes.result) {
         return AppResult.createFailed(countRes.error.error, countRes.message);

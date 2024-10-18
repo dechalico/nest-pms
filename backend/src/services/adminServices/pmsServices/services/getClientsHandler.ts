@@ -34,6 +34,7 @@ export class GetClientsHandler implements IGetClientsHandler {
 
       const clientsRes = await this.clientService.getAllClients({
         areaOfficeId: currentUser.areaOfficeId,
+        like: args.like,
         skip,
         limit,
       });
@@ -49,6 +50,7 @@ export class GetClientsHandler implements IGetClientsHandler {
       if (args.includePagination) {
         const clientsCountRes = await this.clientService.countClients({
           areaOfficeId: currentUser.areaOfficeId,
+          like: args.like,
         });
         if (!clientsCountRes.succeeded) {
           return AppResult.createFailed(

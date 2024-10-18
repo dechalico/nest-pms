@@ -1,5 +1,23 @@
 <template>
   <v-row>
+    <v-col cols="12">
+      <v-card elevation="10">
+        <v-card-text>
+          <div class="d-flex align-center">
+            <div class="w-100 w-md-25">
+              <v-text-field
+                id="search"
+                name="search"
+                density="compact"
+                hide-details
+                placeholder="Search Cleints"
+                @update:model-value="onSearchedClients"
+              ></v-text-field>
+            </div>
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-col>
     <v-col cols="12" md="12">
       <UiParentCard title="Clients">
         <template #action>
@@ -117,6 +135,7 @@ import { PencilIcon, TrashIcon, XIcon } from 'vue-tabler-icons';
 import type { Client } from '@/types/monitoring/client';
 import type { FormInput } from '@/types/pages/form';
 import type { Pagination } from '@/types/pages/navigation';
+import { debounce } from '@/utils/debounce';
 
 type ClientResult = {
   clients: Client[];
@@ -145,11 +164,13 @@ const initialPage =
 
 const currentPage = ref<number>(initialPage);
 
+const searchClient = ref<string>('');
+
 const { data: clientResult, refresh: loadClients } = await useApiFetch<ClientResult>(
   '/admin/clients/',
   {
     showError: true,
-    query: { currentPage: currentPage, pageSize: 10 },
+    query: { currentPage: currentPage, pageSize: 10, searchBy: 'Name', searchValue: searchClient },
   },
 );
 
@@ -174,4 +195,9 @@ const createClientHandler = async () => {
 watch(currentPage, (newPage, _) => {
   router.push({ path: route.path, query: { ...route.query, page: newPage } });
 });
+
+const onSearchedClients = debounce((search: string) => {
+  currentPage.value = 1;
+  searchClient.value = search;
+}, 500);
 </script>

@@ -1,5 +1,24 @@
 <template>
   <v-row>
+    <v-col cols="12">
+      <v-card elevation="10">
+        <v-card-text>
+          <div class="d-flex align-center">
+            <div class="w-100 w-md-25">
+              <v-text-field
+                id="search"
+                name="search"
+                density="compact"
+                hide-details
+                placeholder="Search Users"
+                @update:model-value="onSearchedUsers"
+              ></v-text-field>
+            </div>
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-col>
+
     <v-col cols="12" md="12">
       <UiParentCard title="Users">
         <template #action>
@@ -133,6 +152,7 @@ import type { FormInput } from '@/types/pages/form';
 import type { Office } from '@/types/management/office';
 import { useGlobalMessageStore } from '@/stores/globalMessage';
 import type { Pagination } from '@/types/pages/navigation';
+import { debounce } from '@/utils/debounce';
 
 type UsersResult = {
   users: User[];
@@ -174,10 +194,11 @@ const initialPage =
   route.query.page && !isNaN(Number(route.query.page)) ? Number(route.query.page) : 1;
 
 const currentPage = ref<number>(initialPage);
+const searchedUsers = ref<string>('');
 
 const userFetch = useApiFetch<UsersResult>('admin/users/?includeOffice=true', {
   showError: true,
-  query: { currentPage: currentPage, pageSize: 10 },
+  query: { currentPage: currentPage, pageSize: 10, searchBy: 'Name', searchValue: searchedUsers },
 });
 
 const officeFetch = useApiFetch<OfficeResult>('admin/offices', {
@@ -236,4 +257,9 @@ const handleCopyLink = async () => {
 watch(currentPage, (newPage, _) => {
   router.push({ path: route.path, query: { ...route.query, page: newPage } });
 });
+
+const onSearchedUsers = debounce((search: string) => {
+  currentPage.value = 1;
+  searchedUsers.value = search;
+}, 500);
 </script>

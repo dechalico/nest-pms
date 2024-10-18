@@ -11,6 +11,9 @@ export class GetWarrantyTypeArgs {
   includePagination: boolean;
   pageSize: number;
   currentPage: number;
+  like?: {
+    name?: string;
+  };
 }
 
 export interface Pagination {

@@ -45,6 +45,15 @@ export class EngineerController {
     args.currentPage = args.currentPage || 1;
     args.pageSize = args.pageSize || 10;
 
+    const allowedSearch = {
+      name: 'name',
+    };
+    const like: any = {};
+
+    if (args.searchBy && allowedSearch[args.searchBy] && args.searchValue) {
+      like[allowedSearch[args.searchBy]] = args.searchValue;
+    }
+
     const getEngineersRes = await this.getEngineersHandler.executeAsync({
       includes: {
         areaOffice: args.includeOffice,
@@ -52,6 +61,7 @@ export class EngineerController {
       currentPage: args.currentPage,
       pageSize: args.pageSize,
       includePagination: true,
+      like,
     });
     if (!getEngineersRes.succeeded || !getEngineersRes.result) {
       throw new BadRequestException(getEngineersRes.succeeded);

@@ -26,6 +26,9 @@ export class GetUsersArgs {
   includePagination: boolean;
   pageSize: number;
   currentPage: number;
+  like?: {
+    name?: string;
+  };
 }
 
 export interface Pagination {

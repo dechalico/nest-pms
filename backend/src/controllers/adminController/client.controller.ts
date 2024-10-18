@@ -27,10 +27,20 @@ export class ClientController {
     args.currentPage = args.currentPage || 1;
     args.pageSize = args.pageSize || 10;
 
+    const allowedSearch = {
+      name: 'name',
+    };
+    const like: any = {};
+
+    if (args.searchBy && allowedSearch[args.searchBy] && args.searchValue) {
+      like[allowedSearch[args.searchBy]] = args.searchValue;
+    }
+
     const getClientsRes = await this.getClientsHandler.executeAsync({
       includePagination: true,
       currentPage: args.currentPage,
       pageSize: args.pageSize,
+      like,
     });
     if (!getClientsRes.succeeded || !getClientsRes.result) {
       throw new BadRequestException(getClientsRes.message);

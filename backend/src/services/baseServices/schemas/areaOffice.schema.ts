@@ -27,4 +27,13 @@ export class UpdateAreaOffice extends PartialType(
 export interface GetAllArgs {
   skip?: number;
   limit?: number;
+  like?: {
+    name?: string;
+  };
+}
+
+export interface CountAllArgs {
+  like?: {
+    name?: string;
+  };
 }

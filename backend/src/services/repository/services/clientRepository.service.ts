@@ -46,10 +46,14 @@ export class ClientRepository extends BaseRepositoryService<Client> {
 
   async getAllAsync(args: ClientOptions = { filter: {} }): Promise<AppResult<any>> {
     try {
+      const filter: any = {};
       if (args.filter?.area_office_id) {
-        args.filter.area_office_id = objectIdCreator(args.filter.area_office_id);
+        filter.area_office_id = objectIdCreator(args.filter.area_office_id);
       }
-      return super.getAllAsync(args);
+      if (args.filter?.like?.name) {
+        filter.name = { $regex: args.filter.like.name, $options: 'i' };
+      }
+      return super.getAllAsync({ ...args, filter });
     } catch (error) {
       return AppResult.createFailed(
         error,
@@ -59,12 +63,16 @@ export class ClientRepository extends BaseRepositoryService<Client> {
     }
   }
 
-  async countAsync(args?: CountAllArgs): Promise<AppResult<number>> {
+  async countAsync(args?: ClientCountOptions): Promise<AppResult<number>> {
     try {
-      if (args?.filter?.area_office_id) {
-        args.filter.area_office_id = objectIdCreator(args.filter.area_office_id);
+      const filter: any = {};
+      if (args.filter?.area_office_id) {
+        filter.area_office_id = objectIdCreator(args.filter.area_office_id);
       }
-      return super.countAsync(args);
+      if (args.filter?.like?.name) {
+        filter.name = { $regex: args.filter.like.name, $options: 'i' };
+      }
+      return super.countAsync({ filter });
     } catch (error) {
       return AppResult.createFailed(
         error,
@@ -79,5 +87,18 @@ class ClientOptions extends OmitType(GetAllArgs, ['filter']) {
   filter: {
     _id?: any;
     area_office_id?: any;
+    like?: {
+      name?: string;
+    };
+  };
+}
+
+class ClientCountOptions extends OmitType(CountAllArgs, ['filter']) {
+  filter: {
+    _id?: any;
+    area_office_id?: any;
+    like?: {
+      name?: string;
+    };
   };
 }

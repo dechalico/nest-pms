@@ -35,8 +35,14 @@ export interface GetAllArgs {
   areaOfficeId?: string;
   skip?: number;
   limit?: number;
+  like?: {
+    name?: string;
+  };
 }
 
 export interface CountAllArgs {
   areaOfficeId?: string;
+  like?: {
+    name?: string;
+  };
 }

@@ -1,6 +1,7 @@
 import { Expose, Transform, Type } from 'class-transformer';
-import { IsBoolean, IsNumber, IsOptional, Max, Min } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 import { Pagination } from '../common.dtos/pagination.dto';
+import { ToLowerCase } from '../../../decorators/string.decorator';
 
 export class GetUsersArgs {
   @IsBoolean()
@@ -20,6 +21,15 @@ export class GetUsersArgs {
   @IsNumber()
   @Min(1)
   currentPage?: number;
+
+  @IsOptional()
+  @IsString()
+  @ToLowerCase()
+  searchBy?: string;
+
+  @IsOptional()
+  @IsString()
+  searchValue?: string;
 }
 
 class AreaOffice {

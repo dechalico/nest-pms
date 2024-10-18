@@ -18,6 +18,9 @@ export class GetClientArgs {
   includePagination: boolean;
   pageSize: number;
   currentPage: number;
+  like?: {
+    name?: string;
+  };
 }
 
 export class GetClientResult {

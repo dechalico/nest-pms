@@ -1,6 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from '../../repository/services/userRepository.service';
-import { UserSchema, CreateUser, UpdateUser, GetUsersArgs } from '../schemas/user.schema';
+import {
+  UserSchema,
+  CreateUser,
+  UpdateUser,
+  GetUsersArgs,
+  CountAllArgs,
+} from '../schemas/user.schema';
 import { AppErrorCodes, AppResult } from '../../../common/app.result';
 import { PasswordHasher } from '../../securityServices/services/passwordService';
 
@@ -184,16 +190,18 @@ export class UserService {
 
   async getAllUsers(args: GetUsersArgs): Promise<AppResult<Array<UserSchema>>> {
     try {
-      const options: Record<string, any> = {};
-      if (args.includes?.areaOffice) {
-        options.include = {
-          area_office: args.includes.areaOffice,
-        };
-      }
-      options.limit = args.limit;
-      options.skip = args.skip;
+      const filter: any = {
+        like: args.like,
+      };
 
-      const usersRes = await this.userRepository.getAllAsync(options);
+      const usersRes = await this.userRepository.getAllAsync({
+        filter,
+        limit: args.limit,
+        skip: args.skip,
+        include: {
+          area_office: args.includes?.areaOffice,
+        },
+      });
       if (!usersRes.succeeded || !usersRes.result) {
         return AppResult.createFailed(
           new Error(usersRes.message),
@@ -213,9 +221,13 @@ export class UserService {
     }
   }
 
-  async countUsers(): Promise<AppResult<number>> {
+  async countUsers(args: CountAllArgs): Promise<AppResult<number>> {
     try {
-      const countRes = await this.userRepository.countAsync();
+      const countRes = await this.userRepository.countAsync({
+        filter: {
+          like: args.like,
+        },
+      });
       if (!countRes.succeeded) {
         return AppResult.createFailed(
           new Error(countRes.message),

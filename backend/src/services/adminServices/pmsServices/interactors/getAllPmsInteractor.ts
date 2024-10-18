@@ -75,6 +75,13 @@ export class GetAllPmsArgs {
   includePagination: boolean;
   pageSize: number;
   currentPage: number;
+  like?: {
+    fsrNumber: string;
+    model: string;
+    serialNumbers: string;
+    principal: string;
+    client: string;
+  };
 }
 
 export interface Pagination {
