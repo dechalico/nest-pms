@@ -1,5 +1,22 @@
 <template>
   <v-row>
+    <v-col cols="12">
+      <v-card elevation="10">
+        <v-card-text>
+          <div class="d-flex align-center">
+            <div class="w-100 w-md-25">
+              <v-text-field
+                density="compact"
+                hide-details
+                placeholder="Search Principal"
+                @update:model-value="searchedPrincipals"
+              ></v-text-field>
+            </div>
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-col>
+
     <v-col cols="12" md="12">
       <UiParentCard title="Principals">
         <template #action>
@@ -106,6 +123,7 @@ import { PencilIcon, TrashIcon, XIcon } from 'vue-tabler-icons';
 import type { EquipmentBrand } from '@/types/monitoring/equipmentBrand';
 import type { FormInput } from '@/types/pages/form';
 import type { Pagination } from '@/types/pages/navigation';
+import { debounce } from '@/utils/debounce';
 
 type EquipmentBrandResult = {
   equipmentBrands: EquipmentBrand[];
@@ -128,11 +146,17 @@ const initialPage =
   route.query.page && !isNaN(Number(route.query.page)) ? Number(route.query.page) : 1;
 
 const currentPage = ref<number>(initialPage);
+const searchPrincipal = ref<string>('');
 
 const { data: equipmenBrandResult, refresh: loadEquipmentBrands } =
   await useApiFetch<EquipmentBrandResult>('/admin/equipment-brands', {
     showError: true,
-    query: { currentPage: currentPage, pageSize: 10 },
+    query: {
+      currentPage: currentPage,
+      pageSize: 10,
+      searchBy: 'Name',
+      searchValue: searchPrincipal,
+    },
   });
 
 const createPrincipalHandler = async () => {
@@ -155,4 +179,9 @@ const createPrincipalHandler = async () => {
 watch(currentPage, (newPage, _) => {
   router.push({ path: route.path, query: { ...route.query, page: newPage } });
 });
+
+const searchedPrincipals = debounce((search: string) => {
+  currentPage.value = 1;
+  searchPrincipal.value = search;
+}, 500);
 </script>
