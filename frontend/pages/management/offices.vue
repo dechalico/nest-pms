@@ -1,5 +1,22 @@
 <template>
   <v-row>
+    <v-col cols="12">
+      <v-card elevation="10">
+        <v-card-text>
+          <div class="d-flex align-center">
+            <div class="w-100 w-md-25">
+              <v-text-field
+                density="compact"
+                hide-details
+                placeholder="Search Offices"
+                @update:model-value="onSearchOffices"
+              ></v-text-field>
+            </div>
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-col>
+
     <v-col cols="12" md="12">
       <UiParentCard title="Branches">
         <template #action>
@@ -115,6 +132,7 @@ import { PencilIcon, TrashIcon, XIcon } from 'vue-tabler-icons';
 import type { Office } from '@/types/management/office';
 import type { FormInput } from '@/types/pages/form';
 import type { Pagination } from '@/types/pages/navigation';
+import { debounce } from '@/utils/debounce';
 
 type OfficeResult = {
   offices: Office[];
@@ -144,10 +162,11 @@ const initialPage =
   route.query.page && !isNaN(Number(route.query.page)) ? Number(route.query.page) : 1;
 
 const currentPage = ref<number>(initialPage);
+const searchedOffice = ref<string>('');
 
 const { data: officeResult, refresh } = await useApiFetch<OfficeResult>('admin/offices', {
   showError: true,
-  query: { currentPage: currentPage, pageSize: 10 },
+  query: { currentPage: currentPage, pageSize: 10, searchBy: 'Name', searchValue: searchedOffice },
 });
 
 const createNewOfficeBranch = async () => {
@@ -177,4 +196,9 @@ const resetFields = () => {
 watch(currentPage, (newPage, _) => {
   router.push({ path: route.path, query: { ...route.query, page: newPage } });
 });
+
+const onSearchOffices = debounce((search: string) => {
+  currentPage.value = 1;
+  searchedOffice.value = search;
+}, 500);
 </script>
